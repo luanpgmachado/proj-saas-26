@@ -28,7 +28,7 @@ import {
   type InsertInvestmentContribution,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gte, lte, sql, like, sum } from "drizzle-orm";
+import { eq, and, gte, lte, sql, sum } from "drizzle-orm";
 
 export interface IStorage {
   getCategories(): Promise<Category[]>;
@@ -82,7 +82,12 @@ export class DatabaseStorage implements IStorage {
     const conditions = [];
 
     if (filters.month) {
-      conditions.push(like(transactions.date, `${filters.month}%`));
+      const [year, monthNum] = filters.month.split("-").map(Number);
+      const startDate = `${year}-${String(monthNum).padStart(2, "0")}-01`;
+      const lastDay = new Date(year, monthNum, 0).getDate();
+      const endDate = `${year}-${String(monthNum).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+      conditions.push(gte(transactions.date, startDate));
+      conditions.push(lte(transactions.date, endDate));
     }
     if (filters.categoryId) {
       conditions.push(eq(transactions.categoryId, filters.categoryId));
