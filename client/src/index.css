@@ -192,3 +192,70 @@ th {
   background: #0066cc;
   transition: width 0.3s;
 }
+
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-caixa {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 560px;
+  max-width: 92vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-cabecalho h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.formulario-grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.formulario-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.formulario-campo.linha-inteira {
+  grid-column: 1 / -1;
+}
+
+.modal-erro {
+  margin-top: 12px;
+  color: #c62828;
+  font-size: 13px;
+}
+
+.modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+@media (max-width: 720px) {
+  .formulario-grade {
+    grid-template-columns: 1fr;
+  }
+}

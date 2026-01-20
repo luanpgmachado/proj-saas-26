@@ -13,6 +13,9 @@
 - A coluna Diferenca so ganha destaque quando estourar orcamento.
 - Abas horizontais: Fixos, Variaveis, Parcelados, Entradas.
 - Apenas uma aba visivel por vez, troca instantanea e sem efeito.
+- Ao clicar em "+ Novo Lancamento", abrir modal de cadastro de lancamento.
+  - Campos: descricao, valor (R$), tipo, grupo, data, categoria, metodo de pagamento.
+  - Se tipo for "entry", grupo fica fixo como "entry".
 
 ## Tela de Lancamentos
 - Filtros em linha no topo: categoria, metodo, tipo.

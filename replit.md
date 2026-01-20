@@ -41,3 +41,7 @@ Main endpoints:
   - Built Express API following API contract
   - Set up PostgreSQL database with Drizzle ORM
   - Added error handling and proper date filtering
+- 2026-01-20: Added new transaction modal on the dashboard
+  - Created the launch modal form with category and payment method loading
+  - Wired dashboard button, submission flow, and data refresh after save
+  - Documented the modal behavior in the UX blueprint

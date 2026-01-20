@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../lib/api";
+import ModalLancamento, { type DadosLancamento } from "../components/ModalLancamento";
 
 const formatCurrency = (cents: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
@@ -14,6 +15,7 @@ export default function Dashboard() {
   const [categorySpend, setCategorySpend] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [tab, setTab] = useState("fixed");
+  const [modalAberto, setModalAberto] = useState(false);
 
   useEffect(() => {
     api.getMonthSummary(month).then(setSummary).catch(console.error);
@@ -30,6 +32,25 @@ export default function Dashboard() {
     setMonth(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`);
   };
 
+  const abrirModal = () => setModalAberto(true);
+  const fecharModal = () => setModalAberto(false);
+
+  const recarregarDados = async () => {
+    const [novoResumo, novosGastos, novasTransacoes] = await Promise.all([
+      api.getMonthSummary(month),
+      api.getCategorySpend(month),
+      api.getTransactions({ month, group: tab }),
+    ]);
+    setSummary(novoResumo);
+    setCategorySpend(novosGastos);
+    setTransactions(novasTransacoes);
+  };
+
+  const aoSalvarLancamento = async (dados: DadosLancamento) => {
+    await api.createTransaction(dados);
+    await recarregarDados();
+  };
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -38,7 +59,7 @@ export default function Dashboard() {
           <span style={{ fontWeight: 600, fontSize: 18 }}>{month}</span>
           <button onClick={() => changeMonth(1)}>&gt;</button>
         </div>
-        <button className="primary">+ Novo Lançamento</button>
+        <button className="primary" onClick={abrirModal}>+ Novo Lancamento</button>
       </div>
 
       <div className="cards-row">
@@ -120,6 +141,7 @@ export default function Dashboard() {
           </table>
         )}
       </div>
+      <ModalLancamento aberto={modalAberto} aoFechar={fecharModal} aoSalvar={aoSalvarLancamento} />
     </div>
   );
 }
