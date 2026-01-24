@@ -254,8 +254,92 @@ th {
   margin-top: 16px;
 }
 
+@media (max-width: 1024px) {
+  .cards-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .cards-row {
+    grid-template-columns: 1fr;
+  }
+
+  .card .value {
+    font-size: 22px;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tabs button {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .tabs button:first-child {
+    border-radius: 4px 0 0 0;
+  }
+
+  .tabs button:last-child {
+    border-radius: 0 4px 0 0;
+  }
+
+  .container {
+    padding: 12px;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 8px 6px;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+}
+
 @media (max-width: 720px) {
   .formulario-grade {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .month-selector span {
+    font-size: 14px;
+  }
+
+  button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .nav a {
+    font-size: 13px;
+  }
+
+  .modal-caixa {
+    padding: 16px;
   }
 }

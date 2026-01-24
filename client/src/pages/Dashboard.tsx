@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../lib/api";
 import ModalLancamento, { type DadosLancamento } from "../components/ModalLancamento";
+import ModalConfirmacao from "../components/ModalConfirmacao";
 
 const formatCurrency = (cents: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
@@ -16,6 +17,9 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [tab, setTab] = useState("fixed");
   const [modalAberto, setModalAberto] = useState(false);
+  const [transacaoEditando, setTransacaoEditando] = useState<any | null>(null);
+  const [confirmarExclusao, setConfirmarExclusao] = useState<number | null>(null);
+  const [excluindo, setExcluindo] = useState(false);
 
   useEffect(() => {
     api.getMonthSummary(month).then(setSummary).catch(console.error);
@@ -32,8 +36,20 @@ export default function Dashboard() {
     setMonth(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`);
   };
 
-  const abrirModal = () => setModalAberto(true);
-  const fecharModal = () => setModalAberto(false);
+  const abrirModalNovo = () => {
+    setTransacaoEditando(null);
+    setModalAberto(true);
+  };
+
+  const abrirModalEditar = (transacao: any) => {
+    setTransacaoEditando(transacao);
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+    setTransacaoEditando(null);
+  };
 
   const recarregarDados = async () => {
     const [novoResumo, novosGastos, novasTransacoes] = await Promise.all([
@@ -47,19 +63,37 @@ export default function Dashboard() {
   };
 
   const aoSalvarLancamento = async (dados: DadosLancamento) => {
-    await api.createTransaction(dados);
+    if (transacaoEditando) {
+      await api.updateTransaction(transacaoEditando.id, dados);
+    } else {
+      await api.createTransaction(dados);
+    }
     await recarregarDados();
+  };
+
+  const aoExcluirTransacao = async () => {
+    if (confirmarExclusao === null) return;
+    setExcluindo(true);
+    try {
+      await api.deleteTransaction(confirmarExclusao);
+      await recarregarDados();
+      setConfirmarExclusao(null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setExcluindo(false);
+    }
   };
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div className="month-selector">
           <button onClick={() => changeMonth(-1)}>&lt;</button>
           <span style={{ fontWeight: 600, fontSize: 18 }}>{month}</span>
           <button onClick={() => changeMonth(1)}>&gt;</button>
         </div>
-        <button className="primary" onClick={abrirModal}>+ Novo Lancamento</button>
+        <button className="primary" onClick={abrirModalNovo}>+ Novo Lancamento</button>
       </div>
 
       <div className="cards-row">
@@ -68,7 +102,7 @@ export default function Dashboard() {
           <div className="value positive">{formatCurrency(summary.entriesCents)}</div>
         </div>
         <div className="card">
-          <h3>Saídas</h3>
+          <h3>Saidas</h3>
           <div className="value negative">{formatCurrency(summary.exitsCents)}</div>
         </div>
         <div className="card">
@@ -84,64 +118,98 @@ export default function Dashboard() {
         {categorySpend.length === 0 ? (
           <p>Nenhuma categoria de despesa cadastrada.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Categoria</th>
-                <th className="text-right">Orçamento</th>
-                <th className="text-right">Gasto</th>
-                <th className="text-right">Diferença</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categorySpend.map((cat) => (
-                <tr key={cat.categoryId}>
-                  <td>{cat.categoryName}</td>
-                  <td className="text-right">{cat.budgetCents ? formatCurrency(cat.budgetCents) : "-"}</td>
-                  <td className="text-right">{formatCurrency(cat.spentCents)}</td>
-                  <td className={`text-right ${cat.diffCents < 0 ? "over-budget" : ""}`}>
-                    {formatCurrency(cat.diffCents)}
-                  </td>
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Categoria</th>
+                  <th className="text-right">Orcamento</th>
+                  <th className="text-right">Gasto</th>
+                  <th className="text-right">Diferenca</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {categorySpend.map((cat) => (
+                  <tr key={cat.categoryId}>
+                    <td>{cat.categoryName}</td>
+                    <td className="text-right">{cat.budgetCents ? formatCurrency(cat.budgetCents) : "-"}</td>
+                    <td className="text-right">{formatCurrency(cat.spentCents)}</td>
+                    <td className={`text-right ${cat.diffCents < 0 ? "over-budget" : ""}`}>
+                      {formatCurrency(cat.diffCents)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
       <div className="tabs">
         {["fixed", "variable", "installment", "entry"].map((t) => (
           <button key={t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>
-            {t === "fixed" ? "Fixos" : t === "variable" ? "Variáveis" : t === "installment" ? "Parcelados" : "Entradas"}
+            {t === "fixed" ? "Fixos" : t === "variable" ? "Variaveis" : t === "installment" ? "Parcelados" : "Entradas"}
           </button>
         ))}
       </div>
 
       <div className="card">
         {transactions.length === 0 ? (
-          <p>Nenhum lançamento nesta categoria.</p>
+          <p>Nenhum lancamento nesta categoria.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th className="text-right">Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((t) => (
-                <tr key={t.id}>
-                  <td>{t.date}</td>
-                  <td>{t.description}</td>
-                  <td className="text-right">{formatCurrency(t.amountCents)}</td>
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descricao</th>
+                  <th className="text-right">Valor</th>
+                  <th className="text-right">Acoes</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {transactions.map((t) => (
+                  <tr key={t.id}>
+                    <td>{t.date}</td>
+                    <td>{t.description}</td>
+                    <td className="text-right">{formatCurrency(t.amountCents)}</td>
+                    <td className="text-right">
+                      <button
+                        style={{ padding: "4px 8px", marginRight: 4, fontSize: 12 }}
+                        onClick={() => abrirModalEditar(t)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        style={{ padding: "4px 8px", fontSize: 12, background: "#ffebee", borderColor: "#c62828", color: "#c62828" }}
+                        onClick={() => setConfirmarExclusao(t.id)}
+                      >
+                        Excluir
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
-      <ModalLancamento aberto={modalAberto} aoFechar={fecharModal} aoSalvar={aoSalvarLancamento} />
+
+      <ModalLancamento
+        aberto={modalAberto}
+        aoFechar={fecharModal}
+        aoSalvar={aoSalvarLancamento}
+        transacaoInicial={transacaoEditando}
+      />
+
+      <ModalConfirmacao
+        aberto={confirmarExclusao !== null}
+        titulo="Confirmar exclusao"
+        mensagem="Tem certeza que deseja excluir este lancamento? Esta acao nao pode ser desfeita."
+        aoConfirmar={aoExcluirTransacao}
+        aoCancelar={() => setConfirmarExclusao(null)}
+        confirmando={excluindo}
+      />
     </div>
   );
 }

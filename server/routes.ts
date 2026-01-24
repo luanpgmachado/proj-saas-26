@@ -35,6 +35,20 @@ router.post("/categories", asyncHandler(async (req, res) => {
   res.json(category);
 }));
 
+router.patch("/categories/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const category = await storage.updateCategory(parseInt(id), req.body);
+  if (!category) return res.status(404).json({ error: "Not found" });
+  res.json(category);
+}));
+
+router.delete("/categories/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteCategory(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
+}));
+
 router.get("/payment-methods", asyncHandler(async (req, res) => {
   const methods = await storage.getPaymentMethods();
   res.json(methods);
@@ -50,6 +64,13 @@ router.patch("/payment-methods/:id", asyncHandler(async (req, res) => {
   const method = await storage.updatePaymentMethod(parseInt(id), req.body);
   if (!method) return res.status(404).json({ error: "Not found" });
   res.json(method);
+}));
+
+router.delete("/payment-methods/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deletePaymentMethod(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
 }));
 
 router.get("/transactions", asyncHandler(async (req, res) => {
@@ -78,6 +99,13 @@ router.patch("/transactions/:id", asyncHandler(async (req, res) => {
   const transaction = await storage.updateTransaction(parseInt(id), req.body);
   if (!transaction) return res.status(404).json({ error: "Not found" });
   res.json(transaction);
+}));
+
+router.delete("/transactions/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteTransaction(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
 }));
 
 router.get("/months/:month/summary", asyncHandler(async (req, res) => {

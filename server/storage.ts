@@ -33,12 +33,16 @@ import { eq, and, gte, lte, sql, sum } from "drizzle-orm";
 export interface IStorage {
   getCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category | undefined>;
+  deleteCategory(id: number): Promise<boolean>;
   getPaymentMethods(): Promise<PaymentMethod[]>;
   createPaymentMethod(method: InsertPaymentMethod): Promise<PaymentMethod>;
   updatePaymentMethod(id: number, method: Partial<InsertPaymentMethod>): Promise<PaymentMethod | undefined>;
+  deletePaymentMethod(id: number): Promise<boolean>;
   getTransactions(filters: { month?: string; categoryId?: number; methodId?: number; type?: string; group?: string }): Promise<Transaction[]>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
   updateTransaction(id: number, transaction: Partial<InsertTransaction>): Promise<Transaction | undefined>;
+  deleteTransaction(id: number): Promise<boolean>;
   getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; balanceCents: number }>;
   getCategorySpend(month: string): Promise<{ categoryId: number; categoryName: string; budgetCents: number | null; spentCents: number; diffCents: number }[]>;
   getGoals(): Promise<(Goal & { currentCents: number; progressPercent: number })[]>;
@@ -63,6 +67,16 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category | undefined> {
+    const [updated] = await db.update(categories).set(category).where(eq(categories.id, id)).returning();
+    return updated;
+  }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    const result = await db.delete(categories).where(eq(categories.id, id)).returning();
+    return result.length > 0;
+  }
+
   async getPaymentMethods(): Promise<PaymentMethod[]> {
     return db.select().from(paymentMethods);
   }
@@ -75,6 +89,11 @@ export class DatabaseStorage implements IStorage {
   async updatePaymentMethod(id: number, method: Partial<InsertPaymentMethod>): Promise<PaymentMethod | undefined> {
     const [updated] = await db.update(paymentMethods).set(method).where(eq(paymentMethods.id, id)).returning();
     return updated;
+  }
+
+  async deletePaymentMethod(id: number): Promise<boolean> {
+    const result = await db.delete(paymentMethods).where(eq(paymentMethods.id, id)).returning();
+    return result.length > 0;
   }
 
   async getTransactions(filters: { month?: string; categoryId?: number; methodId?: number; type?: string; group?: string }): Promise<Transaction[]> {
@@ -116,6 +135,11 @@ export class DatabaseStorage implements IStorage {
   async updateTransaction(id: number, transaction: Partial<InsertTransaction>): Promise<Transaction | undefined> {
     const [updated] = await db.update(transactions).set(transaction).where(eq(transactions.id, id)).returning();
     return updated;
+  }
+
+  async deleteTransaction(id: number): Promise<boolean> {
+    const result = await db.delete(transactions).where(eq(transactions.id, id)).returning();
+    return result.length > 0;
   }
 
   async getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; balanceCents: number }> {

@@ -11,10 +11,22 @@ export type DadosLancamento = {
   paymentMethodId: number;
 };
 
+type TransacaoExistente = {
+  id: number;
+  description: string;
+  amountCents: number;
+  type: "entry" | "exit";
+  group: "fixed" | "variable" | "installment" | "entry";
+  date: string;
+  categoryId: number;
+  paymentMethodId: number;
+};
+
 type ModalLancamentoProps = {
   aberto: boolean;
   aoFechar: () => void;
   aoSalvar: (dados: DadosLancamento) => Promise<void>;
+  transacaoInicial?: TransacaoExistente | null;
 };
 
 const formatarMoeda = (centavos: number) => {
@@ -25,7 +37,7 @@ const obterDataHoje = () => {
   return new Date().toISOString().slice(0, 10);
 };
 
-export default function ModalLancamento({ aberto, aoFechar, aoSalvar }: ModalLancamentoProps) {
+export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoInicial }: ModalLancamentoProps) {
   const [descricao, setDescricao] = useState("");
   const [valorCentavos, setValorCentavos] = useState(0);
   const [tipo, setTipo] = useState<"entry" | "exit">("exit");
@@ -40,15 +52,25 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar }: ModalLan
 
   useEffect(() => {
     if (!aberto) return;
-    setDescricao("");
-    setValorCentavos(0);
-    setTipo("exit");
-    setGrupo("fixed");
-    setData(obterDataHoje());
-    setCategoriaId("");
-    setMetodoPagamentoId("");
+    if (transacaoInicial) {
+      setDescricao(transacaoInicial.description);
+      setValorCentavos(transacaoInicial.amountCents);
+      setTipo(transacaoInicial.type);
+      setGrupo(transacaoInicial.group);
+      setData(transacaoInicial.date);
+      setCategoriaId(String(transacaoInicial.categoryId));
+      setMetodoPagamentoId(String(transacaoInicial.paymentMethodId));
+    } else {
+      setDescricao("");
+      setValorCentavos(0);
+      setTipo("exit");
+      setGrupo("fixed");
+      setData(obterDataHoje());
+      setCategoriaId("");
+      setMetodoPagamentoId("");
+    }
     setErro("");
-  }, [aberto]);
+  }, [aberto, transacaoInicial]);
 
   useEffect(() => {
     if (!aberto) return;
@@ -118,11 +140,13 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar }: ModalLan
       { value: "installment", label: "Parcelado" },
     ];
 
+  const modoEdicao = !!transacaoInicial;
+
   return (
     <div className="modal-fundo" onClick={aoFechar}>
       <div className="modal-caixa" onClick={(event) => event.stopPropagation()}>
         <div className="modal-cabecalho">
-          <h3>Novo lancamento</h3>
+          <h3>{modoEdicao ? "Editar lancamento" : "Novo lancamento"}</h3>
           <button type="button" onClick={aoFechar}>Fechar</button>
         </div>
         <form onSubmit={aoSalvarFormulario}>
@@ -200,7 +224,7 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar }: ModalLan
           <div className="modal-acoes">
             <button type="button" onClick={aoFechar}>Cancelar</button>
             <button type="submit" className="primary" disabled={!podeSalvar || salvando}>
-              {salvando ? "Salvando..." : "Salvar"}
+              {salvando ? "Salvando..." : modoEdicao ? "Atualizar" : "Salvar"}
             </button>
           </div>
         </form>
