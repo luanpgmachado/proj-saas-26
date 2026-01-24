@@ -24,13 +24,21 @@ Run `npm run dev` to start both frontend and backend concurrently:
 
 ## Database
 PostgreSQL database managed via Drizzle ORM. Run `npm run db:push` to sync schema changes.
-This project is expected to run against two environments:
-- Personal VM database (external)
-- Replit database (internal to Replit)
-Set `DATABASE_URL` accordingly in each environment before starting the server.
+
+### Dual Database Configuration
+The application supports two database connections with automatic fallback:
+- **REPLIT_DB_URL** (priority): Internal Replit PostgreSQL database
+- **DATABASE_URL** (fallback): External VM PostgreSQL database
+
+The connection priority is: `REPLIT_DB_URL || DATABASE_URL`
+
 Environment guidance:
-- Development (Replit): use the Replit database (`DATABASE_URL` from Replit secrets).
-- Production (VM): use the VM PostgreSQL database (`DATABASE_URL` pointing to the VM).
+- **Development (Replit)**: Set `REPLIT_DB_URL` to use the internal Replit database
+- **Production (VM)**: Set only `DATABASE_URL` pointing to the VM database
+
+Current setup:
+- `REPLIT_DB_URL` configured in development environment for Replit's internal database
+- `DATABASE_URL` remains as secret for external VM database connection
 
 ## API Endpoints
 See `docs/API_CONTRACT.md` for full API documentation.
