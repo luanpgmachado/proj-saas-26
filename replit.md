@@ -4,10 +4,12 @@
 A family finance SaaS application (desktop-first) for managing monthly income and expenses. Built with React frontend and Express/PostgreSQL backend.
 
 ## Project Structure
+- `AGENTS.md` - PDCA flow and context engineering rules.
 - `client/` - React frontend (Vite)
 - `server/` - Express backend API
 - `shared/` - Shared types and database schema (Drizzle ORM)
 - `docs/` - Design documentation and specifications
+  - `docs/MODELO_DADOS.md` - Data model and relationships
 
 ## Tech Stack
 - **Frontend**: React 18, Wouter (routing), Vite
@@ -22,6 +24,13 @@ Run `npm run dev` to start both frontend and backend concurrently:
 
 ## Database
 PostgreSQL database managed via Drizzle ORM. Run `npm run db:push` to sync schema changes.
+This project is expected to run against two environments:
+- Personal VM database (external)
+- Replit database (internal to Replit)
+Set `DATABASE_URL` accordingly in each environment before starting the server.
+Environment guidance:
+- Development (Replit): use the Replit database (`DATABASE_URL` from Replit secrets).
+- Production (VM): use the VM PostgreSQL database (`DATABASE_URL` pointing to the VM).
 
 ## API Endpoints
 See `docs/API_CONTRACT.md` for full API documentation.
