@@ -141,6 +141,25 @@ router.get("/goals", asyncHandler(async (req, res) => {
   res.json(goals);
 }));
 
+router.post("/goals", asyncHandler(async (req, res) => {
+  const goal = await storage.createGoal(req.body);
+  res.json(goal);
+}));
+
+router.patch("/goals/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const goal = await storage.updateGoal(parseInt(id), req.body);
+  if (!goal) return res.status(404).json({ error: "Not found" });
+  res.json(goal);
+}));
+
+router.delete("/goals/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteGoal(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
+}));
+
 router.get("/goals/:id/contributions", asyncHandler(async (req, res) => {
   const id = getParamString(req.params.id);
   const contributions = await storage.getGoalContributions(parseInt(id));
@@ -156,10 +175,36 @@ router.post("/goals/:id/contributions", asyncHandler(async (req, res) => {
   res.json(contribution);
 }));
 
+router.delete("/goal-contributions/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteGoalContribution(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
+}));
+
 router.get("/reserve", asyncHandler(async (req, res) => {
   const reserve = await storage.getReserve();
   if (!reserve) return res.status(404).json({ error: "No reserve found" });
   res.json(reserve);
+}));
+
+router.post("/reserve", asyncHandler(async (req, res) => {
+  const reserve = await storage.createReserve(req.body);
+  res.json(reserve);
+}));
+
+router.patch("/reserve/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const reserve = await storage.updateReserve(parseInt(id), req.body);
+  if (!reserve) return res.status(404).json({ error: "Not found" });
+  res.json(reserve);
+}));
+
+router.delete("/reserve/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteReserve(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
 }));
 
 router.get("/reserve/contributions", asyncHandler(async (req, res) => {
@@ -168,8 +213,10 @@ router.get("/reserve/contributions", asyncHandler(async (req, res) => {
 }));
 
 router.post("/reserve/contributions", asyncHandler(async (req, res) => {
-  const reserve = await storage.getReserve();
-  if (!reserve) return res.status(404).json({ error: "No reserve found" });
+  let reserve = await storage.getReserve();
+  if (!reserve) {
+    reserve = { ...(await storage.createReserve({ name: "Reserva de Emergencia" })), currentCents: 0 };
+  }
   const contribution = await storage.createReserveContribution({
     ...req.body,
     reserveId: reserve.id,
@@ -177,9 +224,35 @@ router.post("/reserve/contributions", asyncHandler(async (req, res) => {
   res.json(contribution);
 }));
 
+router.delete("/reserve-contributions/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteReserveContribution(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
+}));
+
 router.get("/investments", asyncHandler(async (req, res) => {
   const investments = await storage.getInvestments();
   res.json(investments);
+}));
+
+router.post("/investments", asyncHandler(async (req, res) => {
+  const investment = await storage.createInvestment(req.body);
+  res.json(investment);
+}));
+
+router.patch("/investments/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const investment = await storage.updateInvestment(parseInt(id), req.body);
+  if (!investment) return res.status(404).json({ error: "Not found" });
+  res.json(investment);
+}));
+
+router.delete("/investments/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteInvestment(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
 }));
 
 router.get("/investments/:id/contributions", asyncHandler(async (req, res) => {
@@ -195,6 +268,13 @@ router.post("/investments/:id/contributions", asyncHandler(async (req, res) => {
     investmentId: parseInt(id),
   });
   res.json(contribution);
+}));
+
+router.delete("/investment-contributions/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const deleted = await storage.deleteInvestmentContribution(parseInt(id));
+  if (!deleted) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true });
 }));
 
 export default router;

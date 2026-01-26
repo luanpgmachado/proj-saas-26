@@ -62,3 +62,7 @@ Main endpoints:
   - Created the launch modal form with category and payment method loading
   - Wired dashboard button, submission flow, and data refresh after save
   - Documented the modal behavior in the UX blueprint
+- 2026-01-26: CRUD completo para Reserva de Emergência
+  - Adicionados métodos updateReserve e deleteReserve no storage e API
+  - Rotas PATCH e DELETE /reserve/:id implementadas
+  - UI de editar/excluir reserva com modais e confirmação

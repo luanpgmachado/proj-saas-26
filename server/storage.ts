@@ -46,14 +46,26 @@ export interface IStorage {
   getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; balanceCents: number }>;
   getCategorySpend(month: string): Promise<{ categoryId: number; categoryName: string; budgetCents: number | null; spentCents: number; diffCents: number }[]>;
   getGoals(): Promise<(Goal & { currentCents: number; progressPercent: number })[]>;
+  createGoal(goal: InsertGoal): Promise<Goal>;
+  updateGoal(id: number, goal: Partial<InsertGoal>): Promise<Goal | undefined>;
+  deleteGoal(id: number): Promise<boolean>;
   getGoalContributions(goalId: number): Promise<GoalContribution[]>;
   createGoalContribution(contribution: InsertGoalContribution): Promise<GoalContribution>;
+  deleteGoalContribution(id: number): Promise<boolean>;
   getReserve(): Promise<(Reserve & { currentCents: number }) | undefined>;
+  createReserve(reserve: InsertReserve): Promise<Reserve>;
+  updateReserve(id: number, reserve: Partial<InsertReserve>): Promise<Reserve | undefined>;
+  deleteReserve(id: number): Promise<boolean>;
   getReserveContributions(): Promise<ReserveContribution[]>;
   createReserveContribution(contribution: InsertReserveContribution): Promise<ReserveContribution>;
+  deleteReserveContribution(id: number): Promise<boolean>;
   getInvestments(): Promise<(Investment & { currentCents: number })[]>;
+  createInvestment(investment: InsertInvestment): Promise<Investment>;
+  updateInvestment(id: number, investment: Partial<InsertInvestment>): Promise<Investment | undefined>;
+  deleteInvestment(id: number): Promise<boolean>;
   getInvestmentContributions(investmentId: number): Promise<InvestmentContribution[]>;
   createInvestmentContribution(contribution: InsertInvestmentContribution): Promise<InvestmentContribution>;
+  deleteInvestmentContribution(id: number): Promise<boolean>;
   getAnnualSummary(year: string): Promise<{ month: string; entriesCents: number; exitsCents: number; balanceCents: number }[]>;
 }
 
@@ -180,6 +192,22 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
+  async createGoal(goal: InsertGoal): Promise<Goal> {
+    const [created] = await db.insert(goals).values(goal).returning();
+    return created;
+  }
+
+  async updateGoal(id: number, goal: Partial<InsertGoal>): Promise<Goal | undefined> {
+    const [updated] = await db.update(goals).set(goal).where(eq(goals.id, id)).returning();
+    return updated;
+  }
+
+  async deleteGoal(id: number): Promise<boolean> {
+    await db.delete(goalContributions).where(eq(goalContributions.goalId, id));
+    const result = await db.delete(goals).where(eq(goals.id, id)).returning();
+    return result.length > 0;
+  }
+
   async getGoalContributions(goalId: number): Promise<GoalContribution[]> {
     return db.select().from(goalContributions).where(eq(goalContributions.goalId, goalId));
   }
@@ -189,12 +217,33 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async deleteGoalContribution(id: number): Promise<boolean> {
+    const result = await db.delete(goalContributions).where(eq(goalContributions.id, id)).returning();
+    return result.length > 0;
+  }
+
   async getReserve(): Promise<(Reserve & { currentCents: number }) | undefined> {
     const [reserve] = await db.select().from(reserves).limit(1);
     if (!reserve) return undefined;
     const contributions = await db.select().from(reserveContributions).where(eq(reserveContributions.reserveId, reserve.id));
     const currentCents = contributions.reduce((acc, c) => acc + c.amountCents, 0);
     return { ...reserve, currentCents };
+  }
+
+  async createReserve(reserve: InsertReserve): Promise<Reserve> {
+    const [created] = await db.insert(reserves).values(reserve).returning();
+    return created;
+  }
+
+  async updateReserve(id: number, reserve: Partial<InsertReserve>): Promise<Reserve | undefined> {
+    const [updated] = await db.update(reserves).set(reserve).where(eq(reserves.id, id)).returning();
+    return updated;
+  }
+
+  async deleteReserve(id: number): Promise<boolean> {
+    await db.delete(reserveContributions).where(eq(reserveContributions.reserveId, id));
+    const result = await db.delete(reserves).where(eq(reserves.id, id)).returning();
+    return result.length > 0;
   }
 
   async getReserveContributions(): Promise<ReserveContribution[]> {
@@ -208,6 +257,11 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async deleteReserveContribution(id: number): Promise<boolean> {
+    const result = await db.delete(reserveContributions).where(eq(reserveContributions.id, id)).returning();
+    return result.length > 0;
+  }
+
   async getInvestments(): Promise<(Investment & { currentCents: number })[]> {
     const allInvestments = await db.select().from(investments);
     const result = [];
@@ -219,6 +273,22 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
+  async createInvestment(investment: InsertInvestment): Promise<Investment> {
+    const [created] = await db.insert(investments).values(investment).returning();
+    return created;
+  }
+
+  async updateInvestment(id: number, investment: Partial<InsertInvestment>): Promise<Investment | undefined> {
+    const [updated] = await db.update(investments).set(investment).where(eq(investments.id, id)).returning();
+    return updated;
+  }
+
+  async deleteInvestment(id: number): Promise<boolean> {
+    await db.delete(investmentContributions).where(eq(investmentContributions.investmentId, id));
+    const result = await db.delete(investments).where(eq(investments.id, id)).returning();
+    return result.length > 0;
+  }
+
   async getInvestmentContributions(investmentId: number): Promise<InvestmentContribution[]> {
     return db.select().from(investmentContributions).where(eq(investmentContributions.investmentId, investmentId));
   }
@@ -226,6 +296,11 @@ export class DatabaseStorage implements IStorage {
   async createInvestmentContribution(contribution: InsertInvestmentContribution): Promise<InvestmentContribution> {
     const [created] = await db.insert(investmentContributions).values(contribution).returning();
     return created;
+  }
+
+  async deleteInvestmentContribution(id: number): Promise<boolean> {
+    const result = await db.delete(investmentContributions).where(eq(investmentContributions.id, id)).returning();
+    return result.length > 0;
   }
 
   async getAnnualSummary(year: string): Promise<{ month: string; entriesCents: number; exitsCents: number; balanceCents: number }[]> {
