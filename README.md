@@ -10,6 +10,7 @@ legibilidade, previsibilidade e controle explicito.
 - `docs/UX_BLUEPRINT.md`: blueprint UX canonico, sem codigo.
 - `docs/API_CONTRACT.md`: contrato base da API.
 - `docs/MODELO_DADOS.md`: modelo de dados e relacoes.
+- `docs/USAGE.md`: passo a passo de uso local.
 - `docs/PROMPTS/`: prompts operacionais por papel.
 - `docs/RUNBOOK.md`: ordem de trabalho e fluxo operacional.
 

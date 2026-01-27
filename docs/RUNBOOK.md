@@ -8,6 +8,9 @@
 5. Execute a tarefa respeitando `docs/UX_BLUEPRINT.md` e `docs/API_CONTRACT.md`.
 6. Se requisitos mudarem, atualize os documentos canonicos antes do codigo.
 
+## Uso do ambiente
+- Guia operacional: `docs/USAGE.md`.
+
 ## Uso diario
 - Front-end segue `docs/UX_BLUEPRINT.md`.
 - Back-end segue `docs/API_CONTRACT.md`.
