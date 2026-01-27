@@ -66,3 +66,16 @@ Main endpoints:
   - Adicionados métodos updateReserve e deleteReserve no storage e API
   - Rotas PATCH e DELETE /reserve/:id implementadas
   - UI de editar/excluir reserva com modais e confirmação
+
+## Registro PDCA
+
+### 2026-01-27: CRUD Reserva de Emergência
+- **Plan:** Escopo definido para adicionar operações de editar/excluir na Reserva de Emergência, seguindo padrão já existente em Goals e Investments
+- **Do:** 
+  - Backend: métodos updateReserve/deleteReserve em storage.ts
+  - Backend: rotas PATCH/DELETE /reserve/:id em routes.ts
+  - API Client: métodos updateReserve/deleteReserve em api.ts
+  - Frontend: modal de edição, botões de editar/excluir, confirmação de exclusão em Investments.tsx
+- **Check:** Revisão aprovada pelo Architect - implementação segue padrões existentes
+- **Act:** Documentação atualizada, aplicação publicada (commit 3c0ec9f2)
+- **Pendências:** Validar regra de limite de 1 reserva na UI (observação do Architect)
