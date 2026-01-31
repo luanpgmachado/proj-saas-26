@@ -1,0 +1,95 @@
+Project financeiro_bl {
+  database_type: "PostgreSQL"
+  Note: "Modelo lógico (tradução PT-BR) baseado no seu ERD."
+}
+
+Table categorias {
+  id int [pk, increment]
+  nome varchar [not null]
+  natureza varchar [not null, note: "receita|despesa"]
+  orcamento_mensal_centavos int [note: "nullable"]
+}
+
+Table metodos_pagamento {
+  id int [pk, increment]
+  nome varchar [not null]
+  tipo varchar [not null, note: "dinheiro|transferencia|debito|cartao_credito|outro"]
+  eh_cartao boolean [not null, default: false]
+  paga_no_mes boolean [not null, default: true]
+  dia_fechamento int [note: "nullable (1-31, típico de cartão)"]
+  dia_vencimento int [note: "nullable (1-31, típico de cartão)"]
+}
+
+Table recorrencias {
+  id int [pk, increment]
+  descricao text [not null]
+  tipo varchar [not null, note: "entrada|saida"]
+  grupo varchar [not null, note: "fixo|parcelado|entrada"]
+  valor_centavos int [not null]
+  categoria_id int [note: "nullable"]
+  metodo_pagamento_id int [note: "nullable"]
+  data_inicio date [not null]
+  data_fim date [note: "nullable"]
+  dia_mes int [not null, note: "1-31 (ajusta para ultimo dia do mes)"]
+  parcela_total int [note: "nullable"]
+  status varchar [not null, note: "ativa|pausada|cancelada"]
+}
+
+Table lancamentos {
+  id int [pk, increment]
+  data date [not null]
+  descricao text [not null]
+  tipo varchar [not null, note: "entrada|saida"]
+  valor_centavos int [not null]
+  categoria_id int [note: "nullable"]
+  metodo_pagamento_id int [note: "nullable"]
+  grupo varchar [not null, note: "fixo|variavel|parcelado|entrada"]
+  grupo_parcelamento_id varchar [note: "nullable (id lógico do conjunto de parcelas)"]
+  parcela_indice int [note: "nullable (1..parcela_total)"]
+  parcela_total int [note: "nullable"]
+  recorrencia_id int [note: "nullable"]
+}
+
+Table metas {
+  id int [pk, increment]
+  nome varchar [not null]
+  alvo_centavos int [not null]
+}
+
+Table aportes_meta {
+  id int [pk, increment]
+  meta_id int [not null]
+  data date [not null]
+  valor_centavos int [not null]
+}
+
+Table reservas {
+  id int [pk, increment]
+  nome varchar [not null]
+}
+
+Table aportes_reserva {
+  id int [pk, increment]
+  reserva_id int [not null]
+  data date [not null]
+  valor_centavos int [not null]
+}
+
+Table investimentos {
+  id int [pk, increment]
+  nome varchar [not null]
+}
+
+Table aportes_investimento {
+  id int [pk, increment]
+  investimento_id int [not null]
+  data date [not null]
+  valor_centavos int [not null]
+}
+
+Ref: lancamentos.categoria_id > categorias.id
+Ref: lancamentos.metodo_pagamento_id > metodos_pagamento.id
+Ref: lancamentos.recorrencia_id > recorrencias.id
+Ref: aportes_meta.meta_id > metas.id
+Ref: aportes_reserva.reserva_id > reservas.id
+Ref: aportes_investimento.investimento_id > investimentos.id

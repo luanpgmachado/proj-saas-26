@@ -18,6 +18,21 @@ export const paymentMethods = pgTable("payment_methods", {
   dueDay: integer("due_day"),
 });
 
+export const recurrences = pgTable("recurrences", {
+  id: serial("id").primaryKey(),
+  description: text("description").notNull(),
+  type: varchar("type", { length: 50 }).notNull(),
+  group: varchar("group", { length: 50 }).notNull(),
+  amountCents: integer("amount_cents").notNull(),
+  categoryId: integer("category_id").references(() => categories.id),
+  paymentMethodId: integer("payment_method_id").references(() => paymentMethods.id),
+  startDate: date("start_date").notNull(),
+  endDate: date("end_date"),
+  dayOfMonth: integer("day_of_month").notNull(),
+  installmentTotal: integer("installment_total"),
+  status: varchar("status", { length: 50 }).notNull(),
+});
+
 export const transactions = pgTable("transactions", {
   id: serial("id").primaryKey(),
   date: date("date").notNull(),
@@ -30,6 +45,7 @@ export const transactions = pgTable("transactions", {
   installmentGroupId: varchar("installment_group_id", { length: 255 }),
   installmentIndex: integer("installment_index"),
   installmentTotal: integer("installment_total"),
+  recurrenceId: integer("recurrence_id").references(() => recurrences.id),
 });
 
 export const goals = pgTable("goals", {
@@ -71,9 +87,23 @@ export const investmentContributions = pgTable("investment_contributions", {
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
   transactions: many(transactions),
+  recurrences: many(recurrences),
 }));
 
 export const paymentMethodsRelations = relations(paymentMethods, ({ many }) => ({
+  transactions: many(transactions),
+  recurrences: many(recurrences),
+}));
+
+export const recurrencesRelations = relations(recurrences, ({ many, one }) => ({
+  category: one(categories, {
+    fields: [recurrences.categoryId],
+    references: [categories.id],
+  }),
+  paymentMethod: one(paymentMethods, {
+    fields: [recurrences.paymentMethodId],
+    references: [paymentMethods.id],
+  }),
   transactions: many(transactions),
 }));
 
@@ -85,6 +115,10 @@ export const transactionsRelations = relations(transactions, ({ one }) => ({
   paymentMethod: one(paymentMethods, {
     fields: [transactions.paymentMethodId],
     references: [paymentMethods.id],
+  }),
+  recurrence: one(recurrences, {
+    fields: [transactions.recurrenceId],
+    references: [recurrences.id],
   }),
 }));
 
@@ -125,6 +159,8 @@ export type Category = typeof categories.$inferSelect;
 export type InsertCategory = typeof categories.$inferInsert;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
 export type InsertPaymentMethod = typeof paymentMethods.$inferInsert;
+export type Recurrence = typeof recurrences.$inferSelect;
+export type InsertRecurrence = typeof recurrences.$inferInsert;
 export type Transaction = typeof transactions.$inferSelect;
 export type InsertTransaction = typeof transactions.$inferInsert;
 export type Goal = typeof goals.$inferSelect;

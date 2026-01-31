@@ -108,6 +108,30 @@ router.delete("/transactions/:id", asyncHandler(async (req, res) => {
   res.json({ success: true });
 }));
 
+router.get("/recurrences", asyncHandler(async (req, res) => {
+  const recurrences = await storage.getRecurrences();
+  res.json(recurrences);
+}));
+
+router.post("/recurrences", asyncHandler(async (req, res) => {
+  const recurrence = await storage.createRecurrence(req.body);
+  res.json(recurrence);
+}));
+
+router.patch("/recurrences/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const recurrence = await storage.updateRecurrence(parseInt(id), req.body);
+  if (!recurrence) return res.status(404).json({ error: "Not found" });
+  res.json(recurrence);
+}));
+
+router.post("/recurrences/generate", asyncHandler(async (req, res) => {
+  const month = getQueryString(req.query.month);
+  if (!month) return res.status(400).json({ error: "month é obrigatório" });
+  const transactions = await storage.generateRecurrenceTransactions(month);
+  res.json(transactions);
+}));
+
 router.get("/months/:month/summary", asyncHandler(async (req, res) => {
   const month = getParamString(req.params.month);
   const summary = await storage.getMonthSummary(month);

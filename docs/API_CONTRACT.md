@@ -36,6 +36,21 @@
 - installmentGroupId (opcional)
 - installmentIndex (opcional)
 - installmentTotal (opcional)
+- recurrenceId (opcional)
+
+### Recurrence
+- id
+- description
+- type: `entry` | `exit`
+- group: `fixed` | `installment` | `entry`
+- amountCents
+- categoryId
+- paymentMethodId
+- startDate
+- endDate (opcional)
+- dayOfMonth
+- installmentTotal (opcional)
+- status: `active` | `paused` | `canceled`
 
 ### MonthSummary
 - month
@@ -104,6 +119,25 @@
 
 Campos editaveis no PATCH: date, description, amountCents, categoryId,
 paymentMethodId, type, group, installmentIndex, installmentTotal.
+
+### Recorrencias
+- GET `/api/recurrences` -> Recurrence[]
+- POST `/api/recurrences` -> Recurrence
+- PATCH `/api/recurrences/{id}` -> Recurrence
+- POST `/api/recurrences/generate?month={YYYY-MM}` -> Transaction[]
+
+## Relatorios e recorrencias
+- Relatorios mensais e anuais usam apenas `transactions` como fonte de verdade.
+- Recorrencias nao geradas nao impactam totais nem categorias.
+- Geracao e explicita via endpoint e pode incluir meses futuros.
+- Gerar meses futuros reflete nos totais de panorama anual quando houver transacoes criadas.
+
+## Padrao recomendado para recorrencias fixas
+- Para despesas fixas de longo prazo (aluguel, internet), usar:
+  - `group = fixed`, `endDate = null`, `dayOfMonth` no dia de vencimento.
+- Reajuste de valor:
+  - Criar nova recorrencia com novo `amountCents` e `startDate`.
+  - Pausar/cancelar a recorrencia anterior para preservar historico.
 
 ### Metodos de pagamento
 - GET `/api/payment-methods` -> PaymentMethod[]

@@ -40,6 +40,10 @@ Current setup:
 - `REPLIT_DB_URL` configured in development environment for Replit's internal database
 - `DATABASE_URL` remains as secret for external VM database connection
 
+### Padronizacao de schema
+- O schema oficial do app e o definido em `shared/schema.ts` (tabelas em ingles).
+- Os arquivos `financeiro_bl.postgresql.sql` e `financeiro_bl.dbml` sao referencia PT-BR e nao devem ser aplicados no banco em runtime.
+
 ## API Endpoints
 See `docs/API_CONTRACT.md` for full API documentation.
 
@@ -66,6 +70,13 @@ Main endpoints:
   - Adicionados métodos updateReserve e deleteReserve no storage e API
   - Rotas PATCH e DELETE /reserve/:id implementadas
   - UI de editar/excluir reserva com modais e confirmação
+- 2026-01-30: Recorrencias mensais (parcelamentos e fixos)
+  - Modelo de dados atualizado com entidade `recurrences` e `transactions.recurrenceId`
+  - Endpoints `/api/recurrences` e `/api/recurrences/generate` adicionados
+  - Rotina de geracao mensal idempotente e validacoes de negocio
+  - Script de backfill para parcelamentos legados (`server/backfill_recorrencias.ts`)
+  - Documentacao: regras de recorrencia e padrao para fixos/reajuste em `docs/`
+  - Padronizacao de schema: uso exclusivo de `shared/schema.ts` em runtime
 
 ## Registro PDCA
 
@@ -79,3 +90,14 @@ Main endpoints:
 - **Check:** Revisão aprovada pelo Architect - implementação segue padrões existentes
 - **Act:** Documentação atualizada, aplicação publicada (commit 3c0ec9f2)
 - **Pendências:** Validar regra de limite de 1 reserva na UI (observação do Architect)
+
+### 2026-01-30: Recorrencias mensais (parcelamentos e fixos)
+- **Plan:** Definir modelo de recorrencia e estrategia incremental sem quebra.
+- **Do:**
+  - Modelo: `recurrences` + `transactions.recurrenceId` (DBML/SQL/Drizzle).
+  - Backend: CRUD de recorrencias e endpoint de geracao mensal.
+  - Rotina idempotente de geracao com ajuste de dia do mes.
+  - Validacoes de negocio para `group/type/status` e `installmentTotal`.
+  - Backfill manual para parcelamentos legados.
+- **Check:** Testes manuais de criacao, geracao, idempotencia e pausa.
+- **Act:** Documentacao atualizada em `docs/MODELO_DADOS.md`, `docs/API_CONTRACT.md` e `docs/USAGE.md`.
