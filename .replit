@@ -1,7 +1,7 @@
-modules = ["nodejs-20", "postgresql-16"]
+modules = ["nodejs-20", "python-3.11", "postgresql-16"]
 [agent]
 expertMode = true
-integrations = ["javascript_database:1.0.0"]
+integrations = ["javascript_database:1.0.0", "linear:1.0.0"]
 
 [nix]
 channel = "stable-25_05"
