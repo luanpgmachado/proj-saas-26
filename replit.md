@@ -42,7 +42,12 @@ Current setup:
 
 ### Padronizacao de schema
 - O schema oficial do app e o definido em `shared/schema.ts` (tabelas em ingles).
-- Os arquivos `financeiro_bl.postgresql.sql` e `financeiro_bl.dbml` sao referencia PT-BR e nao devem ser aplicados no banco em runtime.
+- Os arquivos em `docs/REFERENCIAS_PT_BR/` sao referencia PT-BR e nao devem ser aplicados no banco em runtime.
+
+### Documentacao e logs
+- Mapa de docs: `docs/INDEX.md`
+- Registro PDCA: `docs/PDCA_LOG.md`
+- Registro de testes: `docs/TEST_LOG.md`
 
 ## API Endpoints
 See `docs/API_CONTRACT.md` for full API documentation.
@@ -77,30 +82,10 @@ Main endpoints:
   - Script de backfill para parcelamentos legados (`server/backfill_recorrencias.ts`)
   - Documentacao: regras de recorrencia e padrao para fixos/reajuste em `docs/`
   - Padronizacao de schema: uso exclusivo de `shared/schema.ts` em runtime
+- 2026-01-31: Reorganizacao de documentacao
+  - Mapa de docs em `docs/INDEX.md`
+  - Historicos separados em `docs/PDCA_LOG.md` e `docs/TEST_LOG.md`
 
-## Registro PDCA
-
-### 2026-01-27: CRUD Reserva de Emergência
-- **Plan:** Escopo definido para adicionar operações de editar/excluir na Reserva de Emergência, seguindo padrão já existente em Goals e Investments
-- **Do:** 
-  - Backend: métodos updateReserve/deleteReserve em storage.ts
-  - Backend: rotas PATCH/DELETE /reserve/:id em routes.ts
-  - API Client: métodos updateReserve/deleteReserve em api.ts
-  - Frontend: modal de edição, botões de editar/excluir, confirmação de exclusão em Investments.tsx
-- **Check:** Revisão aprovada pelo Architect - implementação segue padrões existentes
-- **Act:** Documentação atualizada, aplicação publicada (commit 3c0ec9f2)
-- **Pendências:** Validar regra de limite de 1 reserva na UI (observação do Architect)
-
-### 2026-01-30: Recorrencias mensais (parcelamentos e fixos)
-- **Plan:** Definir modelo de recorrencia e estrategia incremental sem quebra.
-- **Do:**
-  - Modelo: `recurrences` + `transactions.recurrenceId` (DBML/SQL/Drizzle).
-  - Backend: CRUD de recorrencias e endpoint de geracao mensal.
-  - Rotina idempotente de geracao com ajuste de dia do mes.
-  - Validacoes de negocio para `group/type/status` e `installmentTotal`.
-  - Backfill manual para parcelamentos legados.
-- **Check:** Testes manuais de criacao, geracao, idempotencia e pausa.
-- **Act:** Documentacao atualizada em `docs/MODELO_DADOS.md`, `docs/API_CONTRACT.md` e `docs/USAGE.md`.
 
 ### 2026-01-31: Testes de API no Replit
 - **Plan:** Validar endpoints principais conforme API_CONTRACT.md. REPLIT_DB_URL ativo.

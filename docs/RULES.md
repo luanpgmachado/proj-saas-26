@@ -1,7 +1,7 @@
 # Rules
 
 ## Regras gerais
-- Leia `docs/CONTEXT.md`, `docs/RULES.md` e `replit.md` antes de qualquer alteracao.
+- Leia `docs/INDEX.md`, `docs/CONTEXT.md`, `docs/RULES.md` e `replit.md` antes de qualquer alteracao.
 - Nao introduza funcionalidades ou comportamentos fora de `docs/UX_BLUEPRINT.md` e `docs/API_CONTRACT.md`.
 - Nao misture visao, regra e execucao em um mesmo arquivo.
 - Mantenha o produto desktop-first e com interacao direta.

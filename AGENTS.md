@@ -11,6 +11,10 @@ Definir fluxo PDCA e regras de engenharia de contexto para manter docs e codigo 
 - docs/MODELO_DADOS.md
 - docs/RUNBOOK.md
 
+## Registros
+- docs/PDCA_LOG.md
+- docs/TEST_LOG.md
+
 ## Papeis (prompts)
 - Backend: docs/PROMPTS/backend.agent.md
 - Frontend: docs/PROMPTS/frontend.agent.md
