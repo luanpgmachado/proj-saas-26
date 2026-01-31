@@ -113,3 +113,22 @@ Main endpoints:
 - **Check:** Todos os endpoints respondem conforme API_CONTRACT.md. Foi necessario executar `npm run db:push` para sincronizar schema (tabela recurrences nao existia).
 - **Act:** Schema sincronizado. Documentacao PDCA atualizada.
 - **Pendencias:** Nenhuma. MCP Linear nao configurado - resultados registrados no replit.md.
+
+### 2026-01-31: Validacao de Recorrencias no Replit (com Linear)
+- **Plan:** Validar recorrencias com dados reais no Replit. Linear configurado via MCP.
+- **Do:**
+  - Criadas 3 recorrencias de teste:
+    - Financiamento (id=4): parcelado, 18x R$537,00, dia 18.
+    - Aluguel (id=5): fixo, R$2.300,00, dia 15, ate 2029.
+    - Monitor (id=6): parcelado, 5x R$100,00, dia 18.
+  - Geracao 2026-02: 3 transacoes criadas (Financiamento 2/18, Aluguel, Monitor 2/5).
+  - Idempotencia: segunda geracao do mesmo mes retornou array vazio (OK).
+  - Pausa de Aluguel (id=5): status alterado para "paused".
+  - Geracao 2026-03: 2 transacoes criadas (Financiamento 3/18, Monitor 3/5). Aluguel pausado NAO gerou.
+- **Check:**
+  - recurrenceId presente em todas transacoes geradas.
+  - installmentIndex incrementando corretamente (2, 3).
+  - installmentTotal consistente (18 e 5).
+  - Pausa funcionando: recorrencia pausada nao gera novas transacoes.
+- **Act:** Documentacao atualizada em `docs/USAGE.md` (secao 11.1). PDCA registrado.
+- **Pendencias:** Nenhuma. Backend funcionando conforme API_CONTRACT.md e MODELO_DADOS.md.
