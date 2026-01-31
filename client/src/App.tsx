@@ -6,6 +6,7 @@ import PaymentMethods from "./pages/PaymentMethods";
 import AnnualView from "./pages/AnnualView";
 import Goals from "./pages/Goals";
 import Investments from "./pages/Investments";
+import Recurrences from "./pages/Recurrences";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/annual" component={AnnualView} />
           <Route path="/goals" component={Goals} />
           <Route path="/investments" component={Investments} />
+          <Route path="/recurrences" component={Recurrences} />
         </Switch>
       </div>
     </div>

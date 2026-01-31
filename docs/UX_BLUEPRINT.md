@@ -46,3 +46,24 @@
 - Dois blocos verticais bem separados.
 - Reserva de emergencia no topo, investimentos abaixo.
 - Apenas lista de aportes, sem simulacoes ou projecoes.
+
+## Tela de Recorrencias
+- Topo com seletor de mes/ano a esquerda e botao "Gerar Mes" a direita.
+- Ao clicar "Gerar Mes", chamar endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
+- Abaixo, tabela com todas as recorrencias cadastradas.
+- Colunas: descricao, tipo, grupo, valor, categoria, dia do mes, status, data inicio, data fim.
+- Acoes por linha discretas: editar, pausar, cancelar, reativar (conforme status atual).
+- Edicao inline: clique edita, Enter salva, Esc cancela.
+- Botao "+ Nova Recorrencia" abre formulario inline no topo da tabela (sem modal).
+- Formulario de nova recorrencia:
+  - Campos: descricao, tipo (entry/exit), grupo (fixed/installment/entry), valor (R$), categoria, metodo de pagamento, data inicio, data fim (opcional), dia do mes (1-31), total de parcelas (obrigatorio se grupo=installment).
+  - Se tipo for "entry", grupo fica fixo como "entry".
+  - Se tipo for "exit", grupo deve ser "fixed" ou "installment".
+  - Status inicial: active.
+- Validacoes:
+  - group permitido: fixed | installment | entry.
+  - status permitido: active | paused | canceled.
+  - type=entry => group=entry.
+  - type=exit => group != entry.
+  - group=installment => installmentTotal obrigatorio.
+  - dayOfMonth entre 1 e 31.

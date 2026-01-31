@@ -13,6 +13,7 @@ export default function Header() {
         <Link href="/annual" className={location === "/annual" ? "active" : ""}>Panorama Anual</Link>
         <Link href="/goals" className={location === "/goals" ? "active" : ""}>Metas</Link>
         <Link href="/investments" className={location === "/investments" ? "active" : ""}>Investimentos</Link>
+        <Link href="/recurrences" className={location === "/recurrences" ? "active" : ""}>Recorrencias</Link>
       </nav>
     </header>
   );

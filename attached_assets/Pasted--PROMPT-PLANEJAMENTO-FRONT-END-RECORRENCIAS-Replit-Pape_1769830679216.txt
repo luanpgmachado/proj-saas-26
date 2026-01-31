@@ -1,0 +1,68 @@
+# PROMPT — PLANEJAMENTO FRONT-END RECORRENCIAS (Replit)
+
+Papel: Frontend Agent
+Objetivo: planejar a funcionalidade de recorrencias no front-end, sem implementar codigo.
+Regras: seguir AGENTS.md (PDCA + engenharia de contexto), manter UX Blueprint, nao criar automacoes implicitas.
+
+## PLAN
+1) Ler canonicos:
+- docs/CONTEXT.md
+- docs/RULES.md
+- docs/UX_BLUEPRINT.md
+- docs/API_CONTRACT.md
+- docs/MODELO_DADOS.md
+- docs/RUNBOOK.md
+
+2) Criar issue no Linear via MCP (planejamento front-end de recorrencias).
+
+3) Definir escopo:
+- Planejamento apenas (sem codigo).
+- Se precisar modal ou nova tela, registrar no UX Blueprint antes de sugerir.
+
+## DO (planejamento)
+A) Mapear necessidade do usuario:
+- Recorrencias fixas e parceladas devem ser criadas e geradas manualmente.
+- Controles explicitos: gerar mes, pausar, cancelar, reativar.
+
+B) Propor onde a funcionalidade aparece:
+- Preferir nova tela/rota “Recorrencias” com layout simples (desktop-first).
+- Evitar modais novos; se modal for necessario, documentar mudanca no UX Blueprint.
+
+C) Definir componentes/estados:
+- Lista de recorrencias: descricao, tipo, grupo, valor, categoria, dia do mes, status, data inicio/fim.
+- Acoes por linha: editar, pausar, cancelar, reativar.
+- Acao explicita “Gerar mes” com seletor YYYY-MM.
+
+D) Validacoes no front alinhadas ao contrato:
+- group permitido: fixed | installment | entry (nao usar variable).
+- status permitido: active | paused | canceled.
+- type=entry => group=entry.
+- type=exit => group != entry.
+- group=installment => installmentTotal obrigatorio.
+- dayOfMonth 1..31.
+
+E) Mapear chamadas da API:
+- GET /api/recurrences
+- POST /api/recurrences
+- PATCH /api/recurrences/:id
+- POST /api/recurrences/generate?month=YYYY-MM
+
+F) Feedbacks:
+- Confirmar geracao de mes (resultado: qtd transacoes criadas).
+- Mensagem clara para pausa/cancelamento.
+
+## CHECK
+- Verificar aderencia ao UX Blueprint (sem animacoes, sem modais nao descritos).
+- Verificar alinhamento com API_CONTRACT e MODELO_DADOS.
+- Registrar riscos: necessidade de nova tela ou ajuste de blueprint.
+
+## ACT
+- Documentar planejamento no arquivo apropriado:
+  - Preferencia: docs/UX_BLUEPRINT.md (ou criar docs/FRONTEND_RECORRENCIAS.md, se aprovado).
+- Atualizar replit.md com o registro do planejamento.
+- Encerrar issue no Linear com resumo.
+
+## Entregaveis
+- Plano UI/fluxo/estados.
+- Mapeamento de validacoes e chamadas de API.
+- Ajustes propostos no UX Blueprint (se houver).
