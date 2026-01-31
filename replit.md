@@ -101,3 +101,15 @@ Main endpoints:
   - Backfill manual para parcelamentos legados.
 - **Check:** Testes manuais de criacao, geracao, idempotencia e pausa.
 - **Act:** Documentacao atualizada em `docs/MODELO_DADOS.md`, `docs/API_CONTRACT.md` e `docs/USAGE.md`.
+
+### 2026-01-31: Testes de API no Replit
+- **Plan:** Validar endpoints principais conforme API_CONTRACT.md. REPLIT_DB_URL ativo.
+- **Do:** Testes via curl nos endpoints:
+  - `GET /api/categories` - OK (15 categorias retornadas)
+  - `GET /api/payment-methods` - OK (2 metodos retornados: PIX, ITAU)
+  - `GET /api/transactions?month=2026-01` - OK (1 transacao retornada com recurrenceId)
+  - `GET /api/recurrences` - OK (lista vazia, nenhuma recorrencia criada)
+  - `POST /api/recurrences/generate?month=2026-02` - OK (lista vazia, sem recorrencias para gerar)
+- **Check:** Todos os endpoints respondem conforme API_CONTRACT.md. Foi necessario executar `npm run db:push` para sincronizar schema (tabela recurrences nao existia).
+- **Act:** Schema sincronizado. Documentacao PDCA atualizada.
+- **Pendencias:** Nenhuma. MCP Linear nao configurado - resultados registrados no replit.md.
