@@ -132,3 +132,17 @@ Main endpoints:
   - Pausa funcionando: recorrencia pausada nao gera novas transacoes.
 - **Act:** Documentacao atualizada em `docs/USAGE.md` (secao 11.1). PDCA registrado.
 - **Pendencias:** Nenhuma. Backend funcionando conforme API_CONTRACT.md e MODELO_DADOS.md.
+
+### 2026-01-31: Front-end de Recorrencias
+- **Plan:** Implementar tela de gerenciamento de recorrencias no front-end.
+- **Do:**
+  - Criada pagina `client/src/pages/Recurrences.tsx` com listagem, criacao, edicao e acoes de status.
+  - Formulario inline (sem modal) para nova recorrencia e edicao.
+  - Validacoes no front: descricao obrigatoria, valor > 0, data inicio obrigatoria, installmentTotal obrigatorio se parcelado.
+  - Acoes por linha: editar, pausar, cancelar, reativar.
+  - Botao "Gerar Mes" com feedback de quantidade de transacoes criadas.
+  - Adicionada rota /recurrences no App.tsx.
+  - Adicionado link "Recorrencias" no Header.tsx.
+  - Atualizado docs/UX_BLUEPRINT.md com especificacao da tela.
+- **Check:** Tela funcionando, validacoes aplicadas, acoes de status corretas.
+- **Act:** Documentacao UX_BLUEPRINT.md atualizada. PDCA registrado.

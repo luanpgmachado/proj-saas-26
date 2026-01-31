@@ -65,6 +65,7 @@ export default function Recurrences() {
   const [dataFim, setDataFim] = useState("");
   const [diaDoMes, setDiaDoMes] = useState(1);
   const [totalParcelas, setTotalParcelas] = useState<number | null>(null);
+  const [erroFormulario, setErroFormulario] = useState<string | null>(null);
 
   useEffect(() => {
     carregarDados();
@@ -115,6 +116,7 @@ export default function Recurrences() {
     setDiaDoMes(1);
     setTotalParcelas(null);
     setEditandoId(null);
+    setErroFormulario(null);
     setMostraFormulario(false);
   };
 
@@ -135,10 +137,30 @@ export default function Recurrences() {
     setDataFim(rec.endDate ?? "");
     setDiaDoMes(rec.dayOfMonth);
     setTotalParcelas(rec.installmentTotal);
+    setErroFormulario(null);
     setMostraFormulario(true);
   };
 
+  const validarFormulario = (): string | null => {
+    if (!descricao.trim()) return "Descricao e obrigatoria.";
+    const valorNumerico = parseFloat(valorReais.replace(",", "."));
+    if (isNaN(valorNumerico) || valorNumerico <= 0) return "Valor deve ser maior que zero.";
+    if (!dataInicio) return "Data de inicio e obrigatoria.";
+    if (diaDoMes < 1 || diaDoMes > 31) return "Dia do mes deve ser entre 1 e 31.";
+    if (grupo === "installment" && (!totalParcelas || totalParcelas < 1)) {
+      return "Total de parcelas e obrigatorio para recorrencias parceladas.";
+    }
+    return null;
+  };
+
   const salvar = async () => {
+    const erro = validarFormulario();
+    if (erro) {
+      setErroFormulario(erro);
+      return;
+    }
+    setErroFormulario(null);
+
     const valorCentavos = Math.round(parseFloat(valorReais.replace(",", ".")) * 100);
     const dados = {
       description: descricao,
@@ -151,13 +173,12 @@ export default function Recurrences() {
       endDate: dataFim || null,
       dayOfMonth: diaDoMes,
       installmentTotal: grupo === "installment" ? totalParcelas : null,
-      status: "active" as const,
     };
 
     if (editandoId) {
       await api.updateRecurrence(editandoId, dados);
     } else {
-      await api.createRecurrence(dados);
+      await api.createRecurrence({ ...dados, status: "active" });
     }
     limparFormulario();
     carregarDados();
@@ -199,6 +220,7 @@ export default function Recurrences() {
 
       {mostraFormulario && (
         <div className="formulario-recorrencia">
+          {erroFormulario && <div className="erro-formulario">{erroFormulario}</div>}
           <div className="formulario-grade">
             <label className="formulario-campo">
               Descricao

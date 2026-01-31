@@ -48,14 +48,14 @@
 - Apenas lista de aportes, sem simulacoes ou projecoes.
 
 ## Tela de Recorrencias
-- Topo com seletor de mes/ano a esquerda e botao "Gerar Mes" a direita.
+- Topo com seletor de mes/ano a esquerda e botoes "Gerar Mes" e "+ Nova Recorrencia" a direita.
 - Ao clicar "Gerar Mes", chamar endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
 - Abaixo, tabela com todas as recorrencias cadastradas.
-- Colunas: descricao, tipo, grupo, valor, categoria, dia do mes, status, data inicio, data fim.
+- Colunas: descricao, tipo, grupo, valor, categoria, metodo, dia, status, inicio, fim, acoes.
 - Acoes por linha discretas: editar, pausar, cancelar, reativar (conforme status atual).
-- Edicao inline: clique edita, Enter salva, Esc cancela.
+- Botao "Editar" abre formulario inline no topo da tabela com os dados preenchidos.
 - Botao "+ Nova Recorrencia" abre formulario inline no topo da tabela (sem modal).
-- Formulario de nova recorrencia:
+- Formulario de nova recorrencia/edicao:
   - Campos: descricao, tipo (entry/exit), grupo (fixed/installment/entry), valor (R$), categoria, metodo de pagamento, data inicio, data fim (opcional), dia do mes (1-31), total de parcelas (obrigatorio se grupo=installment).
   - Se tipo for "entry", grupo fica fixo como "entry".
   - Se tipo for "exit", grupo deve ser "fixed" ou "installment".
