@@ -33,14 +33,39 @@ import {
 import { db } from "./db";
 import { eq, and, gte, lte, isNotNull } from "drizzle-orm";
 
+class HttpError extends Error {
+  statusCode: number;
+
+  constructor(statusCode: number, message: string) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
 const recurrenceTypes = new Set(["entry", "exit"]);
 const recurrenceGroups = new Set(["fixed", "installment", "entry"]);
 const recurrenceStatuses = new Set(["active", "paused", "canceled"]);
+const categoryKinds = new Set(["income", "expense"]);
 
 function normalizeRecurrenceText(value: string | undefined | null): string | undefined {
   if (value === undefined || value === null) return undefined;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function normalizeCategoryName(value: unknown): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function assertIntegerNonNegative(value: unknown, field: string) {
+  if (value === undefined) return;
+  if (value === null) return;
+  if (!Number.isInteger(value) || (value as number) < 0) {
+    throw new HttpError(400, `${field} inválido`);
+  }
 }
 
 function isValidIsoDate(value: string | undefined | null): boolean {
@@ -184,16 +209,75 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCategory(category: InsertCategory): Promise<Category> {
-    const [created] = await db.insert(categories).values(category).returning();
+    const name = normalizeCategoryName((category as any).name);
+    if (!name) throw new HttpError(400, "name é obrigatório");
+
+    const kind = (category as any).kind;
+    if (typeof kind !== "string" || !categoryKinds.has(kind)) {
+      throw new HttpError(400, "kind inválido");
+    }
+
+    assertIntegerNonNegative((category as any).monthlyBudgetCents, "monthlyBudgetCents");
+
+    const normalized: InsertCategory = {
+      ...category,
+      name,
+      kind,
+    };
+
+    const [created] = await db.insert(categories).values(normalized).returning();
     return created;
   }
 
   async updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category | undefined> {
-    const [updated] = await db.update(categories).set(category).where(eq(categories.id, id)).returning();
+    const [existing] = await db.select().from(categories).where(eq(categories.id, id));
+    if (!existing) return undefined;
+
+    const patch: Partial<InsertCategory> = {};
+
+    if (Object.prototype.hasOwnProperty.call(category, "name")) {
+      const name = normalizeCategoryName((category as any).name);
+      if (!name) throw new HttpError(400, "name inválido");
+      patch.name = name;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(category, "kind")) {
+      const kind = (category as any).kind;
+      if (typeof kind !== "string" || !categoryKinds.has(kind)) {
+        throw new HttpError(400, "kind inválido");
+      }
+      patch.kind = kind;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(category, "monthlyBudgetCents")) {
+      const budget = (category as any).monthlyBudgetCents;
+      assertIntegerNonNegative(budget, "monthlyBudgetCents");
+      patch.monthlyBudgetCents = budget as any;
+    }
+
+    const [updated] = await db.update(categories).set(patch).where(eq(categories.id, id)).returning();
     return updated;
   }
 
   async deleteCategory(id: number): Promise<boolean> {
+    const [txn] = await db
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(eq(transactions.categoryId, id))
+      .limit(1);
+    if (txn) {
+      throw new HttpError(409, "Categoria em uso por lancamentos. Remova/edite os lancamentos antes de excluir.");
+    }
+
+    const [rec] = await db
+      .select({ id: recurrences.id })
+      .from(recurrences)
+      .where(eq(recurrences.categoryId, id))
+      .limit(1);
+    if (rec) {
+      throw new HttpError(409, "Categoria em uso por recorrencias. Remova/edite as recorrencias antes de excluir.");
+    }
+
     const result = await db.delete(categories).where(eq(categories.id, id)).returning();
     return result.length > 0;
   }

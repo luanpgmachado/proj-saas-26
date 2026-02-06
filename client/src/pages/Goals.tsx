@@ -145,7 +145,7 @@ export default function Goals() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div className="barra-topo">
         <h2>Metas Financeiras</h2>
         <button className="btn-primary" onClick={abrirNovaMeta}>+ Nova Meta</button>
       </div>

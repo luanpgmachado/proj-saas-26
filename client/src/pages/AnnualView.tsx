@@ -21,9 +21,9 @@ export default function AnnualView() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div className="barra-topo">
         <h2>Panorama Anual</h2>
-        <div className="month-selector">
+        <div className="seletor-mes" aria-label="Seletor de ano">
           <button onClick={() => setYear(String(parseInt(year) - 1))}>&lt;</button>
           <span style={{ fontWeight: 600, fontSize: 18 }}>{year}</span>
           <button onClick={() => setYear(String(parseInt(year) + 1))}>&gt;</button>

@@ -31,3 +31,32 @@
   - Movidos arquivos PT-BR de referencia para `docs/REFERENCIAS_PT_BR/`.
 - **Check:** Alinhamento entre `docs/`, `AGENTS.md` e `replit.md`.
 - **Act:** `replit.md` e `docs/USAGE.md` atualizados com ponteiros para os logs.
+
+## 2026-02-05 — Deploy VM Oracle Free (acesso externo + nginx)
+- **Plan:** Diagnosticar porque a aplicacao Node/Express nao ficava acessivel fora do localhost e padronizar deploy (nginx + systemd + firewall).
+- **Do:**
+  - Diagnostico: Node em `0.0.0.0:3001`, Nginx em `:80`, mas `iptables` rejeitava conexoes novas exceto `22`.
+  - Infra: liberado `80/443` no `iptables` antes do `REJECT` e persistido com `netfilter-persistent` (normalizado com `iptables-restore` a partir de `/etc/iptables/rules.v4`).
+  - Backend: corrigido catch-all em `server/index.ts` para nao pendurar `/api` (chama `next()` quando path inicia com `/api`).
+  - Deploy: rebuild `npm run build` e restart do servico `proj-financa` na VM.
+- **Check:** Externo: `http://137.131.233.220/` retorna `200` e `http://137.131.233.220/api/` retorna `404` imediato (sem timeout).
+- **Act:** Runbook atualizado em `docs/RUNBOOK.md` com checklist de deploy (nginx/systemd/firewall/ingress OCI). 
+
+## 2026-02-06 — CRUD de Categorias (Lancamentos)
+- **Plan:** Habilitar criar/editar/excluir categorias diretamente na tela de Lancamentos, alinhando contrato e UX antes do codigo.
+- **Do:**
+  - Docs: atualizado `docs/API_CONTRACT.md` com POST/PATCH/DELETE `/api/categories` e erros `400/404/409`.
+  - Docs: atualizado `docs/UX_BLUEPRINT.md` com formulario inline de categoria e confirmacao inline de exclusao (sem modal).
+  - Backend: validacoes para categorias (name/kind/monthlyBudgetCents) e bloqueio de exclusao com `409` quando categoria estiver em uso por `transactions` ou `recurrences` (`server/storage.ts` + `server/index.ts`).
+  - Frontend: UI na tela `client/src/pages/Transactions.tsx` com botao "+ Nova categoria", edicao e exclusao inline; recarrega lista e seleciona categoria criada no filtro.
+- **Check:** Fluxo completo testado manualmente (criar/editar/excluir + erro de exclusao por uso).
+- **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.
+
+## 2026-02-06 — Refinamento de UI (planilha mensal viva)
+- **Plan:** Melhorar legibilidade e consistencia visual do front, sem alterar comportamentos fora do `docs/UX_BLUEPRINT.md` (desktop-first, sem animacoes).
+- **Do:**
+  - Frontend: definido sistema de tokens (papel/tinta/caneta azul) e padrao de componentes (cartao, botoes, formularios, tabelas) em `client/src/index.css`.
+  - Frontend: unificado cabecalhos de pagina e seletor de mes/ano (`barra-topo`, `seletor-mes`) e destaque do Saldo como elemento principal na visao do mes (`client/src/pages/Dashboard.tsx`).
+  - Frontend: corrigidos estilos ausentes usados em telas (ex: `btn-primary`, `btn-danger`, `form-group`) e padronizado layout do Header (`client/src/components/Header.tsx`).
+- **Check:** `npm run build` executado com sucesso.
+- **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.

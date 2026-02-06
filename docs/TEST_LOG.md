@@ -28,3 +28,21 @@
   - installmentIndex incrementando corretamente (2, 3, ...).
   - installmentTotal consistente com a recorrencia (18 e 5).
 - Conclusao: Backend funcionando conforme `docs/API_CONTRACT.md` e `docs/MODELO_DADOS.md`.
+
+## 2026-02-06 — Categorias (CRUD via Tela de Lancamentos)
+- Ambiente: local (frontend Vite + backend Express).
+- Cenarios testados:
+  - Criar categoria pela tela de Lancamentos (nome + tipo + orcamento opcional).
+  - Editar categoria selecionada no filtro (alterar nome/tipo/orcamento).
+  - Excluir categoria sem referencias (sucesso).
+  - Excluir categoria em uso por lancamentos/recorrencias (bloqueio `409` com mensagem).
+- Verificacoes:
+  - Lista de categorias recarrega apos salvar/excluir.
+  - Ao criar, a categoria criada fica selecionada no filtro.
+  - Erros de API aparecem na tela (mensagem do backend).
+
+## 2026-02-06 — UI (refino visual)
+- Ambiente: local.
+- Verificacoes:
+  - Build: `npm run build` OK.
+  - Sem animacoes CSS introduzidas (removido `transition` da barra de progresso).

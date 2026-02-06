@@ -7,6 +7,13 @@ const formatCurrency = (cents: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 };
 
+const formatarMesAno = (mes: string) => {
+  const [ano, numeroMes] = mes.split("-").map(Number);
+  const nomes = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const nome = nomes[(numeroMes || 1) - 1] ?? "mes";
+  return `${nome}/${ano}`;
+};
+
 export default function Dashboard() {
   const [month, setMonth] = useState(() => {
     const now = new Date();
@@ -87,13 +94,21 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-        <div className="month-selector">
-          <button onClick={() => changeMonth(-1)}>&lt;</button>
-          <span style={{ fontWeight: 600, fontSize: 18 }}>{month}</span>
-          <button onClick={() => changeMonth(1)}>&gt;</button>
+      <div className="barra-topo">
+        <div className="seletor-mes" aria-label="Seletor de mes">
+          <button className="btn-ghost" onClick={() => changeMonth(-1)} aria-label="Mes anterior">
+            &lt;
+          </button>
+          <span className="seletor-mes-label" title={month}>
+            {formatarMesAno(month)}
+          </span>
+          <button className="btn-ghost" onClick={() => changeMonth(1)} aria-label="Proximo mes">
+            &gt;
+          </button>
         </div>
-        <button className="primary" onClick={abrirModalNovo}>+ Novo Lancamento</button>
+        <button className="btn-primary" onClick={abrirModalNovo}>
+          + Novo Lancamento
+        </button>
       </div>
 
       <div className="cards-row">
@@ -105,7 +120,7 @@ export default function Dashboard() {
           <h3>Saidas</h3>
           <div className="value negative">{formatCurrency(summary.exitsCents)}</div>
         </div>
-        <div className="card">
+        <div className="card card--saldo">
           <h3>Saldo</h3>
           <div className={`value ${summary.balanceCents >= 0 ? "positive" : "negative"}`}>
             {formatCurrency(summary.balanceCents)}
@@ -175,13 +190,14 @@ export default function Dashboard() {
                     <td className="text-right">{formatCurrency(t.amountCents)}</td>
                     <td className="text-right">
                       <button
-                        style={{ padding: "4px 8px", marginRight: 4, fontSize: 12 }}
+                        className="btn-sm"
+                        style={{ marginRight: 6 }}
                         onClick={() => abrirModalEditar(t)}
                       >
                         Editar
                       </button>
                       <button
-                        style={{ padding: "4px 8px", fontSize: 12, background: "#ffebee", borderColor: "#c62828", color: "#c62828" }}
+                        className="btn-sm btn-danger"
                         onClick={() => setConfirmarExclusao(t.id)}
                       >
                         Excluir

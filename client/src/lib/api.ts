@@ -8,8 +8,21 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
       ...options?.headers,
     },
   });
-  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-  return res.json();
+  const text = await res.text();
+  if (!res.ok) {
+    let message = `HTTP error! status: ${res.status}`;
+    try {
+      const parsed = text ? JSON.parse(text) : null;
+      if (parsed?.error) message = parsed.error;
+    } catch {
+      // ignore parse errors
+    }
+    const err = new Error(message) as any;
+    err.status = res.status;
+    err.body = text;
+    throw err;
+  }
+  return text ? JSON.parse(text) : (null as any);
 }
 
 export const api = {

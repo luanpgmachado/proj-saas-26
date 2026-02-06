@@ -20,9 +20,23 @@
 ## Tela de Lancamentos
 - Filtros em linha no topo: categoria, metodo, tipo.
 - Botao "Limpar filtros".
+- Ao lado do filtro de categoria:
+  - Botao "+ Nova categoria" (abre formulario inline abaixo dos filtros).
+  - Quando houver uma categoria selecionada no filtro (diferente de "Todas"):
+    - Botao "Editar categoria" (abre formulario inline com dados preenchidos).
+    - Botao "Excluir categoria" com confirmacao inline (sem modal): primeiro clique entra em modo de confirmacao com botoes "Confirmar exclusao" e "Cancelar".
 - Tabela com cabecalho fixo e scroll apenas no corpo.
 - Edicao inline: clique edita, Enter salva, Esc cancela.
 - Acoes por linha discretas e sem chamar atencao.
+
+### Formulario inline de categoria (Tela de Lancamentos)
+- Campos:
+  - Nome (obrigatorio)
+  - Tipo: `income` | `expense` (obrigatorio)
+  - Orcamento mensal (R$, opcional)
+- Ao salvar:
+  - Recarregar lista de categorias.
+  - Se estiver criando, selecionar automaticamente a categoria criada no filtro.
 
 ## Tela de Metodos de Pagamento
 - Tabela unica.

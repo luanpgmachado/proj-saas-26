@@ -18,15 +18,16 @@ app.use("/api", routes);
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("*", (req, res) => {
-  if (!req.path.startsWith("/api")) {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-  }
+app.get("*", (req, res, next) => {
+  // Evita requests "pendurados" quando alguem chama /api ou /api/ sem rota.
+  if (req.path.startsWith("/api")) return next();
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  const status = typeof (err as any)?.statusCode === "number" ? (err as any).statusCode : 500;
   console.error("Error:", err.message);
-  res.status(500).json({ error: err.message || "Internal Server Error" });
+  res.status(status).json({ error: err.message || "Internal Server Error" });
 };
 app.use(errorHandler);
 

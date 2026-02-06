@@ -146,6 +146,20 @@ paymentMethodId, type, group, installmentIndex, installmentTotal.
 
 ### Categorias
 - GET `/api/categories` -> Category[]
+- POST `/api/categories` -> Category
+- PATCH `/api/categories/{id}` -> Category
+- DELETE `/api/categories/{id}` -> `{ success: true }`
+
+Payloads:
+- POST `/api/categories`
+  - body: `{ name, kind, monthlyBudgetCents? }`
+- PATCH `/api/categories/{id}`
+  - Campos editaveis: `name`, `kind`, `monthlyBudgetCents`
+
+Erros:
+- `400` quando payload invalido (ex: `name` vazio, `kind` fora de `income|expense`, `monthlyBudgetCents` negativo).
+- `404` quando `id` nao existir.
+- `409` ao tentar excluir categoria em uso por `transactions` ou `recurrences`.
 
 ### Panorama anual
 - GET `/api/years/{year}/summary` -> AnnualSummaryRow[]

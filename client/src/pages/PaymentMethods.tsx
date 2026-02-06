@@ -102,7 +102,7 @@ export default function PaymentMethods() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div className="barra-topo">
         <h2>Metodos de Pagamento</h2>
         <button className="btn-primary" onClick={abrirNovo}>+ Novo Metodo</button>
       </div>

@@ -7,6 +7,11 @@ const formatCurrency = (cents: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 };
 
+const parsearCentavosDeTexto = (valor: string) => {
+  const somenteDigitos = valor.replace(/\D/g, "");
+  return somenteDigitos ? parseInt(somenteDigitos, 10) : 0;
+};
+
 type Transaction = {
   id: number;
   date: string;
@@ -18,19 +23,36 @@ type Transaction = {
   group: "fixed" | "variable" | "installment" | "entry";
 };
 
+type Categoria = {
+  id: number;
+  name: string;
+  kind: "income" | "expense";
+  monthlyBudgetCents: number | null;
+};
+
 export default function Transactions() {
   const [month, setMonth] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Categoria[]>([]);
   const [methods, setMethods] = useState<any[]>([]);
   const [filters, setFilters] = useState({ categoryId: "", methodId: "", type: "" });
   const [modalAberto, setModalAberto] = useState(false);
   const [transacaoEditando, setTransacaoEditando] = useState<Transaction | null>(null);
   const [confirmarExclusao, setConfirmarExclusao] = useState<number | null>(null);
   const [excluindo, setExcluindo] = useState(false);
+
+  const [categoriaFormularioAberto, setCategoriaFormularioAberto] = useState(false);
+  const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);
+  const [categoriaNome, setCategoriaNome] = useState("");
+  const [categoriaTipo, setCategoriaTipo] = useState<"income" | "expense">("expense");
+  const [categoriaOrcamentoCentavos, setCategoriaOrcamentoCentavos] = useState<number | null>(null);
+  const [categoriaSalvando, setCategoriaSalvando] = useState(false);
+  const [categoriaErro, setCategoriaErro] = useState("");
+  const [categoriaConfirmandoExclusao, setCategoriaConfirmandoExclusao] = useState(false);
+  const [categoriaExcluindo, setCategoriaExcluindo] = useState(false);
 
   const carregarDados = () => {
     const params: Record<string, string> = { month };
@@ -40,8 +62,13 @@ export default function Transactions() {
     api.getTransactions(params).then(setTransactions).catch(console.error);
   };
 
+  const carregarCategorias = async () => {
+    const cats = await api.getCategories();
+    setCategories(cats);
+  };
+
   useEffect(() => {
-    api.getCategories().then(setCategories).catch(console.error);
+    carregarCategorias().catch(console.error);
     api.getPaymentMethods().then(setMethods).catch(console.error);
   }, []);
 
@@ -50,6 +77,102 @@ export default function Transactions() {
   }, [month, filters]);
 
   const clearFilters = () => setFilters({ categoryId: "", methodId: "", type: "" });
+
+  const categoriaSelecionada = filters.categoryId
+    ? categories.find((c) => String(c.id) === filters.categoryId) ?? null
+    : null;
+
+  const abrirFormularioCriarCategoria = () => {
+    setCategoriaErro("");
+    setCategoriaEditando(null);
+    setCategoriaNome("");
+    setCategoriaTipo("expense");
+    setCategoriaOrcamentoCentavos(null);
+    setCategoriaConfirmandoExclusao(false);
+    setCategoriaFormularioAberto(true);
+  };
+
+  const abrirFormularioEditarCategoria = () => {
+    if (!categoriaSelecionada) return;
+    setCategoriaErro("");
+    setCategoriaEditando(categoriaSelecionada);
+    setCategoriaNome(categoriaSelecionada.name);
+    setCategoriaTipo(categoriaSelecionada.kind);
+    setCategoriaOrcamentoCentavos(categoriaSelecionada.monthlyBudgetCents ?? null);
+    setCategoriaConfirmandoExclusao(false);
+    setCategoriaFormularioAberto(true);
+  };
+
+  const fecharFormularioCategoria = () => {
+    setCategoriaFormularioAberto(false);
+    setCategoriaEditando(null);
+    setCategoriaNome("");
+    setCategoriaTipo("expense");
+    setCategoriaOrcamentoCentavos(null);
+    setCategoriaErro("");
+  };
+
+  const salvarCategoria = async () => {
+    if (!categoriaNome.trim()) {
+      setCategoriaErro("Nome é obrigatório.");
+      return;
+    }
+
+    setCategoriaSalvando(true);
+    setCategoriaErro("");
+    try {
+      const payload = {
+        name: categoriaNome.trim(),
+        kind: categoriaTipo,
+        monthlyBudgetCents: categoriaOrcamentoCentavos,
+      };
+
+      const saved = categoriaEditando
+        ? await api.updateCategory(categoriaEditando.id, payload)
+        : await api.createCategory(payload);
+
+      await carregarCategorias();
+
+      if (!categoriaEditando && saved?.id) {
+        setFilters((prev) => ({ ...prev, categoryId: String(saved.id) }));
+      }
+
+      fecharFormularioCategoria();
+    } catch (err: any) {
+      setCategoriaErro(err?.message || "Nao foi possivel salvar a categoria.");
+    } finally {
+      setCategoriaSalvando(false);
+    }
+  };
+
+  const iniciarExclusaoCategoria = () => {
+    if (!categoriaSelecionada) return;
+    setCategoriaErro("");
+    setCategoriaFormularioAberto(false);
+    setCategoriaConfirmandoExclusao(true);
+  };
+
+  const cancelarExclusaoCategoria = () => {
+    setCategoriaConfirmandoExclusao(false);
+    setCategoriaExcluindo(false);
+    setCategoriaErro("");
+  };
+
+  const excluirCategoria = async () => {
+    if (!categoriaSelecionada) return;
+    setCategoriaExcluindo(true);
+    setCategoriaErro("");
+    try {
+      await api.deleteCategory(categoriaSelecionada.id);
+      await carregarCategorias();
+      setCategoriaConfirmandoExclusao(false);
+      setFilters((prev) => ({ ...prev, categoryId: "" }));
+    } catch (err: any) {
+      setCategoriaErro(err?.message || "Nao foi possivel excluir a categoria.");
+    } finally {
+      setCategoriaExcluindo(false);
+    }
+  };
 
   const abrirNovo = () => {
     setTransacaoEditando(null);
@@ -87,7 +210,7 @@ export default function Transactions() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div className="barra-topo">
         <h2>Lancamentos</h2>
         <button className="btn-primary" onClick={abrirNovo}>+ Novo Lancamento</button>
       </div>
@@ -98,6 +221,15 @@ export default function Transactions() {
           <option value="">Todas categorias</option>
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button onClick={abrirFormularioCriarCategoria}>+ Nova categoria</button>
+          {categoriaSelecionada ? (
+            <>
+              <button onClick={abrirFormularioEditarCategoria}>Editar categoria</button>
+              <button className="btn-danger" onClick={iniciarExclusaoCategoria}>Excluir categoria</button>
+            </>
+          ) : null}
+        </div>
         <select value={filters.methodId} onChange={(e) => setFilters({ ...filters, methodId: e.target.value })}>
           <option value="">Todos metodos</option>
           {methods.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
@@ -109,6 +241,64 @@ export default function Transactions() {
         </select>
         <button onClick={clearFilters}>Limpar filtros</button>
       </div>
+
+      {categoriaFormularioAberto ? (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0 }}>{categoriaEditando ? "Editar categoria" : "Nova categoria"}</h3>
+            <button onClick={fecharFormularioCategoria}>Fechar</button>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: 12, alignItems: "end" }}>
+            <label>
+              Nome
+              <input value={categoriaNome} onChange={(e) => setCategoriaNome(e.target.value)} />
+            </label>
+            <label>
+              Tipo
+              <select value={categoriaTipo} onChange={(e) => setCategoriaTipo(e.target.value as any)}>
+                <option value="income">Receita</option>
+                <option value="expense">Despesa</option>
+              </select>
+            </label>
+            <label>
+              Orcamento mensal (R$)
+              <input
+                inputMode="numeric"
+                placeholder="R$ 0,00"
+                value={categoriaOrcamentoCentavos === null ? "" : formatCurrency(categoriaOrcamentoCentavos)}
+                onChange={(e) => {
+                  const centavos = parsearCentavosDeTexto(e.target.value);
+                  setCategoriaOrcamentoCentavos(e.target.value.trim() ? centavos : null);
+                }}
+              />
+            </label>
+            <button className="btn-primary" onClick={salvarCategoria} disabled={categoriaSalvando}>
+              {categoriaSalvando ? "Salvando..." : "Salvar"}
+            </button>
+          </div>
+          {categoriaErro ? <div style={{ marginTop: 10, color: "#b91c1c" }}>{categoriaErro}</div> : null}
+        </div>
+      ) : null}
+
+      {categoriaConfirmandoExclusao && categoriaSelecionada ? (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+            <div>
+              <strong>Excluir categoria:</strong> {categoriaSelecionada.name}
+              <div style={{ fontSize: 12, opacity: 0.8 }}>
+                A exclusao e bloqueada se houver lancamentos ou recorrencias usando essa categoria.
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={cancelarExclusaoCategoria} disabled={categoriaExcluindo}>Cancelar</button>
+              <button className="btn-danger" onClick={excluirCategoria} disabled={categoriaExcluindo}>
+                {categoriaExcluindo ? "Excluindo..." : "Confirmar exclusao"}
+              </button>
+            </div>
+          </div>
+          {categoriaErro ? <div style={{ marginTop: 10, color: "#b91c1c" }}>{categoriaErro}</div> : null}
+        </div>
+      ) : null}
 
       <div className="card">
         {transactions.length === 0 ? (
