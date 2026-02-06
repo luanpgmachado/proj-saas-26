@@ -46,3 +46,9 @@
 - Verificacoes:
   - Build: `npm run build` OK.
   - Sem animacoes CSS introduzidas (removido `transition` da barra de progresso).
+
+## 2026-02-06 — Performance (front)
+- Ambiente: local.
+- Verificacoes:
+  - Build: `npm run build` OK.
+  - Output: chunks por pagina gerados (code-splitting por rota).

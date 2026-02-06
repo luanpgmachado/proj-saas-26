@@ -332,62 +332,64 @@ export default function Recurrences() {
         </div>
       )}
 
-      <table className="tabela-recorrencias">
-        <thead>
-          <tr>
-            <th>Descricao</th>
-            <th>Tipo</th>
-            <th>Grupo</th>
-            <th>Valor</th>
-            <th>Categoria</th>
-            <th>Metodo</th>
-            <th>Dia</th>
-            <th>Status</th>
-            <th>Inicio</th>
-            <th>Fim</th>
-            <th>Acoes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recorrencias.map((rec) => (
-            <tr key={rec.id}>
-              <td>{rec.description}</td>
-              <td>{traduzirTipo(rec.type)}</td>
-              <td>{traduzirGrupo(rec.group)}</td>
-              <td className="valor-direita">{formatarMoeda(rec.amountCents)}</td>
-              <td>{nomeCategoria(rec.categoryId)}</td>
-              <td>{nomeMetodo(rec.paymentMethodId)}</td>
-              <td>{rec.dayOfMonth}</td>
-              <td>{traduzirStatus(rec.status)}</td>
-              <td>{formatarData(rec.startDate)}</td>
-              <td>{formatarData(rec.endDate)}</td>
-              <td className="acoes-linha">
-                <button onClick={() => abrirEdicao(rec)}>Editar</button>
-                {rec.status === "active" && (
-                  <>
-                    <button onClick={() => alterarStatus(rec.id, "paused")}>Pausar</button>
-                    <button onClick={() => alterarStatus(rec.id, "canceled")}>Cancelar</button>
-                  </>
-                )}
-                {rec.status === "paused" && (
-                  <>
-                    <button onClick={() => alterarStatus(rec.id, "active")}>Reativar</button>
-                    <button onClick={() => alterarStatus(rec.id, "canceled")}>Cancelar</button>
-                  </>
-                )}
-                {rec.status === "canceled" && (
-                  <button onClick={() => alterarStatus(rec.id, "active")}>Reativar</button>
-                )}
-              </td>
-            </tr>
-          ))}
-          {recorrencias.length === 0 && (
+      <div className="table-container tabela-scroll" aria-label="Tabela de recorrencias">
+        <table className="tabela-recorrencias">
+          <thead>
             <tr>
-              <td colSpan={11} className="sem-dados">Nenhuma recorrencia cadastrada.</td>
+              <th>Descricao</th>
+              <th>Tipo</th>
+              <th>Grupo</th>
+              <th>Valor</th>
+              <th>Categoria</th>
+              <th>Metodo</th>
+              <th>Dia</th>
+              <th>Status</th>
+              <th>Inicio</th>
+              <th>Fim</th>
+              <th>Acoes</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {recorrencias.map((rec) => (
+              <tr key={rec.id}>
+                <td>{rec.description}</td>
+                <td>{traduzirTipo(rec.type)}</td>
+                <td>{traduzirGrupo(rec.group)}</td>
+                <td className="valor-direita">{formatarMoeda(rec.amountCents)}</td>
+                <td>{nomeCategoria(rec.categoryId)}</td>
+                <td>{nomeMetodo(rec.paymentMethodId)}</td>
+                <td>{rec.dayOfMonth}</td>
+                <td>{traduzirStatus(rec.status)}</td>
+                <td>{formatarData(rec.startDate)}</td>
+                <td>{formatarData(rec.endDate)}</td>
+                <td className="acoes-linha">
+                  <button onClick={() => abrirEdicao(rec)}>Editar</button>
+                  {rec.status === "active" && (
+                    <>
+                      <button onClick={() => alterarStatus(rec.id, "paused")}>Pausar</button>
+                      <button onClick={() => alterarStatus(rec.id, "canceled")}>Cancelar</button>
+                    </>
+                  )}
+                  {rec.status === "paused" && (
+                    <>
+                      <button onClick={() => alterarStatus(rec.id, "active")}>Reativar</button>
+                      <button onClick={() => alterarStatus(rec.id, "canceled")}>Cancelar</button>
+                    </>
+                  )}
+                  {rec.status === "canceled" && (
+                    <button onClick={() => alterarStatus(rec.id, "active")}>Reativar</button>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {recorrencias.length === 0 && (
+              <tr>
+                <td colSpan={11} className="sem-dados">Nenhuma recorrencia cadastrada.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

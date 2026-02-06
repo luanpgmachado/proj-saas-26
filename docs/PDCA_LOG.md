@@ -60,3 +60,12 @@
   - Frontend: corrigidos estilos ausentes usados em telas (ex: `btn-primary`, `btn-danger`, `form-group`) e padronizado layout do Header (`client/src/components/Header.tsx`).
 - **Check:** `npm run build` executado com sucesso.
 - **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.
+
+## 2026-02-06 — Performance do Front (code-splitting + tabelas)
+- **Plan:** Reduzir bundle inicial e melhorar performance percebida em navegacao (sem mudar regras/fluxos de UX).
+- **Do:**
+  - Frontend: code-splitting por rota com `React.lazy` + `Suspense` (`client/src/App.tsx`).
+  - Frontend: header sticky e cabecalho de tabelas fixo em areas com scroll (`client/src/index.css`, `client/src/pages/Transactions.tsx`, `client/src/pages/Recurrences.tsx`).
+  - Frontend: otimizacao de render em tabela de Lancamentos (mapas `id->nome` via `useMemo`) (`client/src/pages/Transactions.tsx`).
+- **Check:** `npm run build` executado com sucesso; output em chunks por pagina.
+- **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.

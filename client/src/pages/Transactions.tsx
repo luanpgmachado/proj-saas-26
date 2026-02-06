@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { api } from "../lib/api";
 import ModalLancamento, { DadosLancamento } from "../components/ModalLancamento";
 import ModalConfirmacao from "../components/ModalConfirmacao";
@@ -75,6 +75,18 @@ export default function Transactions() {
   useEffect(() => {
     carregarDados();
   }, [month, filters]);
+
+  const nomeCategoriaPorId = useMemo(() => {
+    const mapa = new Map<number, string>();
+    for (const c of categories) mapa.set(c.id, c.name);
+    return mapa;
+  }, [categories]);
+
+  const nomeMetodoPorId = useMemo(() => {
+    const mapa = new Map<number, string>();
+    for (const m of methods) mapa.set(m.id, m.name);
+    return mapa;
+  }, [methods]);
 
   const clearFilters = () => setFilters({ categoryId: "", methodId: "", type: "" });
 
@@ -304,7 +316,7 @@ export default function Transactions() {
         {transactions.length === 0 ? (
           <p>Nenhum lancamento encontrado.</p>
         ) : (
-          <div className="table-container">
+          <div className="table-container tabela-scroll" aria-label="Tabela de lancamentos">
             <table>
               <thead>
                 <tr>
@@ -323,8 +335,8 @@ export default function Transactions() {
                     <td>{t.date}</td>
                     <td>{t.description}</td>
                     <td>{t.type === "entry" ? "Entrada" : "Saida"}</td>
-                    <td>{categories.find((c) => c.id === t.categoryId)?.name || "-"}</td>
-                    <td>{methods.find((m) => m.id === t.paymentMethodId)?.name || "-"}</td>
+                    <td>{nomeCategoriaPorId.get(t.categoryId) || "-"}</td>
+                    <td>{nomeMetodoPorId.get(t.paymentMethodId) || "-"}</td>
                     <td className="text-right">{formatCurrency(t.amountCents)}</td>
                     <td className="text-right">
                       <button onClick={() => abrirEditar(t)} style={{ marginRight: 8 }}>Editar</button>
