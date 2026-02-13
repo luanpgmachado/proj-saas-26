@@ -46,6 +46,7 @@ const recurrenceTypes = new Set(["entry", "exit"]);
 const recurrenceGroups = new Set(["fixed", "installment", "entry"]);
 const recurrenceStatuses = new Set(["active", "paused", "canceled"]);
 const categoryKinds = new Set(["income", "expense"]);
+const transactionTypes = new Set(["entry", "exit"]);
 
 function normalizeRecurrenceText(value: string | undefined | null): string | undefined {
   if (value === undefined || value === null) return undefined;
@@ -90,6 +91,14 @@ function getLastDayOfMonth(year: number, month: number): number {
 
 function toIsoDate(year: number, month: number, day: number): string {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function getTodayIsoLocal(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function getMonthIndex(year: number, month: number): number {
@@ -177,7 +186,7 @@ export interface IStorage {
   createRecurrence(recurrence: InsertRecurrence): Promise<Recurrence>;
   updateRecurrence(id: number, recurrence: Partial<InsertRecurrence>): Promise<Recurrence | undefined>;
   generateRecurrenceTransactions(month: string): Promise<Transaction[]>;
-  getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; balanceCents: number }>;
+  getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; paidExitsCents: number; balanceCents: number; realBalanceCents: number }>;
   getCategorySpend(month: string): Promise<{ categoryId: number; categoryName: string; budgetCents: number | null; spentCents: number; diffCents: number }[]>;
   getGoals(): Promise<(Goal & { currentCents: number; progressPercent: number })[]>;
   createGoal(goal: InsertGoal): Promise<Goal>;
@@ -333,12 +342,76 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
-    const [created] = await db.insert(transactions).values(transaction).returning();
+    const normalized: InsertTransaction = { ...transaction };
+
+    const tipoFinal = normalized.type as any as string;
+    if (!transactionTypes.has(tipoFinal)) {
+      throw new HttpError(400, "type inválido");
+    }
+
+    const isPaidFinal = normalized.isPaid ?? false;
+    const paidAtFinal = normalized.paidAt ?? null;
+
+    if (tipoFinal === "entry") {
+      if (isPaidFinal) {
+        throw new HttpError(400, "Nao e possivel marcar lancamento do tipo entry como pago.");
+      }
+      normalized.isPaid = false;
+      normalized.paidAt = null;
+    } else {
+      if (isPaidFinal) {
+        if (paidAtFinal && !isValidIsoDate(paidAtFinal)) {
+          throw new HttpError(400, "paidAt invalido. Use YYYY-MM-DD.");
+        }
+        normalized.isPaid = true;
+        normalized.paidAt = paidAtFinal ?? getTodayIsoLocal();
+      } else {
+        normalized.isPaid = false;
+        normalized.paidAt = null;
+      }
+    }
+
+    const [created] = await db.insert(transactions).values(normalized).returning();
     return created;
   }
 
   async updateTransaction(id: number, transaction: Partial<InsertTransaction>): Promise<Transaction | undefined> {
-    const [updated] = await db.update(transactions).set(transaction).where(eq(transactions.id, id)).returning();
+    const [existing] = await db.select().from(transactions).where(eq(transactions.id, id));
+    if (!existing) return undefined;
+
+    const normalizedPatch: Partial<InsertTransaction> = { ...transaction };
+
+    const tipoFinal = (normalizedPatch.type ?? existing.type) as any as string;
+    if (!transactionTypes.has(tipoFinal)) {
+      throw new HttpError(400, "type inválido");
+    }
+
+    const isPaidFinal = (normalizedPatch.isPaid ?? existing.isPaid) as boolean;
+    const paidAtFinal = (normalizedPatch.paidAt ?? existing.paidAt) as string | null;
+
+    if (normalizedPatch.isPaid === true && tipoFinal !== "exit") {
+      throw new HttpError(400, "Apenas lancamentos do tipo exit podem ser marcados como pagos.");
+    }
+
+    if (tipoFinal === "entry") {
+      normalizedPatch.isPaid = false;
+      normalizedPatch.paidAt = null;
+    } else {
+      if (isPaidFinal) {
+        if (paidAtFinal && !isValidIsoDate(paidAtFinal)) {
+          throw new HttpError(400, "paidAt invalido. Use YYYY-MM-DD.");
+        }
+        normalizedPatch.isPaid = true;
+        if (!paidAtFinal) {
+          normalizedPatch.paidAt = getTodayIsoLocal();
+        }
+      } else {
+        normalizedPatch.isPaid = false;
+        normalizedPatch.paidAt = null;
+      }
+    }
+
+    const [updated] = await db.update(transactions).set(normalizedPatch).where(eq(transactions.id, id)).returning();
     return updated;
   }
 
@@ -464,11 +537,16 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
-  async getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; balanceCents: number }> {
+  async getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; paidExitsCents: number; balanceCents: number; realBalanceCents: number }> {
     const txns = await this.getTransactions({ month });
     const entriesCents = txns.filter((t) => t.type === "entry").reduce((acc, t) => acc + t.amountCents, 0);
     const exitsCents = txns.filter((t) => t.type === "exit").reduce((acc, t) => acc + t.amountCents, 0);
-    return { entriesCents, exitsCents, balanceCents: entriesCents - exitsCents };
+    const paidExitsCents = txns
+      .filter((t) => t.type === "exit" && t.isPaid)
+      .reduce((acc, t) => acc + t.amountCents, 0);
+    const balanceCents = entriesCents - exitsCents;
+    const realBalanceCents = entriesCents - paidExitsCents;
+    return { entriesCents, exitsCents, paidExitsCents, balanceCents, realBalanceCents };
   }
 
   async getCategorySpend(month: string): Promise<{ categoryId: number; categoryName: string; budgetCents: number | null; spentCents: number; diffCents: number }[]> {
@@ -617,8 +695,8 @@ export class DatabaseStorage implements IStorage {
     const result = [];
     for (let m = 1; m <= 12; m++) {
       const month = `${year}-${m.toString().padStart(2, "0")}`;
-      const summary = await this.getMonthSummary(month);
-      result.push({ month, ...summary });
+      const { entriesCents, exitsCents, balanceCents } = await this.getMonthSummary(month);
+      result.push({ month, entriesCents, exitsCents, balanceCents });
     }
     return result;
   }

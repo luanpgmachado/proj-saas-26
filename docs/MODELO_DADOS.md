@@ -40,6 +40,8 @@ erDiagram
     int installmentIndex "nullable"
     int installmentTotal "nullable"
     int recurrenceId "nullable"
+    boolean isPaid
+    date paidAt "nullable"
   }
 
   recurrences {
@@ -108,6 +110,7 @@ erDiagram
 - categories: id, name, kind, monthlyBudgetCents.
 - payment_methods: id, name, type, isCard, paidInMonth, closingDay, dueDay.
 - transactions: id, date, description, type, amountCents, categoryId, paymentMethodId, group, installmentGroupId, installmentIndex, installmentTotal, recurrenceId.
+- transactions (pagamento): isPaid (default false), paidAt (nullable).
 - recurrences: id, description, type, group, amountCents, categoryId, paymentMethodId, startDate, endDate, dayOfMonth, installmentTotal, status.
 - goals: id, name, targetCents.
 - goal_contributions: id, goalId, date, amountCents.
@@ -143,6 +146,10 @@ erDiagram
 - dayOfMonth maior que o ultimo dia do mes usa o ultimo dia do mes.
 - Recorrencia fixa de longo prazo usa endDate = null (ex: aluguel, internet).
 - Reajuste de valor: preferir criar nova recorrencia com novo amountCents e startDate, e pausar/cancelar a anterior para preservar historico.
+
+## Regras de pagamento (dados)
+- Apenas `transactions.type = exit` pode ser marcado como pago.
+- `transactions.type = entry` exige `isPaid = false` e `paidAt = null` (backend deve auto-limpar se o tipo for alterado).
 
 ## Migracao incremental (dados)
 - Manter installmentGroupId, installmentIndex e installmentTotal como legado.

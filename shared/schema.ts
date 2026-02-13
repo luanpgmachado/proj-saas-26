@@ -46,6 +46,8 @@ export const transactions = pgTable("transactions", {
   installmentIndex: integer("installment_index"),
   installmentTotal: integer("installment_total"),
   recurrenceId: integer("recurrence_id").references(() => recurrences.id),
+  isPaid: boolean("is_paid").notNull().default(false),
+  paidAt: date("paid_at"),
 });
 
 export const goals = pgTable("goals", {

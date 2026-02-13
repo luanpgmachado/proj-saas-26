@@ -37,6 +37,8 @@
 - installmentIndex (opcional)
 - installmentTotal (opcional)
 - recurrenceId (opcional)
+- isPaid (bool, default `false`, somente `exit`)
+- paidAt (date ISO `YYYY-MM-DD`, nullable)
 
 ### Recurrence
 - id
@@ -56,7 +58,13 @@
 - month
 - entriesCents
 - exitsCents
+- paidExitsCents
 - balanceCents
+- realBalanceCents
+
+Notas:
+- `balanceCents` = Entradas - Saidas (**Saldo Projetado**).
+- `realBalanceCents` = Entradas - Valor Pago (**Saldo Real**).
 
 ### CategorySpend
 - categoryId
@@ -118,7 +126,14 @@
 - PATCH `/api/transactions/{id}` -> Transaction
 
 Campos editaveis no PATCH: date, description, amountCents, categoryId,
-paymentMethodId, type, group, installmentIndex, installmentTotal.
+paymentMethodId, type, group, installmentIndex, installmentTotal, isPaid, paidAt.
+
+Regras:
+- Apenas `type = exit` pode receber `isPaid = true`.
+- Se `type = entry`, o backend deve manter `isPaid = false` e `paidAt = null`.
+
+Erros:
+- `400` ao tentar marcar `isPaid = true` em lancamento `type = entry`.
 
 ### Recorrencias
 - GET `/api/recurrences` -> Recurrence[]

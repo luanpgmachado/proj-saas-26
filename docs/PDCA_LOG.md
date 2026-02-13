@@ -69,3 +69,21 @@
   - Frontend: otimizacao de render em tabela de Lancamentos (mapas `id->nome` via `useMemo`) (`client/src/pages/Transactions.tsx`).
 - **Check:** `npm run build` executado com sucesso; output em chunks por pagina.
 - **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.
+
+## 2026-02-13 — Controle de Pagamento (Lancamentos Mensais)
+- **Plan:** Adicionar controle de pagamento em lancamentos (`transactions`) do tipo `exit`, com toggle otimista na UI e ajustes de saldo (Real vs Projetado), sem tocar recorrencias.
+- **Do:**
+  - Docs: atualizados `docs/MODELO_DADOS.md`, `docs/API_CONTRACT.md`, `docs/UX_BLUEPRINT.md`.
+  - Modelo: adicionados `transactions.isPaid` e `transactions.paidAt` em `shared/schema.ts`.
+  - Backend: regras de pagamento em `server/storage.ts` (somente `exit` pode ser pago; auto-limpa ao virar `entry`) e `getMonthSummary` ampliado com `paidExitsCents` e `realBalanceCents`.
+  - Frontend: nova coluna "Pago" na tela `client/src/pages/Transactions.tsx` com checkbox apenas para `exit`, update otimista e feedback visual discreto.
+  - Frontend: Dashboard (`client/src/pages/Dashboard.tsx`) com card "Valor Pago" e Saldo Real como principal, Saldo Projetado como secundario.
+  - Estrutura: criado `client/src/model/transacao.ts` (model) e `client/src/service/transacoes.service.ts` (service).
+- **Check:**
+  - Build: `npm run build` OK (local e na VM).
+  - DB: `npm run db:push` OK na VM Oracle (adicionadas colunas em `transactions`).
+  - API: cenarios de toggle e regras validados (exit paga/despaga, entry bloqueado, auto-limpeza ao virar entry) e `MonthSummary` com `paidExitsCents` + `realBalanceCents`.
+  - Externo: `http://137.131.233.220/` e `http://137.131.233.220/api/months/2026-02/summary` retornando `200`.
+- **Act:**
+  - Registro de testes atualizado em `docs/TEST_LOG.md` com evidencias da validacao.
+  - Deploy aplicado na VM Oracle (`proj-financa-v1`) com `npm run build` e restart do `proj-financa.service`.

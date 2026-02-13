@@ -149,7 +149,7 @@ input[type="checkbox"] {
 
 .cards-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
   gap: var(--espaco_5);
   margin-bottom: var(--espaco_5);
 }
@@ -181,6 +181,13 @@ input[type="checkbox"] {
   border-color: color-mix(in srgb, var(--cor_acao) 35%, var(--cor_linha));
   background: var(--cor_papel_2);
   background: color-mix(in srgb, var(--cor_acao) 6%, var(--cor_painel));
+}
+
+.saldo-secundario {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--cor_tinta_2);
+  font-family: var(--fonte_numero);
 }
 
 /* Cabecalho */
@@ -318,6 +325,23 @@ th {
 
 .table-container {
   overflow: auto;
+}
+
+.coluna-pago {
+  width: 92px;
+  text-align: center;
+}
+
+.linha-paga td {
+  background: color-mix(in srgb, var(--cor_sucesso) 6%, var(--cor_painel));
+}
+
+.erro-pago {
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--cor_perigo);
+  max-width: 140px;
+  text-align: center;
 }
 
 .tabela-scroll {

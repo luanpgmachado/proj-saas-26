@@ -52,3 +52,18 @@
 - Verificacoes:
   - Build: `npm run build` OK.
   - Output: chunks por pagina gerados (code-splitting por rota).
+
+## 2026-02-13 — Controle de Pagamento (Lancamentos)
+- Ambiente: local.
+- Build: `npm run build` OK.
+- Banco:
+  - Local: `npm run db:push` falhou com `ECONNREFUSED` ao conectar em `127.0.0.1:5433` (tunel/DB local indisponivel).
+  - VM Oracle: `npm run db:push` OK (aplicadas colunas `is_paid` e `paid_at` em `transactions`).
+- API (validado na VM Oracle):
+  - PATCH exit -> marcar pago: `{ "isPaid": true, "paidAt": "YYYY-MM-DD" }` OK.
+  - PATCH exit -> desmarcar: `{ "isPaid": false, "paidAt": null }` OK.
+  - PATCH entry -> tentar marcar pago: retorna `400` OK.
+  - PATCH type de exit pago para entry: auto-limpa `isPaid=false` e `paidAt=null` OK.
+  - GET `/api/months/2026-02/summary`: retorna `paidExitsCents` e `realBalanceCents` OK.
+- UI (validacao tecnica):
+  - Build contem textos/colunas esperadas (Dashboard: "Valor Pago" e "Saldo Real"; Lancamentos: coluna "Pago").

@@ -8,7 +8,8 @@
 
 ## Tela Principal - Visao do Mes
 - Topo fixo com seletor de mes/ano a esquerda e botao "+ Novo Lancamento" a direita.
-- Tres cards horizontais: Entradas, Saidas, Saldo (saldo com maior destaque).
+- Quatro cards horizontais: Entradas, Saidas, Valor Pago, Saldo Real (saldo com maior destaque).
+- Saldo Projetado (Entradas - Saidas) aparece como informacao secundaria na area de saldo, sem virar card principal.
 - Bloco "Gastos por Categoria" em tabela simples.
 - A coluna Diferenca so ganha destaque quando estourar orcamento.
 - Abas horizontais: Fixos, Variaveis, Parcelados, Entradas.
@@ -28,6 +29,12 @@
 - Tabela com cabecalho fixo e scroll apenas no corpo.
 - Edicao inline: clique edita, Enter salva, Esc cancela.
 - Acoes por linha discretas e sem chamar atencao.
+- Coluna "Pago" apos coluna "Valor".
+  - Checkbox apenas para `type = exit`.
+  - Para `type = entry`, nao exibir checkbox.
+  - Atualizacao instantanea ao marcar/desmarcar (otimista).
+  - Nenhum modal e nenhuma animacao.
+  - Feedback visual discreto na linha quando estiver paga.
 
 ### Formulario inline de categoria (Tela de Lancamentos)
 - Campos:

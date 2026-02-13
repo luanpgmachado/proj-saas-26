@@ -19,7 +19,13 @@ export default function Dashboard() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   });
-  const [summary, setSummary] = useState({ entriesCents: 0, exitsCents: 0, balanceCents: 0 });
+  const [summary, setSummary] = useState({
+    entriesCents: 0,
+    exitsCents: 0,
+    paidExitsCents: 0,
+    balanceCents: 0,
+    realBalanceCents: 0,
+  });
   const [categorySpend, setCategorySpend] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [tab, setTab] = useState("fixed");
@@ -120,11 +126,16 @@ export default function Dashboard() {
           <h3>Saidas</h3>
           <div className="value negative">{formatCurrency(summary.exitsCents)}</div>
         </div>
+        <div className="card">
+          <h3>Valor Pago</h3>
+          <div className="value negative">{formatCurrency(summary.paidExitsCents)}</div>
+        </div>
         <div className="card card--saldo">
-          <h3>Saldo</h3>
-          <div className={`value ${summary.balanceCents >= 0 ? "positive" : "negative"}`}>
-            {formatCurrency(summary.balanceCents)}
+          <h3>Saldo Real</h3>
+          <div className={`value ${summary.realBalanceCents >= 0 ? "positive" : "negative"}`}>
+            {formatCurrency(summary.realBalanceCents)}
           </div>
+          <div className="saldo-secundario">Saldo Projetado: {formatCurrency(summary.balanceCents)}</div>
         </div>
       </div>
 

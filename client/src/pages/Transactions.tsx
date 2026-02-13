@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from "react";
 import { api } from "../lib/api";
 import ModalLancamento, { DadosLancamento } from "../components/ModalLancamento";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import type { Transacao } from "../model/transacao";
+import { alternarPagoOptimista } from "../service/transacoes.service";
 
 const formatCurrency = (cents: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
@@ -10,17 +12,6 @@ const formatCurrency = (cents: number) => {
 const parsearCentavosDeTexto = (valor: string) => {
   const somenteDigitos = valor.replace(/\D/g, "");
   return somenteDigitos ? parseInt(somenteDigitos, 10) : 0;
-};
-
-type Transaction = {
-  id: number;
-  date: string;
-  description: string;
-  type: "entry" | "exit";
-  amountCents: number;
-  categoryId: number;
-  paymentMethodId: number;
-  group: "fixed" | "variable" | "installment" | "entry";
 };
 
 type Categoria = {
@@ -35,14 +26,17 @@ export default function Transactions() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   });
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transacao[]>([]);
   const [categories, setCategories] = useState<Categoria[]>([]);
   const [methods, setMethods] = useState<any[]>([]);
   const [filters, setFilters] = useState({ categoryId: "", methodId: "", type: "" });
   const [modalAberto, setModalAberto] = useState(false);
-  const [transacaoEditando, setTransacaoEditando] = useState<Transaction | null>(null);
+  const [transacaoEditando, setTransacaoEditando] = useState<Transacao | null>(null);
   const [confirmarExclusao, setConfirmarExclusao] = useState<number | null>(null);
   const [excluindo, setExcluindo] = useState(false);
+
+  const [atualizandoPagoPorId, setAtualizandoPagoPorId] = useState<Record<number, boolean>>({});
+  const [erroPagoPorId, setErroPagoPorId] = useState<Record<number, string>>({});
 
   const [categoriaFormularioAberto, setCategoriaFormularioAberto] = useState(false);
   const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);
@@ -191,7 +185,7 @@ export default function Transactions() {
     setModalAberto(true);
   };
 
-  const abrirEditar = (t: Transaction) => {
+  const abrirEditar = (t: Transacao) => {
     setTransacaoEditando(t);
     setModalAberto(true);
   };
@@ -217,6 +211,30 @@ export default function Transactions() {
       console.error(err);
     } finally {
       setExcluindo(false);
+    }
+  };
+
+  const aoAlternarPago = async (id: number, marcar: boolean) => {
+    setAtualizandoPagoPorId((prev) => ({ ...prev, [id]: true }));
+    setErroPagoPorId((prev) => {
+      if (!Object.prototype.hasOwnProperty.call(prev, id)) return prev;
+      const { [id]: _, ...rest } = prev;
+      return rest;
+    });
+
+    try {
+      await alternarPagoOptimista({
+        id,
+        marcar,
+        transacoes: transactions,
+        setTransacoes: setTransactions,
+        atualizarTransacao: async (tid, patch) => api.updateTransaction(tid, patch),
+      });
+    } catch (err: any) {
+      const mensagem = typeof err?.message === "string" ? err.message : "Nao foi possivel atualizar o pagamento.";
+      setErroPagoPorId((prev) => ({ ...prev, [id]: mensagem }));
+    } finally {
+      setAtualizandoPagoPorId((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -326,18 +344,33 @@ export default function Transactions() {
                   <th>Categoria</th>
                   <th>Metodo</th>
                   <th className="text-right">Valor</th>
+                  <th className="coluna-pago">Pago</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {transactions.map((t) => (
-                  <tr key={t.id}>
+                  <tr key={t.id} className={t.type === "exit" && t.isPaid ? "linha-paga" : ""}>
                     <td>{t.date}</td>
                     <td>{t.description}</td>
                     <td>{t.type === "entry" ? "Entrada" : "Saida"}</td>
                     <td>{nomeCategoriaPorId.get(t.categoryId) || "-"}</td>
                     <td>{nomeMetodoPorId.get(t.paymentMethodId) || "-"}</td>
                     <td className="text-right">{formatCurrency(t.amountCents)}</td>
+                    <td className="coluna-pago">
+                      {t.type === "exit" ? (
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                          <input
+                            type="checkbox"
+                            checked={!!t.isPaid}
+                            disabled={!!atualizandoPagoPorId[t.id]}
+                            onChange={(e) => aoAlternarPago(t.id, e.target.checked)}
+                            aria-label={`Marcar lancamento ${t.description} como pago`}
+                          />
+                          {erroPagoPorId[t.id] ? <div className="erro-pago">{erroPagoPorId[t.id]}</div> : null}
+                        </div>
+                      ) : null}
+                    </td>
                     <td className="text-right">
                       <button onClick={() => abrirEditar(t)} style={{ marginRight: 8 }}>Editar</button>
                       <button className="btn-danger" onClick={() => setConfirmarExclusao(t.id)}>Excluir</button>
