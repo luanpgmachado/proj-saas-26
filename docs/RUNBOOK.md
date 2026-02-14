@@ -19,42 +19,61 @@
 - Infra garante build e deploy sem tocar regra de negocio.
 - Reviewer aponta desvios sem alterar arquivos.
 
-## Deploy em VM Oracle Free (Nginx + systemd + firewall)
+## Deploy em VPS Hostinger com Coolify (workflow oficial)
 
-Padrao recomendado:
-- Node/Express em porta interna (ex: `3001`) e **nao expor porta alta** diretamente.
-- Nginx expondo `80/443` e fazendo proxy de `/api/` para o Node.
-- Front buildado (`Vite`) servido como static pelo Nginx.
+Ambiente atual:
+- VPS: Ubuntu 24.04 LTS
+- Host Coolify: `31.97.240.105`
+- Acesso SSH: `ssh root@31.97.240.105`
 
-Checklist (rodar na VM):
-```bash
-# 1) Portas e bind
-sudo ss -ltnp | sed -n '1,140p'
+### Pre-requisitos
+- Repositorio GitHub atualizado.
+- `Dockerfile` no projeto (raiz ou subpasta).
+- Token/API do Coolify configurados no MCP `coolify`.
 
-# 2) Teste local
-curl -sv http://127.0.0.1:3001/ 2>&1 | head -n 20 || true
-curl -sv http://127.0.0.1/ 2>&1 | head -n 20 || true
-
-# 3) Nginx
-sudo nginx -t
-sudo systemctl status nginx --no-pager -l || true
-sudo tail -n 200 /var/log/nginx/error.log || true
-
-# 4) Firewall (ordem importa: ACCEPT 80/443 antes do REJECT/DROP)
-sudo iptables -L INPUT -n -v --line-numbers | sed -n '1,80p'
-sudo iptables -S | sed -n '1,220p'
+### 1) Sincronizacao com GitHub
+```powershell
+git add .
+git commit -m "Preparando para deploy"
+git push origin main
 ```
 
-Firewall (quando usa iptables com REJECT/DROP no fim):
-```bash
-sudo iptables -I INPUT 5 -p tcp -m state --state NEW --dport 80  -j ACCEPT
-sudo iptables -I INPUT 6 -p tcp -m state --state NEW --dport 443 -j ACCEPT
-sudo netfilter-persistent save || true
-```
+### 2) Criar aplicacao no Coolify via MCP
+Padrao:
+- `build_pack='dockerfile'`
+- `ports_exposes='3001'`
+- Ambiente `production`
 
-Ingress da OCI (Console):
-- Liberar TCP `80` e `443` na Subnet via Security List ou NSG (source `0.0.0.0/0` ou seu IP).
+Se app nova:
+- criar projeto (se necessario)
+- criar environment `production`
+- criar app com `application action=create_public` apontando para o repo
 
-Bug tipico (Express):
-- Se existir `app.get("*", ...)`, garantir que requests em `/api/*` **nao** fiquem pendurados:
-  - Se `req.path.startsWith("/api")` => `next()`.
+### 3) Deploy inicial via MCP
+- Disparar `deploy` para UUID da aplicacao.
+- Acompanhar status em `deployment action=get` ate `finished` (ou erro).
+- Inspecionar logs de deploy para diagnosticar falhas.
+
+### 4) DNS manual na Hostinger (acao do usuario)
+Como MCP da Hostinger nao esta disponivel:
+1. Abrir painel Hostinger -> DNS / Nameservers.
+2. Criar registro `A`.
+3. Nome: subdominio (ex: `app`) ou `@`.
+4. Valor: IP da VPS (`31.97.240.105`).
+
+### 5) Dominio e SSL no Coolify
+1. Tentar atualizar `fqdn` automaticamente via MCP (`application action=update`).
+2. Fallback proativo: se falhar, abrir pagina do app no Coolify:
+`https://31.97.240.105:8000/project/[PROJECT-UUID]/environment/[ENV-NAME]/application/[APP-UUID]#configuration`
+3. No campo **Domains**, salvar URL completa com HTTPS (ex: `https://seu-dominio.com`).
+4. Executar **Redeploy**.
+
+### 6) Banco de dados
+- Para este projeto, a API exige `DATABASE_URL` (ou `REPLIT_DB_URL`).
+- Recomendado: criar PostgreSQL no Coolify e usar `internal_db_url` como `DATABASE_URL`.
+- Executar migracao de schema apos primeiro deploy (`npm run db:push`) em job/manual command do Coolify.
+
+### 7) Validacao final
+- URL HTTP provisoria (Coolify/sslip) deve responder.
+- URL HTTPS final (dominio) deve responder.
+- Endpoint de API deve retornar resposta imediata (200/404), nunca timeout.

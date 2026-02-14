@@ -28,17 +28,17 @@ PostgreSQL database managed via Drizzle ORM. Run `npm run db:push` to sync schem
 ### Dual Database Configuration
 The application supports two database connections with automatic fallback:
 - **REPLIT_DB_URL** (priority): Internal Replit PostgreSQL database
-- **DATABASE_URL** (fallback): External VM PostgreSQL database
+- **DATABASE_URL** (fallback): External PostgreSQL database (ex: Coolify/VPS)
 
 The connection priority is: `REPLIT_DB_URL || DATABASE_URL`
 
 Environment guidance:
 - **Development (Replit)**: Set `REPLIT_DB_URL` to use the internal Replit database
-- **Production (VM)**: Set only `DATABASE_URL` pointing to the VM database
+- **Production (Coolify/VPS)**: Set only `DATABASE_URL` pointing to the production database
 
 Current setup:
 - `REPLIT_DB_URL` configured in development environment for Replit's internal database
-- `DATABASE_URL` remains as secret for external VM database connection
+- `DATABASE_URL` remains as secret for external production database connection
 
 ### Padronizacao de schema
 - O schema oficial do app e o definido em `shared/schema.ts` (tabelas em ingles).

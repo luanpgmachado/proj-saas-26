@@ -42,6 +42,16 @@
 - **Check:** Externo: `http://137.131.233.220/` retorna `200` e `http://137.131.233.220/api/` retorna `404` imediato (sem timeout).
 - **Act:** Runbook atualizado em `docs/RUNBOOK.md` com checklist de deploy (nginx/systemd/firewall/ingress OCI). 
 
+## 2026-02-14 — Migracao de deploy para Coolify (Hostinger VPS)
+- **Plan:** Migrar o fluxo de deploy manual em VM Oracle para deploy automatico no Coolify em nova VPS (`31.97.240.105`) e ajustar documentacao operacional.
+- **Do:**
+  - Configurado app no Coolify via MCP (`build_pack=dockerfile`, app `proj-financa-v1`).
+  - Criado PostgreSQL no Coolify para o projeto (`db-proj-financa-v1`) e obtido `internal_db_url`.
+  - Adicionado `Dockerfile` e `.dockerignore` no repositorio para build do Coolify.
+  - Atualizados `docs/RUNBOOK.md`, `docs/USAGE.md` e `replit.md` para o novo fluxo (Coolify + DNS Hostinger manual).
+- **Check:** Deploy via MCP executado; build inicial falhou por ausencia de `Dockerfile` no commit remoto anterior (diagnostico registrado nos logs do deployment no Coolify).
+- **Act:** Publicar novo commit no GitHub e redeployar app no Coolify com `DATABASE_URL` apontando para o Postgres criado.
+
 ## 2026-02-06 — CRUD de Categorias (Lancamentos)
 - **Plan:** Habilitar criar/editar/excluir categorias diretamente na tela de Lancamentos, alinhando contrato e UX antes do codigo.
 - **Do:**

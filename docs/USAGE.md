@@ -85,3 +85,20 @@
 
 ## Observacoes
 - Historico de testes: `docs/TEST_LOG.md`.
+
+## 11) Deploy em producao (Coolify + Hostinger)
+- Ambiente alvo:
+  - VPS Ubuntu 24.04 LTS em `31.97.240.105`
+  - Coolify em `http://31.97.240.105:8000/`
+- Fluxo:
+  - Garantir codigo no GitHub (`git push origin main`).
+  - No Coolify (via MCP), criar/atualizar app com `build_pack=dockerfile` e porta `3001`.
+  - Configurar envs da app:
+    - `PORT=3001`
+    - `NODE_ENV=production`
+    - `DATABASE_URL=<url do postgres>`
+  - Disparar deploy e monitorar logs ate `finished`.
+- DNS manual (Hostinger):
+  - Criar registro `A` para dominio/subdominio apontando para `31.97.240.105`.
+  - Depois configurar o dominio no campo **Domains** do app no Coolify.
+  - Executar redeploy para emitir SSL.
