@@ -67,3 +67,14 @@
   - GET `/api/months/2026-02/summary`: retorna `paidExitsCents` e `realBalanceCents` OK.
 - UI (validacao tecnica):
   - Build contem textos/colunas esperadas (Dashboard: "Valor Pago" e "Saldo Real"; Lancamentos: coluna "Pago").
+
+## 2026-02-14 — Deploy Coolify (Hostinger VPS)
+- Ambiente: Coolify em `31.97.240.105` com app `proj-financa-v1`.
+- Validacoes:
+  - Deploy via MCP concluido (`status=finished`).
+  - URL provisoria responde:
+    - `GET /` -> `200 OK` em `http://mwooggo4kcoow0wco4wsg80k.31.97.240.105.sslip.io/`.
+    - `GET /api/` -> `404` imediato (sem timeout).
+  - Banco PostgreSQL criado no Coolify (`db-proj-financa-v1`) e `DATABASE_URL` configurada na app.
+- Pendencia:
+  - `GET /api/categories` retorna `500` com `relation "categories" does not exist` (schema ainda nao aplicado no banco novo).
