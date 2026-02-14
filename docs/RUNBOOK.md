@@ -43,6 +43,7 @@ Padrao:
 - `build_pack='dockerfile'`
 - `ports_exposes='3001'`
 - Ambiente `production`
+- Em Dockerfile, usar `npm ci --include=dev` no stage de build para evitar falha quando `NODE_ENV=production` for passado em build-time pelo Coolify.
 
 Se app nova:
 - criar projeto (se necessario)
