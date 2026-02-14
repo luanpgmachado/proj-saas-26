@@ -7,7 +7,6 @@ RUN npm ci --include=dev
 
 COPY . .
 RUN npm run build
-RUN npm prune --omit=dev
 
 FROM node:20-alpine AS runtime
 
@@ -22,4 +21,4 @@ COPY --from=build /app/dist ./dist
 
 EXPOSE 3001
 
-CMD ["node", "dist/server.js"]
+CMD ["sh", "-c", "npm run db:push && node dist/server.js"]

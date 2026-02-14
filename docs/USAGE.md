@@ -98,6 +98,7 @@
     - `NODE_ENV=production`
     - `DATABASE_URL=<url do postgres>`
   - Disparar deploy e monitorar logs ate `finished`.
+  - Na imagem atual, o start roda `npm run db:push` antes do `node dist/server.js`.
 - DNS manual (Hostinger):
   - Criar registro `A` para dominio/subdominio apontando para `31.97.240.105`.
   - Depois configurar o dominio no campo **Domains** do app no Coolify.
