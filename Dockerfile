@@ -21,4 +21,4 @@ COPY --from=build /app/dist ./dist
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npm run db:push && node dist/server.js"]
+CMD ["node", "dist/server.js"]

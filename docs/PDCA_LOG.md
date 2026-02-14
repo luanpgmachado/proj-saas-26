@@ -48,7 +48,7 @@
   - Configurado app no Coolify via MCP (`build_pack=dockerfile`, app `proj-financa-v1`).
   - Criado PostgreSQL no Coolify para o projeto (`db-proj-financa-v1`) e obtido `internal_db_url`.
   - Adicionado `Dockerfile` e `.dockerignore` no repositorio para build do Coolify.
-  - Ajustado `Dockerfile` para `npm ci --include=dev` e start com `npm run db:push && node dist/server.js`.
+  - Ajustado `Dockerfile` para `npm ci --include=dev` e start padrao `node dist/server.js`.
   - Atualizados `docs/RUNBOOK.md`, `docs/USAGE.md` e `replit.md` para o novo fluxo (Coolify + DNS Hostinger manual).
 - **Check:** Deploy via MCP executado; build inicial falhou por ausencia de `Dockerfile` no commit remoto anterior (diagnostico registrado nos logs do deployment no Coolify).
 - **Act:** Publicar novo commit no GitHub e redeployar app no Coolify com `DATABASE_URL` apontando para o Postgres criado.

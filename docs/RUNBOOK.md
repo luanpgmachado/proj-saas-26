@@ -72,7 +72,7 @@ Como MCP da Hostinger nao esta disponivel:
 ### 6) Banco de dados
 - Para este projeto, a API exige `DATABASE_URL` (ou `REPLIT_DB_URL`).
 - Recomendado: criar PostgreSQL no Coolify e usar `internal_db_url` como `DATABASE_URL`.
-- A imagem atual executa `npm run db:push` no start para aplicar schema antes de subir a API.
+- Executar migracao de schema via job/terminal operacional (`npm run db:push`) apos configurar `DATABASE_URL`.
 
 ### 7) Validacao final
 - URL HTTP provisoria (Coolify/sslip) deve responder.
