@@ -70,7 +70,7 @@
 
 ## Tela de Recorrencias
 - Topo com seletor de mes/ano a esquerda e botoes "Gerar Mes" e "+ Nova Recorrencia" a direita.
-- Ao clicar "Gerar Mes", chamar endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
+- Ao clicar " Mes", chamar endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
 - Abaixo, tabela com todas as recorrencias cadastradas.
 - Colunas: descricao, tipo, grupo, valor, categoria, metodo, dia, status, inicio, fim, acoes.
 - Acoes por linha discretas: editar, pausar, cancelar, reativar (conforme status atual).
