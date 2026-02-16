@@ -98,3 +98,16 @@
 - **Act:**
   - Registro de testes atualizado em `docs/TEST_LOG.md` com evidencias da validacao.
   - Deploy aplicado na VM Oracle (`proj-financa-v1`) com `npm run build` e restart do `proj-financa.service`.
+
+## 2026-02-16 — Sincronizacao GitHub x Producao (Coolify)
+- **Plan:** Publicar alteracao pendente no repositorio e garantir que o ambiente de producao em Coolify fique alinhado ao mesmo commit do `main`.
+- **Do:**
+  - Commit e push executados no `main` com a alteracao de documentacao em `docs/UX_BLUEPRINT.md`.
+  - Redeploy da aplicacao no Coolify acionado para o recurso `proj-financa-v1` (ambiente `production`).
+  - Validacao do container em producao com `SOURCE_COMMIT` igual ao commit do `origin/main`.
+- **Check:**
+  - `HEAD` local e `origin/main` alinhados em `f14c6fc6bbde2c2a7a9c6f36b18f12cea7f107f7`.
+  - Aplicacao em producao executando imagem/tag do mesmo commit.
+  - Health check externo de `https://meucontrole.cloud` retornando `HTTP 200`.
+- **Act:**
+  - Registro de rastreabilidade atualizado no `docs/PDCA_LOG.md`.
