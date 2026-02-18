@@ -121,3 +121,16 @@
   - How-to: exemplo de recorrencia parcelada ajustado em `docs/USAGE.md` com `endDate` preenchida.
 - **Check:** `npm run build` executado com sucesso.
 - **Act:** issue `DEV-92` criada no Linear para rastreio da feature.
+
+## 2026-02-18 — Deploy da regra de parcelado com data fim obrigatoria
+- **Plan:** Publicar alteracoes da feature em `main` e validar disponibilidade do ambiente em producao.
+- **Do:**
+  - Commit: `feat(recurrencias): exigir data fim em parcelado`.
+  - Push: `origin/main` atualizado para `6d1cecd97564b7e4875537e6a58274002ef11011`.
+  - MCP do Coolify indisponivel nesta sessao; aplicado fallback operacional via push no `main` + validacao externa por HTTP.
+- **Check:**
+  - `https://meucontrole.cloud/` -> `200 OK`.
+  - `https://meucontrole.cloud/api/recurrences` -> `200 OK`.
+  - URL provisoria `sslip.io` retornando `404` (sem impacto no dominio oficial).
+- **Act:**
+  - Registro de deploy e validacao consolidado em `docs/TEST_LOG.md`.

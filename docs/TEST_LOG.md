@@ -88,3 +88,13 @@
     - Front exige `dataFim` quando grupo parcelado e altera o rotulo para "Data fim" (sem "(opcional)").
 - Observacao:
   - Nao foram executados cenarios manuais completos de CRUD/geracao neste registro; pendente validacao funcional na UI/API.
+
+## 2026-02-18 — Validacao de ambiente em producao (deploy)
+- Ambiente: producao (Coolify + dominio oficial).
+- Evidencias:
+  - Commit publicado no `main`: `6d1cecd97564b7e4875537e6a58274002ef11011`.
+  - `curl -4 -I https://meucontrole.cloud` -> `200 OK`.
+  - `curl -4 -I https://meucontrole.cloud/api/recurrences` -> `200 OK`.
+  - `curl -4 -I http://mwooggo4kcoow0wco4wsg80k.31.97.240.105.sslip.io` -> `404` (endpoint provisoria fora do dominio oficial).
+- Resultado:
+  - Ambiente oficial acessivel e API respondendo.
