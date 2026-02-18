@@ -147,6 +147,9 @@ export default function Recurrences() {
     if (isNaN(valorNumerico) || valorNumerico <= 0) return "Valor deve ser maior que zero.";
     if (!dataInicio) return "Data de inicio e obrigatoria.";
     if (diaDoMes < 1 || diaDoMes > 31) return "Dia do mes deve ser entre 1 e 31.";
+    if (grupo === "installment" && !dataFim) {
+      return "Data fim e obrigatoria para recorrencias parceladas.";
+    }
     if (grupo === "installment" && (!totalParcelas || totalParcelas < 1)) {
       return "Total de parcelas e obrigatorio para recorrencias parceladas.";
     }
@@ -296,7 +299,7 @@ export default function Recurrences() {
               />
             </label>
             <label className="formulario-campo">
-              Data fim (opcional)
+              {grupo === "installment" ? "Data fim" : "Data fim (opcional)"}
               <input
                 type="date"
                 value={dataFim}

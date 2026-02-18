@@ -141,7 +141,7 @@ erDiagram
 - Geracao de transacoes e sempre explicita; nao ha criacao automatica implicita.
 - Edicoes na recorrencia afetam apenas ocorrencias futuras.
 - Cancelamento pausa novas ocorrencias e nao remove transacoes existentes.
-- Para parcelamento: group = installment e installmentTotal obrigatorio.
+- Para parcelamento: group = installment, endDate e installmentTotal obrigatorios.
 - Para receita: type = entry e group = entry.
 - dayOfMonth maior que o ultimo dia do mes usa o ultimo dia do mes.
 - Recorrencia fixa de longo prazo usa endDate = null (ex: aluguel, internet).

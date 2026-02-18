@@ -77,7 +77,7 @@
 - Botao "Editar" abre formulario inline no topo da tabela com os dados preenchidos.
 - Botao "+ Nova Recorrencia" abre formulario inline no topo da tabela (sem modal).
 - Formulario de nova recorrencia/edicao:
-  - Campos: descricao, tipo (entry/exit), grupo (fixed/installment/entry), valor (R$), categoria, metodo de pagamento, data inicio, data fim (opcional), dia do mes (1-31), total de parcelas (obrigatorio se grupo=installment).
+  - Campos: descricao, tipo (entry/exit), grupo (fixed/installment/entry), valor (R$), categoria, metodo de pagamento, data inicio, data fim, dia do mes (1-31), total de parcelas (obrigatorio se grupo=installment).
   - Se tipo for "entry", grupo fica fixo como "entry".
   - Se tipo for "exit", grupo deve ser "fixed" ou "installment".
   - Status inicial: active.
@@ -86,5 +86,5 @@
   - status permitido: active | paused | canceled.
   - type=entry => group=entry.
   - type=exit => group != entry.
-  - group=installment => installmentTotal obrigatorio.
+  - group=installment => endDate e installmentTotal obrigatorios.
   - dayOfMonth entre 1 e 31.

@@ -78,3 +78,13 @@
   - Banco PostgreSQL criado no Coolify (`db-proj-financa-v1`) e `DATABASE_URL` configurada na app.
 - Pendencia:
   - `GET /api/categories` retorna `500` com `relation "categories" does not exist` (schema ainda nao aplicado no banco novo).
+
+## 2026-02-18 — Recorrencias (endDate obrigatorio para parcelado)
+- Ambiente: local.
+- Verificacoes:
+  - Build: `npm run build` OK.
+  - Validacao de regra (codigo):
+    - Backend agora exige `endDate` quando `group = installment` em `POST/PATCH /api/recurrences`.
+    - Front exige `dataFim` quando grupo parcelado e altera o rotulo para "Data fim" (sem "(opcional)").
+- Observacao:
+  - Nao foram executados cenarios manuais completos de CRUD/geracao neste registro; pendente validacao funcional na UI/API.

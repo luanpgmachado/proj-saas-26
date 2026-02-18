@@ -112,6 +112,10 @@ function addMonths(year: number, month: number, delta: number): { year: number; 
   return { year: newYear, month: newMonth };
 }
 
+function toYearMonth(year: number, month: number): string {
+  return `${year}-${String(month).padStart(2, "0")}`;
+}
+
 function assertRecurrenceRules(data: {
   description?: string | null;
   type?: string | null;
@@ -157,6 +161,9 @@ function assertRecurrenceRules(data: {
   }
 
   if (data.group === "installment") {
+    if (!data.endDate) {
+      errors.push("endDate é obrigatório para parcelamento");
+    }
     if (data.installmentTotal === undefined || data.installmentTotal === null || data.installmentTotal < 1) {
       errors.push("installmentTotal é obrigatório para parcelamento");
     }
@@ -213,6 +220,137 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  private async generateRecurrenceTransactionsForMonth(month: string, recurrenceId?: number): Promise<Transaction[]> {
+    const parsed = parseYearMonth(month);
+    if (!parsed) {
+      throw new Error("month inválido. Use YYYY-MM.");
+    }
+    const { year, month: monthNum } = parsed;
+    const lastDay = getLastDayOfMonth(year, monthNum);
+    const monthStart = toIsoDate(year, monthNum, 1);
+    const monthEnd = toIsoDate(year, monthNum, lastDay);
+
+    const activeCondition = recurrenceId === undefined
+      ? eq(recurrences.status, "active")
+      : and(eq(recurrences.status, "active"), eq(recurrences.id, recurrenceId));
+
+    const activeRecurrences = await db
+      .select()
+      .from(recurrences)
+      .where(activeCondition);
+
+    const existingConditions = [
+      gte(transactions.date, monthStart),
+      lte(transactions.date, monthEnd),
+      isNotNull(transactions.recurrenceId),
+    ];
+
+    if (recurrenceId !== undefined) {
+      existingConditions.push(eq(transactions.recurrenceId, recurrenceId));
+    }
+
+    const existing = await db
+      .select()
+      .from(transactions)
+      .where(and(...existingConditions));
+
+    const existingKeys = new Set(
+      existing.map((t) => `${t.recurrenceId}-${t.date}`),
+    );
+
+    const toInsert: InsertTransaction[] = [];
+
+    for (const recurrence of activeRecurrences) {
+      if (!recurrence.startDate) continue;
+
+      const [startYear, startMonth, startDay] = recurrence.startDate.split("-").map(Number);
+      if (!startYear || !startMonth || !startDay) continue;
+
+      const startMonthLastDay = getLastDayOfMonth(startYear, startMonth);
+      const startOccurrenceDay = Math.min(recurrence.dayOfMonth, startMonthLastDay);
+      const startOccurrenceDate = toIsoDate(startYear, startMonth, startOccurrenceDay);
+
+      const firstOccurrenceMonth = startOccurrenceDate < recurrence.startDate
+        ? addMonths(startYear, startMonth, 1)
+        : { year: startYear, month: startMonth };
+
+      const firstIndex = getMonthIndex(firstOccurrenceMonth.year, firstOccurrenceMonth.month);
+      const targetIndex = getMonthIndex(year, monthNum);
+      const monthDiff = targetIndex - firstIndex;
+
+      if (monthDiff < 0) continue;
+
+      const occurrenceDay = Math.min(recurrence.dayOfMonth, lastDay);
+      const occurrenceDate = toIsoDate(year, monthNum, occurrenceDay);
+
+      if (occurrenceDate < recurrence.startDate) continue;
+      if (recurrence.endDate && occurrenceDate > recurrence.endDate) continue;
+
+      let installmentIndex: number | undefined;
+      if (recurrence.group === "installment") {
+        installmentIndex = monthDiff + 1;
+        if (recurrence.installmentTotal && installmentIndex > recurrence.installmentTotal) {
+          continue;
+        }
+      }
+
+      const key = `${recurrence.id}-${occurrenceDate}`;
+      if (existingKeys.has(key)) continue;
+
+      toInsert.push({
+        date: occurrenceDate,
+        description: recurrence.description,
+        type: recurrence.type,
+        amountCents: recurrence.amountCents,
+        categoryId: recurrence.categoryId,
+        paymentMethodId: recurrence.paymentMethodId,
+        group: recurrence.group,
+        recurrenceId: recurrence.id,
+        installmentGroupId: recurrence.group === "installment" ? `recurrence-${recurrence.id}` : null,
+        installmentIndex,
+        installmentTotal: recurrence.group === "installment" ? recurrence.installmentTotal ?? null : null,
+      });
+    }
+
+    if (toInsert.length === 0) return [];
+    const created = await db.insert(transactions).values(toInsert).returning();
+    return created;
+  }
+
+  private getAutoGenerationMonths(recurrence: Recurrence): string[] {
+    const start = parseYearMonth(recurrence.startDate.slice(0, 7));
+    if (!start) return [];
+
+    let end: { year: number; month: number } | null = null;
+
+    if (recurrence.group === "fixed") {
+      if (recurrence.endDate) {
+        end = parseYearMonth(recurrence.endDate.slice(0, 7));
+      } else {
+        end = addMonths(start.year, start.month, 23);
+      }
+    } else if (recurrence.group === "installment") {
+      if (!recurrence.endDate) return [];
+      end = parseYearMonth(recurrence.endDate.slice(0, 7));
+    } else {
+      return [];
+    }
+
+    if (!end) return [];
+
+    const startIndex = getMonthIndex(start.year, start.month);
+    const endIndex = getMonthIndex(end.year, end.month);
+    if (endIndex < startIndex) return [];
+
+    const months: string[] = [];
+    for (let index = startIndex; index <= endIndex; index++) {
+      const year = Math.floor(index / 12);
+      const month = (index % 12) + 1;
+      months.push(toYearMonth(year, month));
+    }
+    return months;
+  }
+
   async getCategories(): Promise<Category[]> {
     return db.select().from(categories);
   }
@@ -431,6 +569,12 @@ export class DatabaseStorage implements IStorage {
     };
     assertRecurrenceRules(normalized);
     const [created] = await db.insert(recurrences).values(normalized).returning();
+
+    const monthsToGenerate = this.getAutoGenerationMonths(created);
+    for (const month of monthsToGenerate) {
+      await this.generateRecurrenceTransactionsForMonth(month, created.id);
+    }
+
     return created;
   }
 
@@ -451,90 +595,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async generateRecurrenceTransactions(month: string): Promise<Transaction[]> {
-    const parsed = parseYearMonth(month);
-    if (!parsed) {
-      throw new Error("month inválido. Use YYYY-MM.");
-    }
-    const { year, month: monthNum } = parsed;
-    const lastDay = getLastDayOfMonth(year, monthNum);
-    const monthStart = toIsoDate(year, monthNum, 1);
-    const monthEnd = toIsoDate(year, monthNum, lastDay);
-
-    const activeRecurrences = await db
-      .select()
-      .from(recurrences)
-      .where(eq(recurrences.status, "active"));
-
-    const existing = await db
-      .select()
-      .from(transactions)
-      .where(and(
-        gte(transactions.date, monthStart),
-        lte(transactions.date, monthEnd),
-        isNotNull(transactions.recurrenceId),
-      ));
-
-    const existingKeys = new Set(
-      existing.map((t) => `${t.recurrenceId}-${t.date}`),
-    );
-
-    const toInsert: InsertTransaction[] = [];
-
-    for (const recurrence of activeRecurrences) {
-      if (!recurrence.startDate) continue;
-
-      const [startYear, startMonth, startDay] = recurrence.startDate.split("-").map(Number);
-      if (!startYear || !startMonth || !startDay) continue;
-
-      const startMonthLastDay = getLastDayOfMonth(startYear, startMonth);
-      const startOccurrenceDay = Math.min(recurrence.dayOfMonth, startMonthLastDay);
-      const startOccurrenceDate = toIsoDate(startYear, startMonth, startOccurrenceDay);
-
-      const firstOccurrenceMonth = startOccurrenceDate < recurrence.startDate
-        ? addMonths(startYear, startMonth, 1)
-        : { year: startYear, month: startMonth };
-
-      const firstIndex = getMonthIndex(firstOccurrenceMonth.year, firstOccurrenceMonth.month);
-      const targetIndex = getMonthIndex(year, monthNum);
-      const monthDiff = targetIndex - firstIndex;
-
-      if (monthDiff < 0) continue;
-
-      const occurrenceDay = Math.min(recurrence.dayOfMonth, lastDay);
-      const occurrenceDate = toIsoDate(year, monthNum, occurrenceDay);
-
-      if (occurrenceDate < recurrence.startDate) continue;
-      if (recurrence.endDate && occurrenceDate > recurrence.endDate) continue;
-
-      let installmentIndex: number | undefined;
-      if (recurrence.group === "installment") {
-        installmentIndex = monthDiff + 1;
-        if (recurrence.installmentTotal && installmentIndex > recurrence.installmentTotal) {
-          continue;
-        }
-      }
-
-      const key = `${recurrence.id}-${occurrenceDate}`;
-      if (existingKeys.has(key)) continue;
-
-      toInsert.push({
-        date: occurrenceDate,
-        description: recurrence.description,
-        type: recurrence.type,
-        amountCents: recurrence.amountCents,
-        categoryId: recurrence.categoryId,
-        paymentMethodId: recurrence.paymentMethodId,
-        group: recurrence.group,
-        recurrenceId: recurrence.id,
-        installmentGroupId: recurrence.group === "installment" ? `recurrence-${recurrence.id}` : null,
-        installmentIndex,
-        installmentTotal: recurrence.group === "installment" ? recurrence.installmentTotal ?? null : null,
-      });
-    }
-
-    if (toInsert.length === 0) return [];
-    const created = await db.insert(transactions).values(toInsert).returning();
-    return created;
+    return this.generateRecurrenceTransactionsForMonth(month);
   }
 
   async getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; paidExitsCents: number; balanceCents: number; realBalanceCents: number }> {

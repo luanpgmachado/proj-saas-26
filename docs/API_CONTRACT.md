@@ -49,9 +49,9 @@
 - categoryId
 - paymentMethodId
 - startDate
-- endDate (opcional)
+- endDate (opcional; obrigatorio quando `group = installment`)
 - dayOfMonth
-- installmentTotal (opcional)
+- installmentTotal (opcional; obrigatorio quando `group = installment`)
 - status: `active` | `paused` | `canceled`
 
 ### MonthSummary
@@ -140,6 +140,9 @@ Erros:
 - POST `/api/recurrences` -> Recurrence
 - PATCH `/api/recurrences/{id}` -> Recurrence
 - POST `/api/recurrences/generate?month={YYYY-MM}` -> Transaction[]
+
+Regras:
+- `group = installment` exige `endDate` e `installmentTotal`.
 
 ## Relatorios e recorrencias
 - Relatorios mensais e anuais usam apenas `transactions` como fonte de verdade.

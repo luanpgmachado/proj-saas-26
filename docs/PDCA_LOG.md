@@ -111,3 +111,13 @@
   - Health check externo de `https://meucontrole.cloud` retornando `HTTP 200`.
 - **Act:**
   - Registro de rastreabilidade atualizado no `docs/PDCA_LOG.md`.
+
+## 2026-02-18 — Recorrencias: endDate obrigatorio para parcelado
+- **Plan:** Ajustar regra de negocio de recorrencias para exigir `endDate` quando `group = installment`, com alinhamento de docs canonicos antes do codigo.
+- **Do:**
+  - Docs: atualizados `docs/UX_BLUEPRINT.md`, `docs/API_CONTRACT.md` e `docs/MODELO_DADOS.md`.
+  - Backend: validacao adicionada em `server/storage.ts` (`assertRecurrenceRules`) para exigir `endDate` em parcelamento.
+  - Frontend: validacao no formulario de recorrencias e ajuste do rotulo de "Data fim" em `client/src/pages/Recurrences.tsx` (remove "(opcional)" quando `group=installment`).
+  - How-to: exemplo de recorrencia parcelada ajustado em `docs/USAGE.md` com `endDate` preenchida.
+- **Check:** `npm run build` executado com sucesso.
+- **Act:** issue `DEV-92` criada no Linear para rastreio da feature.

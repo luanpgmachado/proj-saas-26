@@ -71,7 +71,7 @@
   - Criar recorrencia fixa:
     - `Invoke-RestMethod -Method Post -Uri http://localhost:3001/api/recurrences -ContentType "application/json" -Body '{"description":"Internet","type":"exit","group":"fixed","amountCents":12000,"categoryId":1,"paymentMethodId":1,"startDate":"2026-02-01","endDate":null,"dayOfMonth":5,"installmentTotal":null,"status":"active"}'`
   - Criar recorrencia parcelada:
-    - `Invoke-RestMethod -Method Post -Uri http://localhost:3001/api/recurrences -ContentType "application/json" -Body '{"description":"Notebook","type":"exit","group":"installment","amountCents":250000,"categoryId":1,"paymentMethodId":1,"startDate":"2026-02-01","endDate":null,"dayOfMonth":10,"installmentTotal":10,"status":"active"}'`
+    - `Invoke-RestMethod -Method Post -Uri http://localhost:3001/api/recurrences -ContentType "application/json" -Body '{"description":"Notebook","type":"exit","group":"installment","amountCents":250000,"categoryId":1,"paymentMethodId":1,"startDate":"2026-02-01","endDate":"2026-11-01","dayOfMonth":10,"installmentTotal":10,"status":"active"}'`
   - Listar recorrencias:
     - `Invoke-RestMethod -Uri http://localhost:3001/api/recurrences`
   - Gerar transacoes do mes:
