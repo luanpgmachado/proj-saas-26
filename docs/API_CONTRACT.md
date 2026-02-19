@@ -143,11 +143,13 @@ Erros:
 
 Regras:
 - `group = installment` exige `endDate` e `installmentTotal`.
+- `POST /api/recurrences` e `PATCH /api/recurrences/{id}` disparam geracao automatica de transacoes conforme regras de recorrencia.
+- Para `group = fixed` com `endDate = null`, a geracao automatica cobre 24 meses a partir de `startDate`.
 
 ## Relatorios e recorrencias
 - Relatorios mensais e anuais usam apenas `transactions` como fonte de verdade.
 - Recorrencias nao geradas nao impactam totais nem categorias.
-- Geracao e explicita via endpoint e pode incluir meses futuros.
+- Geracao ocorre automaticamente no CRUD de recorrencias e tambem pode ser acionada explicitamente via endpoint mensal.
 - Gerar meses futuros reflete nos totais de panorama anual quando houver transacoes criadas.
 
 ## Padrao recomendado para recorrencias fixas

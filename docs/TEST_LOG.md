@@ -107,3 +107,15 @@
   - `docs/USAGE.md` nao instrui mais escrita em banco de producao e lista comandos proibidos.
 - Resultado:
   - Regra operacional consolidada para prevenir nova sobrescrita de dados em producao.
+
+## 2026-02-19 — Bugfix DEV-94 (auto-geracao no update de recorrencias)
+- Ambiente: local (`http://localhost:3001/api`).
+- Build:
+  - `npm run build` OK.
+- Cenario executado:
+  - Criada recorrencia `installment` com `startDate=2026-03-10`, `endDate=2026-04-10`, `installmentTotal=2`.
+  - Confirmado antes do update: `2` transacoes geradas.
+  - Editada recorrencia para `group=fixed` com `endDate=null`.
+  - Confirmado apos update: `24` transacoes para o mesmo `recurrenceId` no range de 24 meses.
+- Resultado:
+  - Auto-geracao no `PATCH /api/recurrences/{id}` funcionando conforme regra de 2 anos para fixo sem data fim.

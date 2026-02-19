@@ -51,6 +51,7 @@
 - Criar recorrencia fixa e gerar mes corrente -> 1 transacao criada.
 - Rodar geracao do mesmo mes novamente -> nao deve duplicar.
 - Criar recorrencia parcelada (installmentTotal) e gerar meses sequenciais -> indices crescem e param no total.
+- Editar recorrencia existente para `group=fixed` com `endDate=null` -> auto-gerar 24 meses a partir de `startDate` (sem duplicar).
 - Pausar recorrencia e gerar mes seguinte -> nenhuma transacao nova.
 - Cancelar recorrencia e gerar mes seguinte -> nenhuma transacao nova.
 

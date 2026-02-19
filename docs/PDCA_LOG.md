@@ -143,3 +143,19 @@
   - Atualizado `docs/USAGE.md` removendo qualquer orientacao de escrita em banco de producao e adicionando lista de comandos proibidos.
 - **Check:** Revisao documental cruzada entre `RULES`, `RUNBOOK` e `USAGE` para consistencia de regra.
 - **Act:** Issue `DEV-93` criada no Linear para rastreio e historico.
+
+## 2026-02-19 — Bugfix recorrencias: auto-geracao no update (DEV-94)
+- **Plan:** Corrigir falha de regra no CRUD de recorrencias onde a auto-geracao ocorria no create, mas nao no update.
+- **Do:**
+  - Docs canonicos atualizados para refletir geracao automatica no CRUD:
+    - `docs/API_CONTRACT.md`
+    - `docs/MODELO_DADOS.md`
+    - `docs/UX_BLUEPRINT.md`
+  - Backend ajustado em `server/storage.ts`:
+    - criado helper `runAutoGenerationForRecurrence`.
+    - `createRecurrence` reutiliza o helper.
+    - `updateRecurrence` agora tambem dispara auto-geracao conforme regras.
+- **Check:**
+  - `npm run build` OK.
+  - Cenario validado na API local: recorrencia editada de `installment` para `fixed` passou de 2 para 24 transacoes no range esperado.
+- **Act:** Issue `DEV-94` atualizada no Linear com evidencias do bugfix.

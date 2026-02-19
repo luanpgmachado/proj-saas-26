@@ -81,6 +81,7 @@
   - Se tipo for "entry", grupo fica fixo como "entry".
   - Se tipo for "exit", grupo deve ser "fixed" ou "installment".
   - Status inicial: active.
+  - Ao salvar criacao/edicao, o backend deve disparar geracao automatica de transacoes conforme as regras de recorrencia.
 - Validacoes:
   - group permitido: fixed | installment | entry.
   - status permitido: active | paused | canceled.

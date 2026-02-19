@@ -351,6 +351,13 @@ export class DatabaseStorage implements IStorage {
     return months;
   }
 
+  private async executarGeracaoAutomaticaRecorrencia(recurrence: Recurrence): Promise<void> {
+    const monthsToGenerate = this.getAutoGenerationMonths(recurrence);
+    for (const month of monthsToGenerate) {
+      await this.generateRecurrenceTransactionsForMonth(month, recurrence.id);
+    }
+  }
+
   async getCategories(): Promise<Category[]> {
     return db.select().from(categories);
   }
@@ -569,11 +576,7 @@ export class DatabaseStorage implements IStorage {
     };
     assertRecurrenceRules(normalized);
     const [created] = await db.insert(recurrences).values(normalized).returning();
-
-    const monthsToGenerate = this.getAutoGenerationMonths(created);
-    for (const month of monthsToGenerate) {
-      await this.generateRecurrenceTransactionsForMonth(month, created.id);
-    }
+    await this.executarGeracaoAutomaticaRecorrencia(created);
 
     return created;
   }
@@ -591,6 +594,9 @@ export class DatabaseStorage implements IStorage {
     assertRecurrenceRules(merged);
 
     const [updated] = await db.update(recurrences).set(normalizedPatch).where(eq(recurrences.id, id)).returning();
+    if (updated) {
+      await this.executarGeracaoAutomaticaRecorrencia(updated);
+    }
     return updated;
   }
 

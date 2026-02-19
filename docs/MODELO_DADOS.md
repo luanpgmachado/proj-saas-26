@@ -138,13 +138,14 @@ erDiagram
 
 ## Regras de recorrencia (dados)
 - Recorrencia e um template; transacoes sao a fonte de verdade para relatorios.
-- Geracao de transacoes e sempre explicita; nao ha criacao automatica implicita.
+- Geracao de transacoes ocorre automaticamente no CRUD de recorrencias (create/update), conforme regras de grupo, datas e status.
 - Edicoes na recorrencia afetam apenas ocorrencias futuras.
 - Cancelamento pausa novas ocorrencias e nao remove transacoes existentes.
 - Para parcelamento: group = installment, endDate e installmentTotal obrigatorios.
 - Para receita: type = entry e group = entry.
 - dayOfMonth maior que o ultimo dia do mes usa o ultimo dia do mes.
 - Recorrencia fixa de longo prazo usa endDate = null (ex: aluguel, internet).
+- Para recorrencia fixa com endDate nulo, a geracao automatica cobre 24 meses a partir de startDate.
 - Reajuste de valor: preferir criar nova recorrencia com novo amountCents e startDate, e pausar/cancelar a anterior para preservar historico.
 
 ## Regras de pagamento (dados)
