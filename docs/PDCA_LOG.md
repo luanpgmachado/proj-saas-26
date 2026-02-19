@@ -134,3 +134,12 @@
   - URL provisoria `sslip.io` retornando `404` (sem impacto no dominio oficial).
 - **Act:**
   - Registro de deploy e validacao consolidado em `docs/TEST_LOG.md`.
+
+## 2026-02-19 — Guardrail de deploy para banco de producao
+- **Plan:** Evitar repeticao de incidente de sobrescrita de dados, criando regra canonica de bloqueio de alteracao no banco de producao.
+- **Do:**
+  - Atualizado `docs/RULES.md` com regra obrigatoria de seguranca de dados em deploy.
+  - Atualizado `docs/RUNBOOK.md` com guardrail pre-deploy e lista de comandos proibidos em producao.
+  - Atualizado `docs/USAGE.md` removendo qualquer orientacao de escrita em banco de producao e adicionando lista de comandos proibidos.
+- **Check:** Revisao documental cruzada entre `RULES`, `RUNBOOK` e `USAGE` para consistencia de regra.
+- **Act:** Issue `DEV-93` criada no Linear para rastreio e historico.

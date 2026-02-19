@@ -98,3 +98,12 @@
   - `curl -4 -I http://mwooggo4kcoow0wco4wsg80k.31.97.240.105.sslip.io` -> `404` (endpoint provisoria fora do dominio oficial).
 - Resultado:
   - Ambiente oficial acessivel e API respondendo.
+
+## 2026-02-19 — Validacao de regra operacional (nao alterar banco de producao)
+- Ambiente: documentacao canonica.
+- Verificacoes:
+  - `docs/RULES.md` contem proibicao explicita de alteracao de banco em producao.
+  - `docs/RUNBOOK.md` contem checklist pre-deploy e comandos proibidos.
+  - `docs/USAGE.md` nao instrui mais escrita em banco de producao e lista comandos proibidos.
+- Resultado:
+  - Regra operacional consolidada para prevenir nova sobrescrita de dados em producao.

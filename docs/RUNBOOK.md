@@ -31,6 +31,17 @@ Ambiente atual:
 - `Dockerfile` no projeto (raiz ou subpasta).
 - Token/API do Coolify configurados no MCP `coolify`.
 
+### Guardrail obrigatorio (banco de producao)
+- Banco de producao nao pode ser alterado neste fluxo.
+- Antes do deploy, validar o alvo:
+  - Confirmar `DATABASE_URL`/`REPLIT_DB_URL` da sessao atual.
+  - Se apontar para producao, bloquear comandos de escrita de banco.
+- Comandos proibidos em producao:
+  - `npm run db:push`
+  - `npm run db:seed`
+  - `tsx server/backfill_recorrencias.ts`
+  - SQL manual com alteracao de dados/estrutura.
+
 ### 1) Sincronizacao com GitHub
 ```powershell
 git add .
@@ -72,7 +83,8 @@ Como MCP da Hostinger nao esta disponivel:
 ### 6) Banco de dados
 - Para este projeto, a API exige `DATABASE_URL` (ou `REPLIT_DB_URL`).
 - Recomendado: criar PostgreSQL no Coolify e usar `internal_db_url` como `DATABASE_URL`.
-- Executar migracao de schema via job/terminal operacional (`npm run db:push`) apos configurar `DATABASE_URL`.
+- Nao executar migracoes/escritas de banco em producao neste fluxo.
+- Se schema/provisionamento estiver incorreto, abrir incidente de infra e tratar fora do deploy padrao.
 
 ### 7) Validacao final
 - URL HTTP provisoria (Coolify/sslip) deve responder.
