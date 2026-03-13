@@ -169,3 +169,12 @@
   - Issue `DEV-150` criada e mantida em andamento no Linear para rastreio.
 - **Check:** Estrutura do skill pronta para validacao automatica com `quick_validate.py`.
 - **Act:** Proximo uso do skill deve gerar achados reproduziveis sobre UI/contrato sem precisar reconstruir a matriz manualmente.
+
+## 2026-03-13 — Skill local de design frontend (Claude Code `frontend-design`) (DEV-151)
+- **Plan:** Criar uma skill local no repo inspirada no plugin `plugins/frontend-design` do Claude Code, para padronizar pedidos de UI com melhor qualidade de design.
+- **Do:**
+  - Referencia consumida via Context7 e via leitura direta do GitHub (README + SKILL do plugin).
+  - Criada skill local em `.codex/skills/design-frontend-claude-code/` com `SKILL.md`, `agents/openai.yaml` e `references/origem-frontend-design.md`.
+  - Criado runbook local em `.codex/napkin.md` para registrar o padrao de skills locais.
+- **Check:** Validacao do skill executada com `quick_validate.py`.
+- **Act:** Issue `DEV-151` atualizada no Linear com caminho dos artefatos e estado.

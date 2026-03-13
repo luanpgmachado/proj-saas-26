@@ -1,0 +1,88 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - heading "Financa Familiar" [level=1] [ref=e6]
+      - navigation [ref=e7]:
+        - link "Visao do Mes" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Lancamentos" [ref=e9] [cursor=pointer]:
+          - /url: /transactions
+        - link "Metodos" [ref=e10] [cursor=pointer]:
+          - /url: /payment-methods
+        - link "Panorama Anual" [ref=e11] [cursor=pointer]:
+          - /url: /annual
+        - link "Metas" [ref=e12] [cursor=pointer]:
+          - /url: /goals
+        - link "Investimentos" [ref=e13] [cursor=pointer]:
+          - /url: /investments
+        - link "Recorrencias" [ref=e14] [cursor=pointer]:
+          - /url: /recurrences
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - textbox [ref=e19]: 2026-03
+      - generic [ref=e20]:
+        - button "Gerar Mes" [ref=e21] [cursor=pointer]
+        - button "+ Nova Recorrencia" [ref=e22] [cursor=pointer]
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - text: Descricao
+          - textbox "Descricao" [ref=e44]: CODX DEV94 20260313
+        - generic [ref=e45]:
+          - text: Tipo
+          - combobox "Tipo" [ref=e46]:
+            - option "Saida" [selected]
+            - option "Entrada"
+        - generic [ref=e47]:
+          - text: Grupo
+          - combobox "Grupo" [ref=e48]:
+            - option "Fixo"
+            - option "Parcelado" [selected]
+        - generic [ref=e49]:
+          - text: Valor (R$)
+          - textbox "Valor (R$)" [ref=e50]:
+            - /placeholder: 0,00
+            - text: 123,45
+        - generic [ref=e51]:
+          - text: Categoria
+          - combobox "Categoria" [ref=e52]:
+            - option "Selecione"
+            - option "CODX Categoria 20260313" [selected]
+        - generic [ref=e53]:
+          - text: Metodo de pagamento
+          - combobox "Metodo de pagamento" [ref=e54]:
+            - option "Selecione"
+            - option "CODX Metodo 20260313" [selected]
+        - generic [ref=e55]:
+          - text: Data inicio
+          - textbox "Data inicio" [ref=e56]: 2026-03-10
+        - generic [ref=e57]:
+          - text: Data fim
+          - textbox "Data fim" [ref=e64]: 2026-04-10
+        - generic [ref=e59]:
+          - text: Dia do mes
+          - spinbutton "Dia do mes" [ref=e60]: "10"
+        - generic [ref=e65]:
+          - text: Total de parcelas
+          - spinbutton "Total de parcelas" [active] [ref=e66]: "2"
+      - generic [ref=e61]:
+        - button "Criar" [ref=e62] [cursor=pointer]
+        - button "Cancelar" [ref=e63] [cursor=pointer]
+    - generic "Tabela de recorrencias" [ref=e23]:
+      - table [ref=e24]:
+        - rowgroup [ref=e25]:
+          - row "Descricao Tipo Grupo Valor Categoria Metodo Dia Status Inicio Fim Acoes" [ref=e26]:
+            - columnheader "Descricao" [ref=e27]
+            - columnheader "Tipo" [ref=e28]
+            - columnheader "Grupo" [ref=e29]
+            - columnheader "Valor" [ref=e30]
+            - columnheader "Categoria" [ref=e31]
+            - columnheader "Metodo" [ref=e32]
+            - columnheader "Dia" [ref=e33]
+            - columnheader "Status" [ref=e34]
+            - columnheader "Inicio" [ref=e35]
+            - columnheader "Fim" [ref=e36]
+            - columnheader "Acoes" [ref=e37]
+        - rowgroup [ref=e38]:
+          - row "Nenhuma recorrencia cadastrada." [ref=e39]:
+            - cell "Nenhuma recorrencia cadastrada." [ref=e40]

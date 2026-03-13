@@ -1,0 +1,7 @@
+interface:
+  display_name: "Design Frontend (Claude Code)"
+  short_description: "UI web com estetica forte e codigo pronto"
+  default_prompt: "Use $design-frontend-claude-code para criar ou polir uma interface web com direcao estetica clara e codigo pronto para producao."
+
+policy:
+  allow_implicit_invocation: true

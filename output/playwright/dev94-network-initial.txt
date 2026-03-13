@@ -1,0 +1,6 @@
+[GET] http://localhost:5000/api/recurrences => [200] OK
+[GET] http://localhost:5000/api/categories => [200] OK
+[GET] http://localhost:5000/api/payment-methods => [200] OK
+[GET] http://localhost:5000/api/recurrences => [200] OK
+[GET] http://localhost:5000/api/categories => [200] OK
+[GET] http://localhost:5000/api/payment-methods => [200] OK
