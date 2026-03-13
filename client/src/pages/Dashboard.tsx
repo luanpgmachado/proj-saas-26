@@ -10,7 +10,7 @@ const formatCurrency = (cents: number) => {
 const formatarMesAno = (mes: string) => {
   const [ano, numeroMes] = mes.split("-").map(Number);
   const nomes = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-  const nome = nomes[(numeroMes || 1) - 1] ?? "mes";
+  const nome = nomes[(numeroMes || 1) - 1] ?? "mês";
   return `${nome}/${ano}`;
 };
 
@@ -101,19 +101,19 @@ export default function Dashboard() {
   return (
     <div>
       <div className="barra-topo">
-        <div className="seletor-mes" aria-label="Seletor de mes">
-          <button className="btn-ghost" onClick={() => changeMonth(-1)} aria-label="Mes anterior">
+        <div className="seletor-mes" aria-label="Seletor de mês">
+          <button className="btn-ghost" onClick={() => changeMonth(-1)} aria-label="Mês anterior">
             &lt;
           </button>
           <span className="seletor-mes-label" title={month}>
             {formatarMesAno(month)}
           </span>
-          <button className="btn-ghost" onClick={() => changeMonth(1)} aria-label="Proximo mes">
+          <button className="btn-ghost" onClick={() => changeMonth(1)} aria-label="Proximo mês">
             &gt;
           </button>
         </div>
         <button className="btn-primary" onClick={abrirModalNovo}>
-          + Novo Lancamento
+          + Novo Lançamento
         </button>
       </div>
 
@@ -149,7 +149,7 @@ export default function Dashboard() {
               <thead>
                 <tr>
                   <th>Categoria</th>
-                  <th className="text-right">Orcamento</th>
+                  <th className="text-right">Orçamento</th>
                   <th className="text-right">Gasto</th>
                   <th className="text-right">Diferenca</th>
                 </tr>
@@ -174,23 +174,23 @@ export default function Dashboard() {
       <div className="tabs">
         {["fixed", "variable", "installment", "entry"].map((t) => (
           <button key={t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>
-            {t === "fixed" ? "Fixos" : t === "variable" ? "Variaveis" : t === "installment" ? "Parcelados" : "Entradas"}
+            {t === "fixed" ? "Fixos" : t === "variable" ? "Variáveis" : t === "installment" ? "Parcelados" : "Entradas"}
           </button>
         ))}
       </div>
 
       <div className="card">
         {transactions.length === 0 ? (
-          <p>Nenhum lancamento nesta categoria.</p>
+          <p>Nenhum lançamento nesta categoria.</p>
         ) : (
           <div className="table-container">
             <table>
               <thead>
                 <tr>
                   <th>Data</th>
-                  <th>Descricao</th>
+                  <th>Descrição</th>
                   <th className="text-right">Valor</th>
-                  <th className="text-right">Acoes</th>
+                  <th className="text-right">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -231,8 +231,8 @@ export default function Dashboard() {
 
       <ModalConfirmacao
         aberto={confirmarExclusao !== null}
-        titulo="Confirmar exclusao"
-        mensagem="Tem certeza que deseja excluir este lancamento? Esta acao nao pode ser desfeita."
+        titulo="Confirmar exclusão"
+        mensagem="Tem certeza que deseja excluir este lançamento? Esta ação não pode ser desfeita."
         aoConfirmar={aoExcluirTransacao}
         aoCancelar={() => setConfirmarExclusao(null)}
         confirmando={excluindo}

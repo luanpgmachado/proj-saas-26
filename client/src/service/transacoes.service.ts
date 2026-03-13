@@ -20,7 +20,7 @@ export async function alternarPagoOptimista(params: {
 
   const anterior = transacoes.find((t) => t.id === id);
   if (!anterior) {
-    throw new Error("Lancamento nao encontrado para atualizar.");
+    throw new Error("Lançamento não encontrado para atualizar.");
   }
 
   const patch = marcar

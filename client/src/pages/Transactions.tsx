@@ -241,8 +241,8 @@ export default function Transactions() {
   return (
     <div>
       <div className="barra-topo">
-        <h2>Lancamentos</h2>
-        <button className="btn-primary" onClick={abrirNovo}>+ Novo Lancamento</button>
+        <h2>Lançamentos</h2>
+        <button className="btn-primary" onClick={abrirNovo}>+ Novo Lançamento</button>
       </div>
       
       <div className="filters">
@@ -261,13 +261,13 @@ export default function Transactions() {
           ) : null}
         </div>
         <select value={filters.methodId} onChange={(e) => setFilters({ ...filters, methodId: e.target.value })}>
-          <option value="">Todos metodos</option>
+          <option value="">Todos métodos</option>
           {methods.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
         </select>
         <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value })}>
           <option value="">Todos tipos</option>
           <option value="entry">Entrada</option>
-          <option value="exit">Saida</option>
+          <option value="exit">Saída</option>
         </select>
         <button onClick={clearFilters}>Limpar filtros</button>
       </div>
@@ -291,7 +291,7 @@ export default function Transactions() {
               </select>
             </label>
             <label>
-              Orcamento mensal (R$)
+              Orçamento mensal (R$)
               <input
                 inputMode="numeric"
                 placeholder="R$ 0,00"
@@ -316,13 +316,13 @@ export default function Transactions() {
             <div>
               <strong>Excluir categoria:</strong> {categoriaSelecionada.name}
               <div style={{ fontSize: 12, opacity: 0.8 }}>
-                A exclusao e bloqueada se houver lancamentos ou recorrencias usando essa categoria.
+                A exclusão é bloqueada se houver lançamentos ou recorrências usando essa categoria.
               </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={cancelarExclusaoCategoria} disabled={categoriaExcluindo}>Cancelar</button>
               <button className="btn-danger" onClick={excluirCategoria} disabled={categoriaExcluindo}>
-                {categoriaExcluindo ? "Excluindo..." : "Confirmar exclusao"}
+                {categoriaExcluindo ? "Excluindo..." : "Confirmar exclusão"}
               </button>
             </div>
           </div>
@@ -332,17 +332,17 @@ export default function Transactions() {
 
       <div className="card">
         {transactions.length === 0 ? (
-          <p>Nenhum lancamento encontrado.</p>
+          <p>Nenhum lançamento encontrado.</p>
         ) : (
-          <div className="table-container tabela-scroll" aria-label="Tabela de lancamentos">
+          <div className="table-container tabela-scroll" aria-label="Tabela de lançamentos">
             <table>
               <thead>
                 <tr>
                   <th>Data</th>
-                  <th>Descricao</th>
+                  <th>Descrição</th>
                   <th>Tipo</th>
                   <th>Categoria</th>
-                  <th>Metodo</th>
+                  <th>Método</th>
                   <th className="text-right">Valor</th>
                   <th className="coluna-pago">Pago</th>
                   <th></th>
@@ -353,7 +353,7 @@ export default function Transactions() {
                   <tr key={t.id} className={t.type === "exit" && t.isPaid ? "linha-paga" : ""}>
                     <td>{t.date}</td>
                     <td>{t.description}</td>
-                    <td>{t.type === "entry" ? "Entrada" : "Saida"}</td>
+                    <td>{t.type === "entry" ? "Entrada" : "Saída"}</td>
                     <td>{nomeCategoriaPorId.get(t.categoryId) || "-"}</td>
                     <td>{nomeMetodoPorId.get(t.paymentMethodId) || "-"}</td>
                     <td className="text-right">{formatCurrency(t.amountCents)}</td>
@@ -392,8 +392,8 @@ export default function Transactions() {
 
       <ModalConfirmacao
         aberto={confirmarExclusao !== null}
-        titulo="Excluir Lancamento"
-        mensagem="Tem certeza que deseja excluir este lancamento?"
+        titulo="Excluir Lançamento"
+        mensagem="Tem certeza que deseja excluir este lançamento?"
         aoConfirmar={excluir}
         aoCancelar={() => setConfirmarExclusao(null)}
         confirmando={excluindo}

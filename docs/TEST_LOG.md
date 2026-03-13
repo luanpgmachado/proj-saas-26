@@ -79,6 +79,17 @@
 - Pendencia:
   - `GET /api/categories` retorna `500` com `relation "categories" does not exist` (schema ainda nao aplicado no banco novo).
 
+## 2026-03-13 — Navegacao (menu lateral)
+- Ambiente: local.
+- Verificacoes:
+  - Build: `npm run build` OK.
+  - UI: menu lateral sticky (header + menu permanecem visiveis).
+  - UI: padrao de topo `.barra-topo` aplicado nas telas restantes (Recorrencias e Investimentos).
+  - A11y: skip link no header para pular ao conteudo (teclado).
+  - UI: grupo ativo destacado no menu lateral.
+  - UI: labels e titulos com acentuação PT-BR (menu + telas principais).
+  - UI: labels de formulários e tabelas com acentuação PT-BR (ex: Descrição, Saída, Método, Mês).
+
 ## 2026-02-18 — Recorrencias (endDate obrigatorio para parcelado)
 - Ambiente: local.
 - Verificacoes:

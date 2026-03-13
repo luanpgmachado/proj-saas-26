@@ -78,6 +78,23 @@
   - Frontend: code-splitting por rota com `React.lazy` + `Suspense` (`client/src/App.tsx`).
   - Frontend: header sticky e cabecalho de tabelas fixo em areas com scroll (`client/src/index.css`, `client/src/pages/Transactions.tsx`, `client/src/pages/Recurrences.tsx`).
   - Frontend: otimizacao de render em tabela de Lancamentos (mapas `id->nome` via `useMemo`) (`client/src/pages/Transactions.tsx`).
+
+## 2026-03-13 — Redesign de Navegacao (menu lateral)
+- **Plan:** Simplificar navegacao do front-end reduzindo carga cognitiva e agrupando telas em um menu lateral (desktop-first, sem animacoes), mantendo rotas e comportamentos existentes.
+- **Do:**
+  - Docs: adicionado layout de navegacao global e mapa de grupos em `docs/UX_BLUEPRINT.md`.
+  - Docs: alinhado design system de UI com o novo menu lateral em `.interface-design/system.md`.
+  - Frontend: header simplificado (sem abas no topo) em `client/src/components/Header.tsx`.
+  - Frontend: menu lateral com grupos (Visao/Operacao/Planejamento/Cadastros) em `client/src/components/MenuLateral.tsx`.
+  - Frontend: layout em grid (sidebar + conteudo) e estilos do menu em `client/src/index.css` e `client/src/App.tsx`.
+  - Frontend: menu lateral sticky (permanece visivel ao rolar) em `client/src/index.css`.
+  - Frontend: padronizacao do topo de pagina com `.barra-topo` (ex: Recorrencias e Investimentos) em `client/src/pages/Recurrences.tsx` e `client/src/pages/Investments.tsx`.
+  - Frontend: a11y com skip link ("Pular para o conteudo") no header em `client/src/components/Header.tsx` e alvo no `main` em `client/src/App.tsx`.
+  - Frontend: destaque discreto do grupo ativo no menu lateral em `client/src/components/MenuLateral.tsx` e `client/src/index.css`.
+  - Frontend: padronizacao de labels PT-BR (acentos) no menu e titulos em `client/src/components/MenuLateral.tsx`, `client/src/components/Header.tsx` e paginas principais.
+  - Frontend: padronizacao de labels em formularios/tabelas (ex: Descrição, Saída, Método, Mês) em `client/src/components/ModalLancamento.tsx`, `client/src/pages/Transactions.tsx`, `client/src/pages/Recurrences.tsx`, `client/src/pages/PaymentMethods.tsx` e `client/src/pages/Dashboard.tsx`.
+- **Check:** `npm run build` OK.
+- **Act:** Projeto e issues registrados no Linear (DEV-152, DEV-153, DEV-154).
 - **Check:** `npm run build` executado com sucesso; output em chunks por pagina.
 - **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.
 

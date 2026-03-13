@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Switch } from "wouter";
 import Header from "./components/Header";
+import MenuLateral from "./components/MenuLateral";
 
 // Code-splitting por rota: reduz JS inicial e melhora TTI/FID em conexoes lentas.
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -15,18 +16,23 @@ export default function App() {
   return (
     <div>
       <Header />
-      <div className="container">
-        <Suspense fallback={<div className="card">Carregando...</div>}>
-          <Switch>
-            <Route path="/" component={Dashboard} />
-            <Route path="/transactions" component={Transactions} />
-            <Route path="/payment-methods" component={PaymentMethods} />
-            <Route path="/annual" component={AnnualView} />
-            <Route path="/goals" component={Goals} />
-            <Route path="/investments" component={Investments} />
-            <Route path="/recurrences" component={Recurrences} />
-          </Switch>
-        </Suspense>
+      <div className="app-layout">
+        <MenuLateral />
+        <main className="app-conteudo" id="conteudo" tabIndex={-1}>
+          <div className="container">
+            <Suspense fallback={<div className="card">Carregando...</div>}>
+              <Switch>
+                <Route path="/" component={Dashboard} />
+                <Route path="/transactions" component={Transactions} />
+                <Route path="/payment-methods" component={PaymentMethods} />
+                <Route path="/annual" component={AnnualView} />
+                <Route path="/goals" component={Goals} />
+                <Route path="/investments" component={Investments} />
+                <Route path="/recurrences" component={Recurrences} />
+              </Switch>
+            </Suspense>
+          </div>
+        </main>
       </div>
     </div>
   );

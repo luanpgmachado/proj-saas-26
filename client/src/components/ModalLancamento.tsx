@@ -146,13 +146,13 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoI
     <div className="modal-fundo" onClick={aoFechar}>
       <div className="modal-caixa" onClick={(event) => event.stopPropagation()}>
         <div className="modal-cabecalho">
-          <h3>{modoEdicao ? "Editar lancamento" : "Novo lancamento"}</h3>
+          <h3>{modoEdicao ? "Editar lançamento" : "Novo lançamento"}</h3>
           <button type="button" onClick={aoFechar}>Fechar</button>
         </div>
         <form onSubmit={aoSalvarFormulario}>
           <div className="formulario-grade">
             <label className="formulario-campo linha-inteira">
-              Descricao
+              Descrição
               <input
                 type="text"
                 value={descricao}
@@ -176,7 +176,7 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoI
                 onChange={(event) => aoAlterarTipo(event.target.value as "entry" | "exit")}
               >
                 <option value="entry">Entrada</option>
-                <option value="exit">Saida</option>
+                <option value="exit">Saída</option>
               </select>
             </label>
             <label className="formulario-campo">
@@ -209,7 +209,7 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoI
               </select>
             </label>
             <label className="formulario-campo linha-inteira">
-              Metodo de pagamento
+              Método de pagamento
               <select value={metodoPagamentoId} onChange={(event) => setMetodoPagamentoId(event.target.value)}>
                 <option value="">Selecione</option>
                 {metodosPagamento.map((metodo) => (

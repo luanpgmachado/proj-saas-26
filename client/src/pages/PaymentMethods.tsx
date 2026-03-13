@@ -103,14 +103,14 @@ export default function PaymentMethods() {
   return (
     <div>
       <div className="barra-topo">
-        <h2>Metodos de Pagamento</h2>
-        <button className="btn-primary" onClick={abrirNovo}>+ Novo Metodo</button>
+        <h2>Métodos de Pagamento</h2>
+        <button className="btn-primary" onClick={abrirNovo}>+ Novo Método</button>
       </div>
 
       <div className="card">
-        <h3 style={{ marginBottom: 16 }}>Metodos Gerais</h3>
+        <h3 style={{ marginBottom: 16 }}>Métodos Gerais</h3>
         {nonCards.length === 0 ? (
-          <p>Nenhum metodo cadastrado.</p>
+          <p>Nenhum método cadastrado.</p>
         ) : (
           <div className="table-container">
             <table>
@@ -118,7 +118,7 @@ export default function PaymentMethods() {
                 <tr>
                   <th>Nome</th>
                   <th>Tipo</th>
-                  <th>Pago no mes</th>
+                  <th>Pago no mês</th>
                   <th></th>
                 </tr>
               </thead>
@@ -127,7 +127,7 @@ export default function PaymentMethods() {
                   <tr key={m.id}>
                     <td>{m.name}</td>
                     <td>{m.type}</td>
-                    <td>{m.paidInMonth ? "Sim" : "Nao"}</td>
+                    <td>{m.paidInMonth ? "Sim" : "Não"}</td>
                     <td className="text-right">
                       <button onClick={() => abrirEditar(m)} style={{ marginRight: 8 }}>Editar</button>
                       <button className="btn-danger" onClick={() => setConfirmarExclusao(m.id)}>Excluir</button>
@@ -141,9 +141,9 @@ export default function PaymentMethods() {
       </div>
 
       <div className="card">
-        <h3 style={{ marginBottom: 16 }}>Cartoes de Credito</h3>
+        <h3 style={{ marginBottom: 16 }}>Cartões de Crédito</h3>
         {cards.length === 0 ? (
-          <p>Nenhum cartao cadastrado.</p>
+          <p>Nenhum cartão cadastrado.</p>
         ) : (
           <div className="table-container">
             <table>
@@ -152,7 +152,7 @@ export default function PaymentMethods() {
                   <th>Nome</th>
                   <th>Fechamento</th>
                   <th>Vencimento</th>
-                  <th>Pago no mes</th>
+                  <th>Pago no mês</th>
                   <th></th>
                 </tr>
               </thead>
@@ -162,7 +162,7 @@ export default function PaymentMethods() {
                     <td>{m.name}</td>
                     <td>Dia {m.closingDay}</td>
                     <td>Dia {m.dueDay}</td>
-                    <td>{m.paidInMonth ? "Sim" : "Nao"}</td>
+                    <td>{m.paidInMonth ? "Sim" : "Não"}</td>
                     <td className="text-right">
                       <button onClick={() => abrirEditar(m)} style={{ marginRight: 8 }}>Editar</button>
                       <button className="btn-danger" onClick={() => setConfirmarExclusao(m.id)}>Excluir</button>
@@ -179,7 +179,7 @@ export default function PaymentMethods() {
         <div className="modal-fundo" onClick={() => setModalAberto(false)}>
           <div className="modal-caixa" onClick={(e) => e.stopPropagation()}>
             <div className="modal-cabecalho">
-              <h3>{editando ? "Editar Metodo" : "Novo Metodo"}</h3>
+              <h3>{editando ? "Editar Método" : "Novo Método"}</h3>
             </div>
             <form onSubmit={salvar}>
               <div className="form-group">
@@ -191,15 +191,15 @@ export default function PaymentMethods() {
                 <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
                   <option value="pix">PIX</option>
                   <option value="dinheiro">Dinheiro</option>
-                  <option value="debito">Debito</option>
-                  <option value="credito">Credito</option>
-                  <option value="transferencia">Transferencia</option>
+                  <option value="debito">Débito</option>
+                  <option value="credito">Crédito</option>
+                  <option value="transferencia">Transferência</option>
                 </select>
               </div>
               <div className="form-group">
                 <label>
                   <input type="checkbox" checked={form.isCard} onChange={(e) => setForm({ ...form, isCard: e.target.checked })} />
-                  {" "}E um cartao de credito
+                  {" "}É um cartão de crédito
                 </label>
               </div>
               {form.isCard && (
@@ -217,7 +217,7 @@ export default function PaymentMethods() {
               <div className="form-group">
                 <label>
                   <input type="checkbox" checked={form.paidInMonth} onChange={(e) => setForm({ ...form, paidInMonth: e.target.checked })} />
-                  {" "}Pago no mes
+                  {" "}Pago no mês
                 </label>
               </div>
               <div className="modal-acoes">
@@ -231,8 +231,8 @@ export default function PaymentMethods() {
 
       <ModalConfirmacao
         aberto={confirmarExclusao !== null}
-        titulo="Excluir Metodo"
-        mensagem="Tem certeza que deseja excluir este metodo de pagamento?"
+        titulo="Excluir Método"
+        mensagem="Tem certeza que deseja excluir este método de pagamento?"
         aoConfirmar={excluir}
         aoCancelar={() => setConfirmarExclusao(null)}
         confirmando={excluindo}

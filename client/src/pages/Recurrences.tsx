@@ -28,7 +28,7 @@ const formatarData = (data: string | null) => {
   return `${dia}/${mes}/${ano}`;
 };
 
-const traduzirTipo = (tipo: string) => (tipo === "entry" ? "Entrada" : "Saida");
+const traduzirTipo = (tipo: string) => (tipo === "entry" ? "Entrada" : "Saída");
 const traduzirGrupo = (grupo: string) => {
   if (grupo === "fixed") return "Fixo";
   if (grupo === "installment") return "Parcelado";
@@ -92,14 +92,14 @@ export default function Recurrences() {
     return metodos.find((m) => m.id === id)?.name ?? "-";
   };
 
-  const gerarMes = async () => {
+const gerarMes = async () => {
     setCarregando(true);
     setMensagem(null);
     try {
       const transacoes = await api.generateRecurrences(mesSelecionado);
-      setMensagem(`${transacoes.length} transacao(oes) criada(s) para ${mesSelecionado}.`);
+      setMensagem(`${transacoes.length} transação(ões) criada(s) para ${mesSelecionado}.`);
     } catch {
-      setMensagem("Erro ao gerar transacoes.");
+      setMensagem("Erro ao gerar transações.");
     }
     setCarregando(false);
   };
@@ -142,16 +142,16 @@ export default function Recurrences() {
   };
 
   const validarFormulario = (): string | null => {
-    if (!descricao.trim()) return "Descricao e obrigatoria.";
+    if (!descricao.trim()) return "Descrição é obrigatória.";
     const valorNumerico = parseFloat(valorReais.replace(",", "."));
     if (isNaN(valorNumerico) || valorNumerico <= 0) return "Valor deve ser maior que zero.";
-    if (!dataInicio) return "Data de inicio e obrigatoria.";
-    if (diaDoMes < 1 || diaDoMes > 31) return "Dia do mes deve ser entre 1 e 31.";
+    if (!dataInicio) return "Data de início é obrigatória.";
+    if (diaDoMes < 1 || diaDoMes > 31) return "Dia do mês deve ser entre 1 e 31.";
     if (grupo === "installment" && !dataFim) {
-      return "Data fim e obrigatoria para recorrencias parceladas.";
+      return "Data fim é obrigatória para recorrências parceladas.";
     }
     if (grupo === "installment" && (!totalParcelas || totalParcelas < 1)) {
-      return "Total de parcelas e obrigatorio para recorrencias parceladas.";
+      return "Total de parcelas é obrigatório para recorrências parceladas.";
     }
     return null;
   };
@@ -203,19 +203,24 @@ export default function Recurrences() {
 
   return (
     <div className="pagina-recorrencias">
-      <div className="cabecalho-pagina">
-        <div className="seletor-mes">
-          <input
-            type="month"
-            value={mesSelecionado}
-            onChange={(e) => setMesSelecionado(e.target.value)}
-          />
+      <div className="barra-topo">
+        <div className="barra-topo-esquerda">
+          <h2>Recorrências</h2>
+          <div className="seletor-mes" aria-label="Seletor de mês">
+            <input
+              type="month"
+              value={mesSelecionado}
+              onChange={(e) => setMesSelecionado(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="acoes-cabecalho">
+        <div className="barra-topo-direita">
           <button onClick={gerarMes} disabled={carregando}>
-            {carregando ? "Gerando..." : "Gerar Mes"}
+            {carregando ? "Gerando..." : "Gerar Mês"}
           </button>
-          <button onClick={abrirNovaRecorrencia}>+ Nova Recorrencia</button>
+          <button className="btn-primary" onClick={abrirNovaRecorrencia}>
+            + Nova Recorrência
+          </button>
         </div>
       </div>
 
@@ -226,7 +231,7 @@ export default function Recurrences() {
           {erroFormulario && <div className="erro-formulario">{erroFormulario}</div>}
           <div className="formulario-grade">
             <label className="formulario-campo">
-              Descricao
+              Descrição
               <input
                 type="text"
                 value={descricao}
@@ -236,7 +241,7 @@ export default function Recurrences() {
             <label className="formulario-campo">
               Tipo
               <select value={tipo} onChange={(e) => aoMudarTipo(e.target.value as "entry" | "exit")}>
-                <option value="exit">Saida</option>
+                <option value="exit">Saída</option>
                 <option value="entry">Entrada</option>
               </select>
             </label>
@@ -279,7 +284,7 @@ export default function Recurrences() {
               </select>
             </label>
             <label className="formulario-campo">
-              Metodo de pagamento
+              Método de pagamento
               <select
                 value={metodoId ?? ""}
                 onChange={(e) => setMetodoId(e.target.value ? parseInt(e.target.value) : null)}
@@ -291,7 +296,7 @@ export default function Recurrences() {
               </select>
             </label>
             <label className="formulario-campo">
-              Data inicio
+              Data início
               <input
                 type="date"
                 value={dataInicio}
@@ -307,7 +312,7 @@ export default function Recurrences() {
               />
             </label>
             <label className="formulario-campo">
-              Dia do mes
+              Dia do mês
               <input
                 type="number"
                 min={1}
@@ -335,21 +340,21 @@ export default function Recurrences() {
         </div>
       )}
 
-      <div className="table-container tabela-scroll" aria-label="Tabela de recorrencias">
+      <div className="table-container tabela-scroll" aria-label="Tabela de recorrências">
         <table className="tabela-recorrencias">
           <thead>
             <tr>
-              <th>Descricao</th>
+              <th>Descrição</th>
               <th>Tipo</th>
               <th>Grupo</th>
               <th>Valor</th>
               <th>Categoria</th>
-              <th>Metodo</th>
+              <th>Método</th>
               <th>Dia</th>
               <th>Status</th>
-              <th>Inicio</th>
+              <th>Início</th>
               <th>Fim</th>
-              <th>Acoes</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -387,7 +392,7 @@ export default function Recurrences() {
             ))}
             {recorrencias.length === 0 && (
               <tr>
-                <td colSpan={11} className="sem-dados">Nenhuma recorrencia cadastrada.</td>
+                <td colSpan={11} className="sem-dados">Nenhuma recorrência cadastrada.</td>
               </tr>
             )}
           </tbody>

@@ -261,7 +261,9 @@ export default function Investments() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: 20 }}>Reserva e Investimentos</h2>
+      <div className="barra-topo">
+        <h2>Reserva e Investimentos</h2>
+      </div>
 
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>

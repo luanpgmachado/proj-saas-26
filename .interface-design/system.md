@@ -37,7 +37,17 @@ Base: 4px (`--espaco_1`) e multiplos ate `--espaco_6`.
 ## Componentes (padroes)
 - Header:
   - Wrapper: `.header` + `.header-inner`.
-  - Navegacao: `.nav`, item ativo com underline de `--cor_acao`.
+  - A11y: `.skip-link` (aparece no foco) para pular ao conteudo.
+- Layout global:
+  - Grid: `.app-layout` (sidebar + conteudo).
+  - Conteudo: `.app-conteudo` com `.container` interno.
+- Menu lateral (navegacao global):
+  - Wrapper: `.menu-lateral`.
+  - Grupo: `.menu-grupo` + titulo `.menu-grupo-titulo`.
+  - Itens: `.menu-item` (estado ativo: `.menu-item.active`).
+  - Grupo ativo: `.menu-grupo.active` (destaque discreto do grupo atual).
+  - A11y: foco visivel em links (`a:focus-visible`) e item ativo com `aria-current="page"`.
+  - Scroll: `.menu-lateral` fica sticky para permanecer visivel durante a rolagem.
 - Topo de pagina:
   - `.barra-topo` para alinhar titulo + acao principal.
   - Seletor de mes/ano: `.seletor-mes` + label `.seletor-mes-label` (fonte numero).
@@ -62,3 +72,8 @@ Base: 4px (`--espaco_1`) e multiplos ate `--espaco_6`.
 2. Linhas e divisorias sutis (regua).
 3. Saldo com maior peso visual (card destacado) sem "efeito", so hierarquia.
 
+## Tokens de layout (navegacao)
+- `--largura_max`: largura maxima do layout.
+- `--largura_menu`: largura do menu lateral.
+- `--gap_layout`: espacamento entre menu e conteudo.
+- `--altura_header`: referencia de altura do header para calculo de sticky.
