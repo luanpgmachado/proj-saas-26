@@ -119,3 +119,14 @@
   - Confirmado apos update: `24` transacoes para o mesmo `recurrenceId` no range de 24 meses.
 - Resultado:
   - Auto-geracao no `PATCH /api/recurrences/{id}` funcionando conforme regra de 2 anos para fixo sem data fim.
+
+## 2026-03-13 — Validacao estrutural do skill de teste visual
+- Ambiente: local, sem execucao ainda contra a aplicacao publicada.
+- Artefatos preparados:
+  - skill `playwright-crud-visual-contrato`
+  - referencia `proj-financa-v1.md` com matriz prioritaria e secundaria
+- Verificacoes planejadas:
+  - validacao automatica da estrutura via `quick_validate.py`
+  - uso futuro do skill contra a URL alvo para gerar evidencias de UI/rede
+- Observacao:
+  - Neste registro, ainda nao houve rodada funcional no navegador; apenas a preparacao e validacao estrutural do skill.

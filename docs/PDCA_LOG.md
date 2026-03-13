@@ -159,3 +159,13 @@
   - `npm run build` OK.
   - Cenario validado na API local: recorrencia editada de `installment` para `fixed` passou de 2 para 24 transacoes no range esperado.
 - **Act:** Issue `DEV-94` atualizada no Linear com evidencias do bugfix.
+
+## 2026-03-13 — Skill de teste visual CRUD + contrato com Playwright (DEV-150)
+- **Plan:** Criar um skill reutilizavel para validar os CRUDs do `proj-financa-v1` via navegador real, comparando UI e rede com `docs/UX_BLUEPRINT.md` e `docs/API_CONTRACT.md`.
+- **Do:**
+  - Criado skill global `playwright-crud-visual-contrato` em `C:\Users\luanp\.codex\skills\playwright-crud-visual-contrato`.
+  - Estruturado `SKILL.md` com fluxo obrigatorio, guardrails e uso da skill base `$playwright`.
+  - Criado `references/proj-financa-v1.md` com rotas, matriz de CRUD, checkpoints de UX/contrato e observacoes de divergencia conhecidas.
+  - Issue `DEV-150` criada e mantida em andamento no Linear para rastreio.
+- **Check:** Estrutura do skill pronta para validacao automatica com `quick_validate.py`.
+- **Act:** Proximo uso do skill deve gerar achados reproduziveis sobre UI/contrato sem precisar reconstruir a matriz manualmente.
