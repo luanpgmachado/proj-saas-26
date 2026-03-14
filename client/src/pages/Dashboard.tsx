@@ -3,38 +3,18 @@ import { api } from "../lib/api";
 import { CabecalhoConteudo } from "../components/CabecalhoConteudo";
 import { CartaoMetrica } from "../components/CartaoMetrica";
 import ModalLancamento, { type DadosLancamento } from "../components/ModalLancamento";
+import { useCompetenciaMensal } from "../context/CompetenciaMensalContext";
 import {
   TrendingUp,
   TrendingDown,
   CheckCircle2,
   Wallet,
-  ChevronLeft,
-  ChevronRight,
   Calendar,
   ArrowUpRight,
 } from "lucide-react";
 
 const formatarMoeda = (centavos: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(centavos / 100);
-
-const mesParaRotulo = (mes: string) => {
-  const [ano, numeroMes] = mes.split("-").map(Number);
-  const nomes = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
-  ];
-  return `${nomes[(numeroMes || 1) - 1] ?? "Mês"} ${ano}`;
-};
 
 const formatarDiaMes = (dataISO: string) => {
   const [ano, mes, dia] = dataISO.split("-");
@@ -79,10 +59,7 @@ type Transacao = {
 type Categoria = { id: number; name: string };
 
 export default function Dashboard() {
-  const [month, setMonth] = useState(() => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  });
+  const { competenciaMensal } = useCompetenciaMensal();
   const [summary, setSummary] = useState<ResumoMes>({
     entriesCents: 0,
     exitsCents: 0,
@@ -102,10 +79,10 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    api.getMonthSummary(month).then(setSummary).catch(console.error);
-    api.getCategorySpend(month).then(setCategorySpend).catch(console.error);
-    api.getTransactions({ month, type: "exit" }).then(setTransacoesSaida).catch(console.error);
-  }, [month]);
+    api.getMonthSummary(competenciaMensal).then(setSummary).catch(console.error);
+    api.getCategorySpend(competenciaMensal).then(setCategorySpend).catch(console.error);
+    api.getTransactions({ month: competenciaMensal, type: "exit" }).then(setTransacoesSaida).catch(console.error);
+  }, [competenciaMensal]);
 
   const mapaCategoriaPorId = useMemo(() => {
     const mapa = new Map<number, string>();
@@ -146,12 +123,6 @@ export default function Dashboard() {
     return { css: `conic-gradient(${stops})`, itens: partes };
   }, [categorySpend]);
 
-  const changeMonth = (delta: number) => {
-    const [year, m] = month.split("-").map(Number);
-    const date = new Date(year, m - 1 + delta, 1);
-    setMonth(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`);
-  };
-
   const abrirModalNovo = () => {
     setTransacaoEditando(null);
     setModalAberto(true);
@@ -164,9 +135,9 @@ export default function Dashboard() {
 
   const recarregarDados = async () => {
     const [novoResumo, novosGastos, novasSaidas] = await Promise.all([
-      api.getMonthSummary(month),
-      api.getCategorySpend(month),
-      api.getTransactions({ month, type: "exit" }),
+      api.getMonthSummary(competenciaMensal),
+      api.getCategorySpend(competenciaMensal),
+      api.getTransactions({ month: competenciaMensal, type: "exit" }),
     ]);
     setSummary(novoResumo);
     setCategorySpend(novosGastos);
@@ -187,27 +158,6 @@ export default function Dashboard() {
       <CabecalhoConteudo
         titulo="Dashboard"
         subtitulo="Visão geral das suas finanças"
-        seletorDireita={
-          <div className="surface-card-sm px-2 py-1.5 flex items-center gap-2">
-            <button
-              type="button"
-              className="w-8 h-8 rounded-md hover:bg-secondary text-muted-foreground transition-smooth"
-              onClick={() => changeMonth(-1)}
-              aria-label="Mês anterior"
-            >
-              <ChevronLeft className="w-4 h-4 mx-auto" />
-            </button>
-            <span className="text-sm font-medium tabular-nums min-w-[120px] text-center">{mesParaRotulo(month)}</span>
-            <button
-              type="button"
-              className="w-8 h-8 rounded-md hover:bg-secondary text-muted-foreground transition-smooth"
-              onClick={() => changeMonth(1)}
-              aria-label="Próximo mês"
-            >
-              <ChevronRight className="w-4 h-4 mx-auto" />
-            </button>
-          </div>
-        }
         acaoDireita={
           <button
             type="button"

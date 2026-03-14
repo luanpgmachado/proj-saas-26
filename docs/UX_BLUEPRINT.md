@@ -29,6 +29,10 @@
     - Persistir escolha do usuario (ex: `localStorage`).
     - Sem animacao obrigatoria; transicao suave simples e aceitavel.
   - Deve existir um link de acessibilidade "Pular para o conteudo" para navegacao por teclado (no topo da area de conteudo).
+- O menu lateral inclui um **seletor global de competência mensal (YYYY-MM)**:
+  - Fica visivel na sidebar para o usuario sempre saber qual mês está ativo.
+  - Controla as telas: **Visão do Mês (Dashboard)**, **Lançamentos** e **Recorrências**.
+  - **Nao** controla a tela **Panorama Anual**, que permanece independente e usa filtro próprio de ano.
 
 ## Topo de Pagina (Padrao)
 - Toda tela deve iniciar com um bloco `.barra-topo` para manter previsibilidade.
@@ -54,7 +58,8 @@
   - Métodos de Pagamento (`/payment-methods`)
 
 ## Tela Principal - Visão do Mês
-- Topo com seletor de mês/ano a direita e titulo/subtitulo a esquerda (Layout 3.0).
+- Topo com titulo/subtitulo a esquerda e acao principal a direita (Layout 3.0).
+- A competencia mensal e controlada pelo seletor global da sidebar.
 - Quatro cards horizontais: Entradas, Saidas, Saldo Real, Saldo Projetado.
 - Blocos abaixo (duas colunas no desktop):
   - "Distribuição por Categoria" como grafico simples tipo donut + legenda.
@@ -66,6 +71,7 @@
 
 ## Tela de Lançamentos
 - Topo com titulo/subtitulo e botao "+ Novo Lançamento".
+- Lista sempre reflete a competencia mensal ativa no seletor global da sidebar.
 - Barra de filtros:
   - Chips: Todos, Pagos, Pendentes, Atrasados (visual; mapeamento interno pode usar `type`/`isPaid` quando aplicavel).
   - Busca por descricao (cliente).
@@ -112,8 +118,9 @@
 - Apenas lista de aportes, sem simulacoes ou projecoes.
 
 ## Tela de Recorrências
-- Topo com seletor de mês/ano a esquerda e botoes "Gerar Mês" e "+ Nova Recorrência" a direita.
-- Ao clicar "Gerar Mês", chamar endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
+- Topo com botoes "Gerar Mês" e "+ Nova Recorrência" a direita.
+- A competencia mensal e controlada pelo seletor global da sidebar.
+- Ao clicar "Gerar Mês", usar a competencia mensal ativa para chamar o endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
 - Abaixo, tabela com todas as recorrencias cadastradas.
 - Colunas: descricao, tipo, grupo, valor, categoria, metodo, dia, status, inicio, fim, acoes.
 - Ações por linha discretas: editar, pausar, cancelar, reativar (conforme status atual).

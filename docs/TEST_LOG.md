@@ -192,3 +192,14 @@
   - uso futuro do skill contra a URL alvo para gerar evidencias de UI/rede
 - Observacao:
   - Neste registro, ainda nao houve rodada funcional no navegador; apenas a preparacao e validacao estrutural do skill.
+
+## 2026-03-14 — DEV-163/DEV-164: Filtro global de competencia mensal (sidebar)
+- Ambiente: local.
+- Verificacoes:
+  - Build: `npm run build` OK.
+- Checklist manual (UI):
+  - Alterar a competência no seletor global da sidebar (input de mês + setas).
+  - Confirmar que Dashboard recarrega os cards e blocos conforme o mês ativo.
+  - Navegar para Lançamentos e confirmar que a lista respeita o mesmo mês.
+  - Navegar para Recorrências e confirmar que "Gerar Mês" usa a competência ativa.
+  - Navegar para Panorama Anual e confirmar que continua usando apenas o seletor de ano.

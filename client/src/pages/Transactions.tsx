@@ -6,6 +6,7 @@ import ModalConfirmacao from "../components/ModalConfirmacao";
 import type { Transacao } from "../model/transacao";
 import { alternarPagoOptimista } from "../service/transacoes.service";
 import { CabecalhoConteudo } from "../components/CabecalhoConteudo";
+import { useCompetenciaMensal } from "../context/CompetenciaMensalContext";
 import { Search, Plus, Pencil, Trash2, Check } from "lucide-react";
 
 const formatCurrency = (cents: number) =>
@@ -22,15 +23,10 @@ type MetodoPagamento = { id: number; name: string };
 
 type ChipStatus = "todos" | "pagos" | "pendentes" | "atrasados";
 
-const mesAtual = () => {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-};
-
 const hojeISO = () => new Date().toISOString().slice(0, 10);
 
 export default function Transactions() {
-  const [month] = useState(mesAtual);
+  const { competenciaMensal } = useCompetenciaMensal();
   const [transactions, setTransactions] = useState<Transacao[]>([]);
   const [categories, setCategories] = useState<Categoria[]>([]);
   const [methods, setMethods] = useState<MetodoPagamento[]>([]);
@@ -48,7 +44,7 @@ export default function Transactions() {
   const [erroPagoPorId, setErroPagoPorId] = useState<Record<number, string>>({});
 
   const carregarTransacoes = () => {
-    const params: Record<string, string> = { month };
+    const params: Record<string, string> = { month: competenciaMensal };
     if (filters.categoryId) params.categoryId = filters.categoryId;
     if (filters.methodId) params.methodId = filters.methodId;
     if (filters.type) params.type = filters.type;
@@ -62,7 +58,7 @@ export default function Transactions() {
 
   useEffect(() => {
     carregarTransacoes();
-  }, [filters]);
+  }, [filters, competenciaMensal]);
 
   const nomeCategoriaPorId = useMemo(() => {
     const mapa = new Map<number, string>();

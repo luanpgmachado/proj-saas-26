@@ -11,6 +11,7 @@ import {
   LineChart,
 } from "lucide-react";
 import { LinkNavegacao } from "./LinkNavegacao";
+import { SeletorCompetenciaMensal } from "./SeletorCompetenciaMensal";
 
 type ItemNav = {
   href: string;
@@ -59,7 +60,7 @@ export function BarraLateral() {
   return (
     <aside
       className={[
-        "relative flex flex-col bg-sidebar h-screen sticky top-0 transition-smooth",
+        "flex flex-col bg-sidebar h-screen sticky top-0 transition-smooth overflow-x-hidden",
         recolhida ? "w-16" : "w-60",
       ].join(" ")}
       aria-label="Menu principal"
@@ -71,6 +72,25 @@ export function BarraLateral() {
         {recolhida ? null : (
           <span className="font-semibold text-foreground text-sm tracking-tight">Finança Familiar</span>
         )}
+        <button
+          type="button"
+          onClick={alternar}
+          className={[
+            "ml-auto flex items-center justify-center transition-smooth focus-ring shadow-card-sm border",
+            recolhida
+              ? "w-10 h-10 rounded-xl bg-primary/10 border-primary/30 text-primary hover:bg-primary/15"
+              : "w-9 h-9 rounded-md bg-surface border-input text-muted-foreground hover:text-foreground hover:bg-secondary",
+          ].join(" ")}
+          aria-label={recolhida ? "Expandir menu lateral" : "Recolher menu lateral"}
+          title={recolhida ? "Expandir menu lateral" : "Recolher menu lateral"}
+        >
+          <ChevronLeft
+            className={[
+              "transition-smooth",
+              recolhida ? "w-4.5 h-4.5 rotate-180" : "w-4 h-4",
+            ].join(" ")}
+          />
+        </button>
       </div>
 
       <nav className="flex-1 px-2 py-4 space-y-6 overflow-y-auto">
@@ -105,15 +125,15 @@ export function BarraLateral() {
         </div>
       </nav>
 
-      <button
-        type="button"
-        onClick={alternar}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-surface shadow-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-smooth"
-        aria-label={recolhida ? "Expandir menu lateral" : "Recolher menu lateral"}
+      <footer
+        className={[
+          "px-2 pb-3 flex justify-center",
+          recolhida ? "pt-0" : "pt-1.5",
+        ].join(" ")}
+        aria-label="Competência mensal"
       >
-        <ChevronLeft className={["w-3.5 h-3.5 transition-smooth", recolhida ? "rotate-180" : ""].join(" ")} />
-      </button>
+        <SeletorCompetenciaMensal recolhida={recolhida} />
+      </footer>
     </aside>
   );
 }
-

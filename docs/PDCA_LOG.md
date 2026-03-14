@@ -215,3 +215,15 @@
   - Criado runbook local em `.codex/napkin.md` para registrar o padrao de skills locais.
 - **Check:** Validacao do skill executada com `quick_validate.py`.
 - **Act:** Issue `DEV-151` atualizada no Linear com caminho dos artefatos e estado.
+
+## 2026-03-14 — Filtro global de competencia mensal na sidebar (DEV-163, DEV-164)
+- **Plan:** Corrigir inconsistência de contexto entre telas ao unificar a competência mensal (YYYY-MM) em uma fonte única e expor um seletor global na sidebar, sem impactar o Panorama Anual.
+- **Do:**
+  - Docs: atualizado `docs/UX_BLUEPRINT.md` para refletir seletor global de competência na sidebar e remoção de seletores locais do topo (Dashboard e Recorrências).
+  - Linear: criado projeto "Filtro global de competência mensal" e issues `DEV-163` (bugfix) e `DEV-164` (feature).
+  - Frontend:
+    - Criado provider global `CompetenciaMensalProvider` com persistência em `localStorage`.
+    - Criado componente de UI `SeletorCompetenciaMensal` na sidebar.
+    - Migradas telas Dashboard, Lançamentos e Recorrências para consumir a competência global.
+- **Check:** `npm run build` executado com sucesso.
+- **Act:** Registrar evidências e checklist manual em `docs/TEST_LOG.md`.

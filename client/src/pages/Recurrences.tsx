@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "../lib/api";
 import { CabecalhoConteudo } from "../components/CabecalhoConteudo";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { useCompetenciaMensal } from "../context/CompetenciaMensalContext";
 import { PlayCircle, Plus, Repeat } from "lucide-react";
 
 type Recurrence = {
@@ -43,16 +44,11 @@ const traduzirStatus = (status: string) => {
   return "Cancelada";
 };
 
-const mesAtual = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-};
-
 export default function Recurrences() {
+  const { competenciaMensal } = useCompetenciaMensal();
   const [recorrencias, setRecorrencias] = useState<Recurrence[]>([]);
   const [categorias, setCategorias] = useState<Category[]>([]);
   const [metodos, setMetodos] = useState<PaymentMethod[]>([]);
-  const [mesSelecionado, setMesSelecionado] = useState(mesAtual());
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(false);
 
@@ -218,8 +214,8 @@ export default function Recurrences() {
     setCarregando(true);
     setMensagem(null);
     try {
-      const transacoes = await api.generateRecurrences(mesSelecionado);
-      setMensagem(`${transacoes.length} transação(ões) criada(s) para ${mesSelecionado}.`);
+      const transacoes = await api.generateRecurrences(competenciaMensal);
+      setMensagem(`${transacoes.length} transação(ões) criada(s) para ${competenciaMensal}.`);
     } catch {
       setMensagem("Erro ao gerar transações.");
     } finally {
@@ -232,15 +228,6 @@ export default function Recurrences() {
       <CabecalhoConteudo
         titulo="Recorrências"
         subtitulo="Lançamentos automáticos mensais"
-        seletorDireita={
-          <input
-            type="month"
-            value={mesSelecionado}
-            onChange={(e) => setMesSelecionado(e.target.value)}
-            className="h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
-            aria-label="Mês para gerar"
-          />
-        }
         acaoDireita={
           <div className="flex gap-2">
             <button
@@ -571,7 +558,7 @@ export default function Recurrences() {
       <ModalConfirmacao
         aberto={confirmarGeracao}
         titulo="Gerar Lançamentos do Mês"
-        mensagem={`Isso criará lançamentos para ${mesSelecionado}. Deseja confirmar a geração?`}
+        mensagem={`Isso criará lançamentos para ${competenciaMensal}. Deseja confirmar a geração?`}
         aoConfirmar={gerarMes}
         aoCancelar={() => setConfirmarGeracao(false)}
         confirmando={carregando}
