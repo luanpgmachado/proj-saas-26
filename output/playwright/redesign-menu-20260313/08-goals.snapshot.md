@@ -1,0 +1,40 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Pular para o conteúdo" [ref=e6] [cursor=pointer]:
+        - /url: "#conteudo"
+      - heading "Finança Familiar" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - complementary "Menu principal" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Visão
+        - navigation "Visão" [ref=e12]:
+          - link "Visão do Mês" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Panorama Anual" [ref=e14] [cursor=pointer]:
+            - /url: /annual
+      - generic [ref=e15]:
+        - generic [ref=e16]: Operação
+        - navigation "Operação" [ref=e17]:
+          - link "Lançamentos" [ref=e18] [cursor=pointer]:
+            - /url: /transactions
+          - link "Recorrências" [ref=e19] [cursor=pointer]:
+            - /url: /recurrences
+      - generic [ref=e20]:
+        - generic [ref=e21]: Planejamento
+        - navigation "Planejamento" [ref=e22]:
+          - link "Metas" [active] [ref=e23] [cursor=pointer]:
+            - /url: /goals
+          - link "Investimentos / Reserva" [ref=e24] [cursor=pointer]:
+            - /url: /investments
+      - generic [ref=e25]:
+        - generic [ref=e26]: Cadastros
+        - navigation "Cadastros" [ref=e27]:
+          - link "Métodos de Pagamento" [ref=e28] [cursor=pointer]:
+            - /url: /payment-methods
+    - main [ref=e29]:
+      - generic [ref=e135]:
+        - generic [ref=e136]:
+          - heading "Metas Financeiras" [level=2] [ref=e137]
+          - button "+ Nova Meta" [ref=e138] [cursor=pointer]
+        - paragraph [ref=e140]: Nenhuma meta cadastrada.

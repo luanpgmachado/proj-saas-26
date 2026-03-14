@@ -90,6 +90,28 @@
   - UI: labels e titulos com acentuação PT-BR (menu + telas principais).
   - UI: labels de formulários e tabelas com acentuação PT-BR (ex: Descrição, Saída, Método, Mês).
 
+## 2026-03-13 — DEV-154: Validacao CRUD visual + contrato (Playwright)
+- Ambiente: local (Vite `http://localhost:5000` + Express `http://localhost:3001/api`).
+- Banco: Postgres via Docker em `localhost:5433` (schema aplicado com `npm run db:push`).
+- Motivacao: antes do ajuste, a API retornava `500` com mensagem genérica quando o DB estava indisponível (ex: túnel não ativo). Após o fix em `server/index.ts`, a resposta inclui a causa (ex: `ECONNREFUSED`).
+- Fluxos validados (matriz prioritaria):
+  - Categorias (criar `CODX Categoria 20260313`; criar `CODX Receita 20260313`).
+  - Métodos de Pagamento (criar `CODX PIX 20260313`).
+  - Lançamentos (criar saída `CODX Lanche`; marcar como pago; criar entrada `CODX Salário` e confirmar ausência de checkbox de pago).
+  - Recorrências (criar `CODX Internet`; acionar `Gerar Mês`).
+- Evidências (artefatos Playwright):
+  - `output/playwright/dev-154-20260313/01-dashboard.png`
+  - `output/playwright/dev-154-20260313/02-transactions.png`
+  - `output/playwright/dev-154-20260313/07-metodo-criado.png`
+  - `output/playwright/dev-154-20260313/10-transacao-criada.png`
+  - `output/playwright/dev-154-20260313/11-transacao-paga.png`
+  - `output/playwright/dev-154-20260313/15-transacao-entry-criada.png`
+  - `output/playwright/dev-154-20260313/18-recurrence-criada-2.png`
+  - `output/playwright/dev-154-20260313/19-gerar-mes.png`
+- Observacoes de divergencia (para follow-up, fora do escopo do DEV-154):
+  - Tela de Métodos de Pagamento expõe `type` em PT-BR (PIX/Dinheiro/...) enquanto `docs/API_CONTRACT.md` define `cash|transfer|debit|credit_card|other`.
+  - Rede capturada via `playwright-cli network` registra verbos/URLs/status, mas não inclui payload completo (para auditoria de payload, usar captura adicional no backend ou interceptação dedicada).
+
 ## 2026-02-18 — Recorrencias (endDate obrigatorio para parcelado)
 - Ambiente: local.
 - Verificacoes:

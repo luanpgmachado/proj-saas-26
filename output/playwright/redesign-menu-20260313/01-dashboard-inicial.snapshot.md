@@ -1,0 +1,65 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Pular para o conteúdo" [ref=e6] [cursor=pointer]:
+        - /url: "#conteudo"
+      - heading "Finança Familiar" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - complementary "Menu principal" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Visão
+        - navigation "Visão" [ref=e12]:
+          - link "Visão do Mês" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Panorama Anual" [ref=e14] [cursor=pointer]:
+            - /url: /annual
+      - generic [ref=e15]:
+        - generic [ref=e16]: Operação
+        - navigation "Operação" [ref=e17]:
+          - link "Lançamentos" [ref=e18] [cursor=pointer]:
+            - /url: /transactions
+          - link "Recorrências" [ref=e19] [cursor=pointer]:
+            - /url: /recurrences
+      - generic [ref=e20]:
+        - generic [ref=e21]: Planejamento
+        - navigation "Planejamento" [ref=e22]:
+          - link "Metas" [ref=e23] [cursor=pointer]:
+            - /url: /goals
+          - link "Investimentos / Reserva" [ref=e24] [cursor=pointer]:
+            - /url: /investments
+      - generic [ref=e25]:
+        - generic [ref=e26]: Cadastros
+        - navigation "Cadastros" [ref=e27]:
+          - link "Métodos de Pagamento" [ref=e28] [cursor=pointer]:
+            - /url: /payment-methods
+    - main [ref=e29]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic "Seletor de mês" [ref=e34]:
+            - button "Mês anterior" [ref=e35] [cursor=pointer]: <
+            - generic "2026-03" [ref=e36]: mar/2026
+            - button "Proximo mês" [ref=e37] [cursor=pointer]: ">"
+          - button "+ Novo Lançamento" [ref=e38] [cursor=pointer]
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - heading "Entradas" [level=3] [ref=e41]
+            - generic [ref=e42]: R$ 0,00
+          - generic [ref=e43]:
+            - heading "Saidas" [level=3] [ref=e44]
+            - generic [ref=e45]: R$ 0,00
+          - generic [ref=e46]:
+            - heading "Valor Pago" [level=3] [ref=e47]
+            - generic [ref=e48]: R$ 0,00
+          - generic [ref=e49]:
+            - heading "Saldo Real" [level=3] [ref=e50]
+            - generic [ref=e51]: R$ 0,00
+            - generic [ref=e52]: "Saldo Projetado: R$ 0,00"
+        - generic [ref=e53]:
+          - heading "Gastos por Categoria" [level=3] [ref=e54]
+          - paragraph [ref=e55]: Nenhuma categoria de despesa cadastrada.
+        - generic [ref=e56]:
+          - button "Fixos" [ref=e57] [cursor=pointer]
+          - button "Variáveis" [ref=e58] [cursor=pointer]
+          - button "Parcelados" [ref=e59] [cursor=pointer]
+          - button "Entradas" [ref=e60] [cursor=pointer]
+        - paragraph [ref=e62]: Nenhum lançamento nesta categoria.

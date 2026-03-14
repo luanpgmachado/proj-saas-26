@@ -98,6 +98,18 @@
 - **Check:** `npm run build` executado com sucesso; output em chunks por pagina.
 - **Act:** Registro de testes atualizado em `docs/TEST_LOG.md`.
 
+## 2026-03-13 — DEV-154: Erro de API em dev (mensagem vazia)
+- **Plan:** Corrigir erro recorrente em dev onde a API retornava `500` com mensagem genérica (sem indicar a causa), bloqueando validação via Playwright.
+- **Do:**
+  - Backend: aprimorado `server/index.ts` para extrair mensagem útil em erros sem `message` (ex: `AggregateError` de conexão) e logar detalhes em stderr.
+  - Operação local: criado Postgres descartável via Docker em `localhost:5433` e aplicado schema com `npm run db:push` para viabilizar testes.
+- **Check:**
+  - `GET /api/categories` quando DB indisponível agora retorna erro explícito (ex: `connect ECONNREFUSED ::1:5433`), evitando “Internal Server Error” sem causa.
+  - CRUDs prioritários validados via Playwright (evidências em `output/playwright/dev-154-20260313/`).
+- **Act:**
+  - Registro de testes atualizado em `docs/TEST_LOG.md`.
+  - Comentário adicionado no Linear (DEV-154) com o diagnóstico e evidências.
+
 ## 2026-02-13 — Controle de Pagamento (Lancamentos Mensais)
 - **Plan:** Adicionar controle de pagamento em lancamentos (`transactions`) do tipo `exit`, com toggle otimista na UI e ajustes de saldo (Real vs Projetado), sem tocar recorrencias.
 - **Do:**

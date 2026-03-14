@@ -2,6 +2,7 @@ import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import util from "util";
 import routes from "./routes";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,10 +25,39 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+function extrairMensagemErro(err: unknown): string | undefined {
+  if (typeof (err as any)?.message === "string") {
+    const mensagem = (err as any).message.trim();
+    if (mensagem.length > 0) return mensagem;
+  }
+
+  if (typeof err === "string") {
+    const mensagem = err.trim();
+    if (mensagem.length > 0) return mensagem;
+  }
+
+  // Alguns erros do Node (ex: AggregateError de conexao) podem vir sem message no topo.
+  const errosAgregados: unknown[] | undefined = (err as any)?.errors;
+  if (Array.isArray(errosAgregados) && errosAgregados.length > 0) {
+    for (const subErro of errosAgregados) {
+      const msg = extrairMensagemErro(subErro);
+      if (msg) return msg;
+    }
+  }
+
+  return undefined;
+}
+
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   const status = typeof (err as any)?.statusCode === "number" ? (err as any).statusCode : 500;
-  console.error("Error:", err.message);
-  res.status(status).json({ error: err.message || "Internal Server Error" });
+  const isProd = process.env.NODE_ENV === "production";
+  const mensagemDev = extrairMensagemErro(err) ?? "Internal Server Error";
+  const mensagem = status >= 500 && isProd ? "Internal Server Error" : mensagemDev;
+
+  console.error("Error:", mensagemDev);
+  console.error(util.inspect(err, { depth: 6, colors: false }));
+
+  res.status(status).json({ error: mensagem });
 };
 app.use(errorHandler);
 

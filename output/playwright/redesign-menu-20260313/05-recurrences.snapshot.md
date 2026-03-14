@@ -1,0 +1,62 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Pular para o conteúdo" [ref=e6] [cursor=pointer]:
+        - /url: "#conteudo"
+      - heading "Finança Familiar" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - complementary "Menu principal" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Visão
+        - navigation "Visão" [ref=e12]:
+          - link "Visão do Mês" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Panorama Anual" [ref=e14] [cursor=pointer]:
+            - /url: /annual
+      - generic [ref=e15]:
+        - generic [ref=e16]: Operação
+        - navigation "Operação" [ref=e17]:
+          - link "Lançamentos" [ref=e18] [cursor=pointer]:
+            - /url: /transactions
+          - link "Recorrências" [active] [ref=e19] [cursor=pointer]:
+            - /url: /recurrences
+      - generic [ref=e20]:
+        - generic [ref=e21]: Planejamento
+        - navigation "Planejamento" [ref=e22]:
+          - link "Metas" [ref=e23] [cursor=pointer]:
+            - /url: /goals
+          - link "Investimentos / Reserva" [ref=e24] [cursor=pointer]:
+            - /url: /investments
+      - generic [ref=e25]:
+        - generic [ref=e26]: Cadastros
+        - navigation "Cadastros" [ref=e27]:
+          - link "Métodos de Pagamento" [ref=e28] [cursor=pointer]:
+            - /url: /payment-methods
+    - main [ref=e29]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - heading "Recorrências" [level=2] [ref=e80]
+            - generic "Seletor de mês" [ref=e81]:
+              - textbox [ref=e82]: 2026-03
+          - generic [ref=e83]:
+            - button "Gerar Mês" [ref=e84] [cursor=pointer]
+            - button "+ Nova Recorrência" [ref=e85] [cursor=pointer]
+        - generic "Tabela de recorrências" [ref=e86]:
+          - table [ref=e87]:
+            - rowgroup [ref=e88]:
+              - row "Descrição Tipo Grupo Valor Categoria Método Dia Status Início Fim Ações" [ref=e89]:
+                - columnheader "Descrição" [ref=e90]
+                - columnheader "Tipo" [ref=e91]
+                - columnheader "Grupo" [ref=e92]
+                - columnheader "Valor" [ref=e93]
+                - columnheader "Categoria" [ref=e94]
+                - columnheader "Método" [ref=e95]
+                - columnheader "Dia" [ref=e96]
+                - columnheader "Status" [ref=e97]
+                - columnheader "Início" [ref=e98]
+                - columnheader "Fim" [ref=e99]
+                - columnheader "Ações" [ref=e100]
+            - rowgroup [ref=e101]:
+              - row "Nenhuma recorrência cadastrada." [ref=e102]:
+                - cell "Nenhuma recorrência cadastrada." [ref=e103]

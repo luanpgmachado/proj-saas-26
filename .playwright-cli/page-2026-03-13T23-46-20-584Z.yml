@@ -1,0 +1,81 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Pular para o conteúdo" [ref=e6] [cursor=pointer]:
+        - /url: "#conteudo"
+      - heading "Finança Familiar" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - complementary "Menu principal" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Visão
+        - navigation "Visão" [ref=e12]:
+          - link "Visão do Mês" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Panorama Anual" [ref=e14] [cursor=pointer]:
+            - /url: /annual
+      - generic [ref=e15]:
+        - generic [ref=e16]: Operação
+        - navigation "Operação" [ref=e17]:
+          - link "Lançamentos" [ref=e18] [cursor=pointer]:
+            - /url: /transactions
+          - link "Recorrências" [ref=e19] [cursor=pointer]:
+            - /url: /recurrences
+      - generic [ref=e20]:
+        - generic [ref=e21]: Planejamento
+        - navigation "Planejamento" [ref=e22]:
+          - link "Metas" [ref=e23] [cursor=pointer]:
+            - /url: /goals
+          - link "Investimentos / Reserva" [ref=e24] [cursor=pointer]:
+            - /url: /investments
+      - generic [ref=e25]:
+        - generic [ref=e26]: Cadastros
+        - navigation "Cadastros" [ref=e27]:
+          - link "Métodos de Pagamento" [ref=e28] [cursor=pointer]:
+            - /url: /payment-methods
+    - main [ref=e29]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "Lançamentos" [level=2] [ref=e33]
+          - button "+ Novo Lançamento" [ref=e34] [cursor=pointer]
+        - generic [ref=e35]:
+          - textbox [ref=e36]: 2026-03
+          - combobox [ref=e37]:
+            - option "Todas categorias"
+            - option "CODX Categoria 20260313"
+            - option "CODX Receita 20260313" [selected]
+          - generic [ref=e38]:
+            - button "+ Nova categoria" [ref=e39] [cursor=pointer]
+            - button "Editar categoria" [ref=e107] [cursor=pointer]
+            - button "Excluir categoria" [ref=e108] [cursor=pointer]
+          - combobox [ref=e40]:
+            - option "Todos métodos" [selected]
+            - option "CODX PIX 20260313"
+          - combobox [ref=e41]:
+            - option "Todos tipos" [selected]
+            - option "Entrada"
+            - option "Saída"
+          - button "Limpar filtros" [ref=e42] [cursor=pointer]
+        - generic "Tabela de lançamentos" [ref=e134]:
+          - table [ref=e135]:
+            - rowgroup [ref=e136]:
+              - row "Data Descrição Tipo Categoria Método Valor Pago" [ref=e137]:
+                - columnheader "Data" [ref=e138]
+                - columnheader "Descrição" [ref=e139]
+                - columnheader "Tipo" [ref=e140]
+                - columnheader "Categoria" [ref=e141]
+                - columnheader "Método" [ref=e142]
+                - columnheader "Valor" [ref=e143]
+                - columnheader "Pago" [ref=e144]
+                - columnheader [ref=e145]
+            - rowgroup [ref=e146]:
+              - row "2026-03-13 CODX Salário Entrada CODX Receita 20260313 CODX PIX 20260313 R$ 1,00 Editar Excluir" [ref=e147]:
+                - cell "2026-03-13" [ref=e148]
+                - cell "CODX Salário" [ref=e149]
+                - cell "Entrada" [ref=e150]
+                - cell "CODX Receita 20260313" [ref=e151]
+                - cell "CODX PIX 20260313" [ref=e152]
+                - cell "R$ 1,00" [ref=e153]
+                - cell [ref=e154]
+                - cell "Editar Excluir" [ref=e155]:
+                  - button "Editar" [ref=e156] [cursor=pointer]
+                  - button "Excluir" [ref=e157] [cursor=pointer]

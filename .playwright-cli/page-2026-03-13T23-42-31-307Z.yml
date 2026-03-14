@@ -1,0 +1,78 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Pular para o conteúdo" [ref=e6] [cursor=pointer]:
+        - /url: "#conteudo"
+      - heading "Finança Familiar" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - complementary "Menu principal" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Visão
+        - navigation "Visão" [ref=e12]:
+          - link "Visão do Mês" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Panorama Anual" [ref=e14] [cursor=pointer]:
+            - /url: /annual
+      - generic [ref=e15]:
+        - generic [ref=e16]: Operação
+        - navigation "Operação" [ref=e17]:
+          - link "Lançamentos" [ref=e18] [cursor=pointer]:
+            - /url: /transactions
+          - link "Recorrências" [ref=e19] [cursor=pointer]:
+            - /url: /recurrences
+      - generic [ref=e20]:
+        - generic [ref=e21]: Planejamento
+        - navigation "Planejamento" [ref=e22]:
+          - link "Metas" [ref=e23] [cursor=pointer]:
+            - /url: /goals
+          - link "Investimentos / Reserva" [ref=e24] [cursor=pointer]:
+            - /url: /investments
+      - generic [ref=e25]:
+        - generic [ref=e26]: Cadastros
+        - navigation "Cadastros" [ref=e27]:
+          - link "Métodos de Pagamento" [ref=e28] [cursor=pointer]:
+            - /url: /payment-methods
+    - main [ref=e29]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "Lançamentos" [level=2] [ref=e33]
+          - button "+ Novo Lançamento" [ref=e34] [cursor=pointer]
+        - generic [ref=e35]:
+          - textbox [ref=e36]: 2026-03
+          - combobox [ref=e37]:
+            - option "Todas categorias" [selected]
+            - option "CODX Categoria 20260313"
+          - button "+ Nova categoria" [ref=e39] [cursor=pointer]
+          - combobox [ref=e40]:
+            - option "Todos métodos" [selected]
+            - option "CODX PIX 20260313"
+          - combobox [ref=e41]:
+            - option "Todos tipos" [selected]
+            - option "Entrada"
+            - option "Saída"
+          - button "Limpar filtros" [ref=e42] [cursor=pointer]
+        - generic "Tabela de lançamentos" [ref=e69]:
+          - table [ref=e70]:
+            - rowgroup [ref=e71]:
+              - row "Data Descrição Tipo Categoria Método Valor Pago" [ref=e72]:
+                - columnheader "Data" [ref=e73]
+                - columnheader "Descrição" [ref=e74]
+                - columnheader "Tipo" [ref=e75]
+                - columnheader "Categoria" [ref=e76]
+                - columnheader "Método" [ref=e77]
+                - columnheader "Valor" [ref=e78]
+                - columnheader "Pago" [ref=e79]
+                - columnheader [ref=e80]
+            - rowgroup [ref=e81]:
+              - row "2026-03-13 CODX Lanche Saída CODX Categoria 20260313 CODX PIX 20260313 R$ 0,10 Marcar lancamento CODX Lanche como pago Editar Excluir" [ref=e82]:
+                - cell "2026-03-13" [ref=e83]
+                - cell "CODX Lanche" [ref=e84]
+                - cell "Saída" [ref=e85]
+                - cell "CODX Categoria 20260313" [ref=e86]
+                - cell "CODX PIX 20260313" [ref=e87]
+                - cell "R$ 0,10" [ref=e88]
+                - cell "Marcar lancamento CODX Lanche como pago" [ref=e89]:
+                  - checkbox "Marcar lancamento CODX Lanche como pago" [ref=e91]
+                - cell "Editar Excluir" [ref=e92]:
+                  - button "Editar" [ref=e93] [cursor=pointer]
+                  - button "Excluir" [ref=e94] [cursor=pointer]

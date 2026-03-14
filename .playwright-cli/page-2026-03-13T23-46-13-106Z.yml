@@ -1,0 +1,98 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Pular para o conteúdo" [ref=e6] [cursor=pointer]:
+        - /url: "#conteudo"
+      - heading "Finança Familiar" [level=1] [ref=e7]
+  - generic [ref=e8]:
+    - complementary "Menu principal" [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Visão
+        - navigation "Visão" [ref=e12]:
+          - link "Visão do Mês" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Panorama Anual" [ref=e14] [cursor=pointer]:
+            - /url: /annual
+      - generic [ref=e15]:
+        - generic [ref=e16]: Operação
+        - navigation "Operação" [ref=e17]:
+          - link "Lançamentos" [ref=e18] [cursor=pointer]:
+            - /url: /transactions
+          - link "Recorrências" [ref=e19] [cursor=pointer]:
+            - /url: /recurrences
+      - generic [ref=e20]:
+        - generic [ref=e21]: Planejamento
+        - navigation "Planejamento" [ref=e22]:
+          - link "Metas" [ref=e23] [cursor=pointer]:
+            - /url: /goals
+          - link "Investimentos / Reserva" [ref=e24] [cursor=pointer]:
+            - /url: /investments
+      - generic [ref=e25]:
+        - generic [ref=e26]: Cadastros
+        - navigation "Cadastros" [ref=e27]:
+          - link "Métodos de Pagamento" [ref=e28] [cursor=pointer]:
+            - /url: /payment-methods
+    - main [ref=e29]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "Lançamentos" [level=2] [ref=e33]
+          - button "+ Novo Lançamento" [ref=e34] [cursor=pointer]
+        - generic [ref=e35]:
+          - textbox [ref=e36]: 2026-03
+          - combobox [ref=e37]:
+            - option "Todas categorias"
+            - option "CODX Categoria 20260313"
+            - option "CODX Receita 20260313" [selected]
+          - generic [ref=e38]:
+            - button "+ Nova categoria" [ref=e39] [cursor=pointer]
+            - button "Editar categoria" [ref=e107] [cursor=pointer]
+            - button "Excluir categoria" [ref=e108] [cursor=pointer]
+          - combobox [ref=e40]:
+            - option "Todos métodos" [selected]
+            - option "CODX PIX 20260313"
+          - combobox [ref=e41]:
+            - option "Todos tipos" [selected]
+            - option "Entrada"
+            - option "Saída"
+          - button "Limpar filtros" [ref=e42] [cursor=pointer]
+        - paragraph [ref=e109]: Nenhum lançamento encontrado.
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - heading "Novo lançamento" [level=3] [ref=e113]
+            - button "Fechar" [ref=e114] [cursor=pointer]
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - generic [ref=e117]:
+                - text: Descrição
+                - textbox "Descrição" [ref=e118]: CODX Salário
+              - generic [ref=e119]:
+                - text: Valor (R$)
+                - textbox "Valor (R$)" [active] [ref=e120]:
+                  - /placeholder: R$ 0,00
+                  - text: R$ 1,00
+              - generic [ref=e121]:
+                - text: Tipo
+                - combobox "Tipo" [ref=e122]:
+                  - option "Entrada" [selected]
+                  - option "Saída"
+              - generic [ref=e123]:
+                - text: Grupo
+                - combobox "Grupo" [disabled] [ref=e124]:
+                  - option "Entrada" [selected]
+              - generic [ref=e125]:
+                - text: Data
+                - textbox "Data" [ref=e126]: 2026-03-13
+              - generic [ref=e127]:
+                - text: Categoria
+                - combobox "Categoria" [ref=e128]:
+                  - option "Selecione"
+                  - option "CODX Categoria 20260313"
+                  - option "CODX Receita 20260313" [selected]
+              - generic [ref=e129]:
+                - text: Método de pagamento
+                - combobox "Método de pagamento" [ref=e130]:
+                  - option "Selecione" [selected]
+                  - option "CODX PIX 20260313"
+            - generic [ref=e131]:
+              - button "Cancelar" [ref=e132] [cursor=pointer]
+              - button "Salvar" [disabled] [ref=e133]
