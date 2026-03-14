@@ -1,5 +1,34 @@
 # Registro de Testes
 
+## 2026-03-14 — Migracao visual Layout 3.0 (DEV-162)
+- Ambiente: local (Vite + Express).
+- Verificacoes:
+  - `npm run build` OK.
+  - Rotas renderizando com novo layout: `/`, `/transactions`, `/recurrences`, `/categories`, `/payment-methods`, `/annual`, `/goals`, `/investments`.
+  - Modais reestilizados: lancamento e confirmacao (exclusoes/geracao).
+- Validacao visual:
+  - Comparar manualmente com os prints em `output/playwright/layout-3.0-lovable/`.
+
+## 2026-03-14 — DEV-162: Validacao CRUD visual + contrato (Playwright) — Layout 3.0
+- Ambiente: local (`http://localhost:5000`).
+- Sessao Playwright: `dev162`.
+- Evidencias: `output/playwright/dev-162-20260313-230715/.playwright-cli/`.
+- Fluxos validados (matriz prioritaria):
+  - Categorias (`/categories`): criar/editar/excluir + bloqueio `409` ao excluir em uso.
+  - Lancamentos (`/transactions`): criar/editar/excluir + toggle `Pago` apenas para `exit` (entrada sem checkbox).
+  - Metodos de Pagamento (`/payment-methods`): criar/editar/excluir (nao-cartao e cartao com fechamento/vencimento).
+  - Recorrencias (`/recurrences`): criar/editar/pausar/cancelar/reativar + `Gerar Mes` (`POST /api/recurrences/generate?month=YYYY-MM`).
+- Fluxos validados (matriz secundaria):
+  - Metas (`/goals`): criar/editar/excluir + criar/excluir aporte.
+  - Reserva/Investimentos (`/investments`): criar/editar/excluir reserva + aporte; criar/editar/excluir investimento + aporte.
+  - Smoke: Dashboard (`/`) e Panorama Anual (`/annual`) carregando e chamando endpoints canônicos.
+- Bugs corrigidos durante a rodada:
+  - `client/src/pages/Recurrences.tsx`: corrigido `ReferenceError: categoryId is not defined` e ajustado payload/validacoes.
+  - `client/src/pages/PaymentMethods.tsx`: acoes nos cards de cartao com `z-index` para evitar clique bloqueado por elementos do card.
+- Observacoes (nao-bloqueantes):
+  - `GET /api/reserve` retorna `404` quando nao existe reserva (UI trata com botao "Criar", mas o browser registra erro de recurso ausente).
+  - `GET /favicon.ico` retorna `404` no dev server.
+
 ## 2026-01-30 — Backend local (recorrencias)
 - Ambiente: local com tunel SSH e `DATABASE_URL` apontando para VM.
 - Cenarios testados (assumidos para teste):

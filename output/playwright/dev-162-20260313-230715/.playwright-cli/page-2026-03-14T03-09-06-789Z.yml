@@ -1,0 +1,103 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e755]:
+      - generic [ref=e756]:
+        - generic [ref=e757]:
+          - heading "Categorias" [level=2] [ref=e758]
+          - paragraph [ref=e759]: Organize seus lançamentos por tipo
+        - button "Nova Categoria" [ref=e761] [cursor=pointer]:
+          - img [ref=e762]
+          - text: Nova Categoria
+      - generic [ref=e763]:
+        - generic [ref=e764]:
+          - generic [ref=e765]:
+            - generic [ref=e766]:
+              - generic [ref=e767]: C
+              - generic [ref=e768]:
+                - paragraph [ref=e769]: CODX Categoria 20260313
+                - paragraph [ref=e770]: 4 lançamentos · Despesa
+            - generic [ref=e771]:
+              - button "Editar CODX Categoria 20260313" [ref=e772] [cursor=pointer]:
+                - img [ref=e773]
+              - button "Excluir CODX Categoria 20260313" [ref=e776] [cursor=pointer]:
+                - img [ref=e777]
+          - generic [ref=e782]:
+            - img [ref=e783]
+            - generic [ref=e787]: "Orçamento: R$ 1,00"
+        - generic [ref=e789]:
+          - generic [ref=e790]:
+            - generic [ref=e791]: C
+            - generic [ref=e792]:
+              - paragraph [ref=e793]: CODX Receita 20260313
+              - paragraph [ref=e794]: 1 lançamento · Receita
+          - generic [ref=e795]:
+            - button "Editar CODX Receita 20260313" [ref=e796] [cursor=pointer]:
+              - img [ref=e797]
+            - button "Excluir CODX Receita 20260313" [ref=e800] [cursor=pointer]:
+              - img [ref=e801]
+        - generic [ref=e825]:
+          - generic [ref=e826]:
+            - generic [ref=e827]: C
+            - generic [ref=e828]:
+              - paragraph [ref=e829]: CODX Cat Em Uso 20260314-1
+              - paragraph [ref=e830]: 0 lançamentos · Despesa
+          - generic [ref=e831]:
+            - button "Editar CODX Cat Em Uso 20260314-1" [ref=e832] [cursor=pointer]:
+              - img [ref=e833]
+            - button "Excluir CODX Cat Em Uso 20260314-1" [ref=e836] [cursor=pointer]:
+              - img [ref=e837]

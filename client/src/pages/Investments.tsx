@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { api } from "../lib/api";
 import ModalConfirmacao from "../components/ModalConfirmacao";
+import { CabecalhoConteudo } from "../components/CabecalhoConteudo";
+import { Plus, X } from "lucide-react";
 
-const formatCurrency = (cents: number) => {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
-};
+const formatCurrency = (cents: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 
 type Investment = {
   id: number;
@@ -28,6 +29,7 @@ export default function Investments() {
   const [reserve, setReserve] = useState<Reserve | null>(null);
   const [reserveContributions, setReserveContributions] = useState<Contribution[]>([]);
   const [showReserveContribs, setShowReserveContribs] = useState(false);
+
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [investmentContribs, setInvestmentContribs] = useState<Record<number, Contribution[]>>({});
   const [expandedInvestment, setExpandedInvestment] = useState<number | null>(null);
@@ -37,14 +39,14 @@ export default function Investments() {
   const [formInvestimento, setFormInvestimento] = useState({ name: "" });
   const [salvandoInvestimento, setSalvandoInvestimento] = useState(false);
 
+  const [modalReserva, setModalReserva] = useState(false);
+  const [formReserva, setFormReserva] = useState({ name: "" });
+  const [salvandoReserva, setSalvandoReserva] = useState(false);
+
   const [modalAporteReserva, setModalAporteReserva] = useState(false);
   const [modalAporteInvestimento, setModalAporteInvestimento] = useState<number | null>(null);
   const [formAporte, setFormAporte] = useState({ date: "", amountCents: "" });
   const [salvandoAporte, setSalvandoAporte] = useState(false);
-
-  const [modalReserva, setModalReserva] = useState(false);
-  const [formReserva, setFormReserva] = useState({ name: "" });
-  const [salvandoReserva, setSalvandoReserva] = useState(false);
 
   const [confirmarExclusaoReserva, setConfirmarExclusaoReserva] = useState<number | null>(null);
   const [confirmarExclusaoInv, setConfirmarExclusaoInv] = useState<number | null>(null);
@@ -57,7 +59,9 @@ export default function Investments() {
     api.getInvestments().then(setInvestments).catch(console.error);
   };
 
-  useEffect(() => { carregarDados(); }, []);
+  useEffect(() => {
+    carregarDados();
+  }, []);
 
   const carregarReserveContribs = async () => {
     if (showReserveContribs) {
@@ -69,16 +73,19 @@ export default function Investments() {
     setShowReserveContribs(true);
   };
 
-  const abrirNovaReserva = () => {
-    setFormReserva({ name: "Reserva de Emergencia" });
-    setModalReserva(true);
+  const carregarInvestmentContribs = async (invId: number) => {
+    if (expandedInvestment === invId) {
+      setExpandedInvestment(null);
+      return;
+    }
+    const contribs = await api.getInvestmentContributions(invId);
+    setInvestmentContribs((prev) => ({ ...prev, [invId]: contribs }));
+    setExpandedInvestment(invId);
   };
 
-  const abrirEditarReserva = () => {
-    if (reserve) {
-      setFormReserva({ name: reserve.name });
-      setModalReserva(true);
-    }
+  const abrirNovaReserva = () => {
+    setFormReserva({ name: reserve?.name ?? "Reserva de Emergência" });
+    setModalReserva(true);
   };
 
   const salvarReserva = async (e: React.FormEvent) => {
@@ -112,16 +119,6 @@ export default function Investments() {
     } finally {
       setExcluindo(false);
     }
-  };
-
-  const carregarInvestmentContribs = async (invId: number) => {
-    if (expandedInvestment === invId) {
-      setExpandedInvestment(null);
-      return;
-    }
-    const contribs = await api.getInvestmentContributions(invId);
-    setInvestmentContribs({ ...investmentContribs, [invId]: contribs });
-    setExpandedInvestment(invId);
   };
 
   const abrirNovoInvestimento = () => {
@@ -160,6 +157,7 @@ export default function Investments() {
     try {
       await api.deleteInvestment(confirmarExclusaoInv);
       setConfirmarExclusaoInv(null);
+      setExpandedInvestment(null);
       carregarDados();
     } catch (err) {
       console.error(err);
@@ -172,12 +170,6 @@ export default function Investments() {
     const hoje = new Date().toISOString().split("T")[0];
     setFormAporte({ date: hoje, amountCents: "" });
     setModalAporteReserva(true);
-  };
-
-  const abrirAporteInvestimento = (invId: number) => {
-    const hoje = new Date().toISOString().split("T")[0];
-    setFormAporte({ date: hoje, amountCents: "" });
-    setModalAporteInvestimento(invId);
   };
 
   const salvarAporteReserva = async (e: React.FormEvent) => {
@@ -201,6 +193,12 @@ export default function Investments() {
     }
   };
 
+  const abrirAporteInvestimento = (invId: number) => {
+    const hoje = new Date().toISOString().split("T")[0];
+    setFormAporte({ date: hoje, amountCents: "" });
+    setModalAporteInvestimento(invId);
+  };
+
   const salvarAporteInvestimento = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!modalAporteInvestimento) return;
@@ -214,7 +212,7 @@ export default function Investments() {
       carregarDados();
       if (expandedInvestment === modalAporteInvestimento) {
         const contribs = await api.getInvestmentContributions(modalAporteInvestimento);
-        setInvestmentContribs({ ...investmentContribs, [modalAporteInvestimento]: contribs });
+        setInvestmentContribs((prev) => ({ ...prev, [modalAporteInvestimento]: contribs }));
       }
     } catch (err) {
       console.error(err);
@@ -250,7 +248,7 @@ export default function Investments() {
       carregarDados();
       if (expandedInvestment) {
         const contribs = await api.getInvestmentContributions(expandedInvestment);
-        setInvestmentContribs({ ...investmentContribs, [expandedInvestment]: contribs });
+        setInvestmentContribs((prev) => ({ ...prev, [expandedInvestment]: contribs }));
       }
     } catch (err) {
       console.error(err);
@@ -261,221 +259,420 @@ export default function Investments() {
 
   return (
     <div>
-      <div className="barra-topo">
-        <h2>Reserva e Investimentos</h2>
-      </div>
+      <CabecalhoConteudo
+        titulo="Investimentos / Reserva"
+        subtitulo="Acompanhe sua reserva e contas de investimento"
+        acaoDireita={
+          <button
+            type="button"
+            className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring flex items-center gap-2"
+            onClick={abrirNovoInvestimento}
+          >
+            <Plus className="w-4 h-4" />
+            Novo Investimento
+          </button>
+        }
+      />
 
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <h3>Reserva de Emergencia</h3>
-          {reserve && (
+      <div className="space-y-4">
+        <div className="surface-card p-6">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <button onClick={abrirEditarReserva} style={{ marginRight: 8 }}>Editar</button>
-              <button className="btn-danger" onClick={() => setConfirmarExclusaoReserva(reserve.id)}>Excluir</button>
+              <p className="text-sm font-semibold">{reserve ? reserve.name : "Reserva de Emergência"}</p>
+              <p className="text-xs text-muted-foreground mt-1 tabular-nums">
+                Total: <span className="font-semibold text-foreground">{formatCurrency(reserve?.currentCents ?? 0)}</span>
+              </p>
             </div>
-          )}
-        </div>
-        {reserve ? (
-          <>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <span style={{ fontWeight: 500, marginRight: 12 }}>{reserve.name}</span>
-                <span style={{ fontSize: 24, fontWeight: 700 }}>{formatCurrency(reserve.currentCents)}</span>
-              </div>
-              <div>
-                <button onClick={carregarReserveContribs} style={{ marginRight: 8 }}>
-                  {showReserveContribs ? "Ocultar Aportes" : "Ver Aportes"}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="h-9 px-3 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                onClick={abrirNovaReserva}
+              >
+                {reserve ? "Editar" : "Criar"}
+              </button>
+              {reserve ? (
+                <button
+                  type="button"
+                  className="h-9 px-3 rounded-md border border-input bg-surface text-sm font-medium text-destructive hover:bg-destructive/10 transition-smooth focus-ring"
+                  onClick={() => setConfirmarExclusaoReserva(reserve.id)}
+                >
+                  Excluir
                 </button>
-                <button className="btn-primary" onClick={abrirAporteReserva}>+ Aporte</button>
-              </div>
+              ) : null}
+              <button
+                type="button"
+                className="h-9 px-3 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring"
+                onClick={abrirAporteReserva}
+                disabled={!reserve}
+              >
+                + Aporte
+              </button>
+              <button
+                type="button"
+                className="h-9 px-3 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                onClick={carregarReserveContribs}
+              >
+                {showReserveContribs ? "Ocultar Aportes" : "Ver Aportes"}
+              </button>
             </div>
-            {showReserveContribs && (
-              <div style={{ marginTop: 16, borderTop: "1px solid #eee", paddingTop: 16 }}>
-                <h4 style={{ marginBottom: 12 }}>Aportes</h4>
-                {reserveContributions.length === 0 ? (
-                  <p>Nenhum aporte realizado.</p>
-                ) : (
-                  <table>
+          </div>
+
+          {showReserveContribs ? (
+            <div className="mt-5 surface-card-sm p-4">
+              <p className="text-sm font-semibold">Aportes na Reserva</p>
+              {reserveContributions.length === 0 ? (
+                <p className="text-sm text-muted-foreground mt-2">Nenhum aporte registrado.</p>
+              ) : (
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full text-sm">
                     <thead>
-                      <tr>
-                        <th>Data</th>
-                        <th className="text-right">Valor</th>
-                        <th></th>
+                      <tr className="text-xs text-muted-foreground uppercase tracking-wider">
+                        <th className="text-left font-medium px-4 py-2">Data</th>
+                        <th className="text-right font-medium px-4 py-2">Valor</th>
+                        <th className="text-right font-medium px-4 py-2 w-24"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {reserveContributions.map((c) => (
-                        <tr key={c.id}>
-                          <td>{c.date}</td>
-                          <td className="text-right">{formatCurrency(c.amountCents)}</td>
-                          <td className="text-right">
-                            <button className="btn-danger" onClick={() => setConfirmarExclusaoAporteReserva(c.id)}>Excluir</button>
+                      {reserveContributions.map((c, idx) => (
+                        <tr
+                          key={c.id}
+                          className={[
+                            "hover:bg-muted/30 transition-smooth",
+                            idx < reserveContributions.length - 1 ? "border-b border-border" : "",
+                          ].join(" ")}
+                        >
+                          <td className="px-4 py-2.5 text-muted-foreground tabular-nums">{c.date}</td>
+                          <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(c.amountCents)}</td>
+                          <td className="px-4 py-2.5 text-right">
+                            <button
+                              type="button"
+                              className="text-sm font-medium text-destructive hover:underline underline-offset-4"
+                              onClick={() => setConfirmarExclusaoAporteReserva(c.id)}
+                            >
+                              Excluir
+                            </button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                )}
-              </div>
-            )}
-          </>
-        ) : (
-          <div>
-            <p>Nenhuma reserva configurada.</p>
-            <button className="btn-primary" onClick={abrirNovaReserva}>Criar Reserva</button>
-          </div>
-        )}
-      </div>
-
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <h3>Investimentos</h3>
-          <button className="btn-primary" onClick={abrirNovoInvestimento}>+ Novo Investimento</button>
-        </div>
-        {investments.length === 0 ? (
-          <p>Nenhum investimento cadastrado.</p>
-        ) : (
-          investments.map((inv) => (
-            <div key={inv.id} style={{ borderBottom: "1px solid #eee", paddingBottom: 16, marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <strong>{inv.name}</strong>
-                  <span style={{ marginLeft: 16, fontSize: 18, fontWeight: 600 }}>{formatCurrency(inv.currentCents)}</span>
-                </div>
-                <div>
-                  <button onClick={() => abrirEditarInvestimento(inv)} style={{ marginRight: 8 }}>Editar</button>
-                  <button className="btn-danger" onClick={() => setConfirmarExclusaoInv(inv.id)} style={{ marginRight: 8 }}>Excluir</button>
-                  <button onClick={() => carregarInvestmentContribs(inv.id)} style={{ marginRight: 8 }}>
-                    {expandedInvestment === inv.id ? "Ocultar" : "Ver Aportes"}
-                  </button>
-                  <button className="btn-primary" onClick={() => abrirAporteInvestimento(inv.id)}>+ Aporte</button>
-                </div>
-              </div>
-              {expandedInvestment === inv.id && investmentContribs[inv.id] && (
-                <div style={{ marginTop: 12, paddingLeft: 16 }}>
-                  {investmentContribs[inv.id].length === 0 ? (
-                    <p>Nenhum aporte.</p>
-                  ) : (
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Data</th>
-                          <th className="text-right">Valor</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {investmentContribs[inv.id].map((c) => (
-                          <tr key={c.id}>
-                            <td>{c.date}</td>
-                            <td className="text-right">{formatCurrency(c.amountCents)}</td>
-                            <td className="text-right">
-                              <button className="btn-danger" onClick={() => setConfirmarExclusaoAporteInv(c.id)}>Excluir</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
                 </div>
               )}
             </div>
-          ))
-        )}
+          ) : null}
+        </div>
+
+        <div className="surface-card p-6">
+          <p className="text-sm font-semibold mb-4">Investimentos</p>
+          {investments.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Nenhum investimento cadastrado.</p>
+          ) : (
+            <div className="space-y-4">
+              {investments.map((inv) => (
+                <div key={inv.id} className="surface-card-sm p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold">{inv.name}</p>
+                      <p className="text-xs text-muted-foreground mt-1 tabular-nums">
+                        Total: <span className="font-semibold text-foreground">{formatCurrency(inv.currentCents)}</span>
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        className="h-9 px-3 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                        onClick={() => abrirEditarInvestimento(inv)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        className="h-9 px-3 rounded-md border border-input bg-surface text-sm font-medium text-destructive hover:bg-destructive/10 transition-smooth focus-ring"
+                        onClick={() => setConfirmarExclusaoInv(inv.id)}
+                      >
+                        Excluir
+                      </button>
+                      <button
+                        type="button"
+                        className="h-9 px-3 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring"
+                        onClick={() => abrirAporteInvestimento(inv.id)}
+                      >
+                        + Aporte
+                      </button>
+                      <button
+                        type="button"
+                        className="h-9 px-3 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                        onClick={() => carregarInvestmentContribs(inv.id)}
+                      >
+                        {expandedInvestment === inv.id ? "Ocultar Aportes" : "Ver Aportes"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {expandedInvestment === inv.id && investmentContribs[inv.id] ? (
+                    <div className="mt-4 overflow-x-auto">
+                      {investmentContribs[inv.id].length === 0 ? (
+                        <p className="text-sm text-muted-foreground">Nenhum aporte registrado.</p>
+                      ) : (
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="text-xs text-muted-foreground uppercase tracking-wider">
+                              <th className="text-left font-medium px-4 py-2">Data</th>
+                              <th className="text-right font-medium px-4 py-2">Valor</th>
+                              <th className="text-right font-medium px-4 py-2 w-24"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {investmentContribs[inv.id].map((c, idx) => (
+                              <tr
+                                key={c.id}
+                                className={[
+                                  "hover:bg-muted/30 transition-smooth",
+                                  idx < investmentContribs[inv.id].length - 1 ? "border-b border-border" : "",
+                                ].join(" ")}
+                              >
+                                <td className="px-4 py-2.5 text-muted-foreground tabular-nums">{c.date}</td>
+                                <td className="px-4 py-2.5 text-right tabular-nums font-medium">{formatCurrency(c.amountCents)}</td>
+                                <td className="px-4 py-2.5 text-right">
+                                  <button
+                                    type="button"
+                                    className="text-sm font-medium text-destructive hover:underline underline-offset-4"
+                                    onClick={() => setConfirmarExclusaoAporteInv(c.id)}
+                                  >
+                                    Excluir
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {modalInvestimento && (
-        <div className="modal-fundo" onClick={() => setModalInvestimento(false)}>
-          <div className="modal-caixa" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-cabecalho">
-              <h3>{editandoInvestimento ? "Editar Investimento" : "Novo Investimento"}</h3>
+      {modalReserva ? (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setModalReserva(false)}>
+          <div className="surface-card w-full max-w-[520px] p-0" onClick={(e) => e.stopPropagation()}>
+            <div className="px-6 pt-6 pb-0 flex items-center justify-between gap-4">
+              <h3 className="text-lg font-semibold">{reserve ? "Editar Reserva" : "Nova Reserva"}</h3>
+              <button
+                type="button"
+                onClick={() => setModalReserva(false)}
+                className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-smooth focus-ring"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <form onSubmit={salvarInvestimento}>
-              <div className="form-group">
-                <label>Nome</label>
-                <input type="text" value={formInvestimento.name} onChange={(e) => setFormInvestimento({ name: e.target.value })} required />
-              </div>
-              <div className="modal-acoes">
-                <button type="button" onClick={() => setModalInvestimento(false)}>Cancelar</button>
-                <button type="submit" className="btn-primary" disabled={salvandoInvestimento}>{salvandoInvestimento ? "Salvando..." : "Salvar"}</button>
+            <form onSubmit={salvarReserva} className="px-6 py-5">
+              <label>
+                <span className="block text-xs font-medium text-muted-foreground mb-1">Nome</span>
+                <input
+                  type="text"
+                  value={formReserva.name}
+                  onChange={(e) => setFormReserva({ name: e.target.value })}
+                  required
+                  className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
+                />
+              </label>
+              <div className="flex items-center justify-end gap-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setModalReserva(false)}
+                  className="h-10 px-4 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={salvandoReserva}
+                  className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring disabled:opacity-60"
+                >
+                  {salvandoReserva ? "Salvando..." : "Salvar"}
+                </button>
               </div>
             </form>
           </div>
         </div>
-      )}
+      ) : null}
 
-      {modalAporteReserva && (
-        <div className="modal-fundo" onClick={() => setModalAporteReserva(false)}>
-          <div className="modal-caixa" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-cabecalho">
-              <h3>Aporte na Reserva</h3>
+      {modalInvestimento ? (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setModalInvestimento(false)}>
+          <div className="surface-card w-full max-w-[520px] p-0" onClick={(e) => e.stopPropagation()}>
+            <div className="px-6 pt-6 pb-0 flex items-center justify-between gap-4">
+              <h3 className="text-lg font-semibold">{editandoInvestimento ? "Editar Investimento" : "Novo Investimento"}</h3>
+              <button
+                type="button"
+                onClick={() => setModalInvestimento(false)}
+                className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-smooth focus-ring"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <form onSubmit={salvarAporteReserva}>
-              <div className="form-group">
-                <label>Data</label>
-                <input type="date" value={formAporte.date} onChange={(e) => setFormAporte({ ...formAporte, date: e.target.value })} required />
-              </div>
-              <div className="form-group">
-                <label>Valor (R$)</label>
-                <input type="number" step="0.01" min="0" value={formAporte.amountCents} onChange={(e) => setFormAporte({ ...formAporte, amountCents: e.target.value })} required />
-              </div>
-              <div className="modal-acoes">
-                <button type="button" onClick={() => setModalAporteReserva(false)}>Cancelar</button>
-                <button type="submit" className="btn-primary" disabled={salvandoAporte}>{salvandoAporte ? "Salvando..." : "Salvar"}</button>
+            <form onSubmit={salvarInvestimento} className="px-6 py-5">
+              <label>
+                <span className="block text-xs font-medium text-muted-foreground mb-1">Nome</span>
+                <input
+                  type="text"
+                  value={formInvestimento.name}
+                  onChange={(e) => setFormInvestimento({ name: e.target.value })}
+                  required
+                  className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
+                />
+              </label>
+              <div className="flex items-center justify-end gap-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setModalInvestimento(false)}
+                  className="h-10 px-4 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={salvandoInvestimento}
+                  className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring disabled:opacity-60"
+                >
+                  {salvandoInvestimento ? "Salvando..." : "Salvar"}
+                </button>
               </div>
             </form>
           </div>
         </div>
-      )}
+      ) : null}
 
-      {modalAporteInvestimento !== null && (
-        <div className="modal-fundo" onClick={() => setModalAporteInvestimento(null)}>
-          <div className="modal-caixa" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-cabecalho">
-              <h3>Aporte no Investimento</h3>
+      {modalAporteReserva ? (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setModalAporteReserva(false)}>
+          <div className="surface-card w-full max-w-[520px] p-0" onClick={(e) => e.stopPropagation()}>
+            <div className="px-6 pt-6 pb-0 flex items-center justify-between gap-4">
+              <h3 className="text-lg font-semibold">Aporte na Reserva</h3>
+              <button
+                type="button"
+                onClick={() => setModalAporteReserva(false)}
+                className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-smooth focus-ring"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <form onSubmit={salvarAporteInvestimento}>
-              <div className="form-group">
-                <label>Data</label>
-                <input type="date" value={formAporte.date} onChange={(e) => setFormAporte({ ...formAporte, date: e.target.value })} required />
+            <form onSubmit={salvarAporteReserva} className="px-6 py-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label>
+                  <span className="block text-xs font-medium text-muted-foreground mb-1">Data</span>
+                  <input
+                    type="date"
+                    value={formAporte.date}
+                    onChange={(e) => setFormAporte({ ...formAporte, date: e.target.value })}
+                    required
+                    className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring tabular-nums"
+                  />
+                </label>
+                <label>
+                  <span className="block text-xs font-medium text-muted-foreground mb-1">Valor (R$)</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formAporte.amountCents}
+                    onChange={(e) => setFormAporte({ ...formAporte, amountCents: e.target.value })}
+                    required
+                    className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring tabular-nums"
+                  />
+                </label>
               </div>
-              <div className="form-group">
-                <label>Valor (R$)</label>
-                <input type="number" step="0.01" min="0" value={formAporte.amountCents} onChange={(e) => setFormAporte({ ...formAporte, amountCents: e.target.value })} required />
-              </div>
-              <div className="modal-acoes">
-                <button type="button" onClick={() => setModalAporteInvestimento(null)}>Cancelar</button>
-                <button type="submit" className="btn-primary" disabled={salvandoAporte}>{salvandoAporte ? "Salvando..." : "Salvar"}</button>
+              <div className="flex items-center justify-end gap-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setModalAporteReserva(false)}
+                  className="h-10 px-4 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={salvandoAporte}
+                  className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring disabled:opacity-60"
+                >
+                  {salvandoAporte ? "Salvando..." : "Salvar"}
+                </button>
               </div>
             </form>
           </div>
         </div>
-      )}
+      ) : null}
 
-      {modalReserva && (
-        <div className="modal-fundo" onClick={() => setModalReserva(false)}>
-          <div className="modal-caixa" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-cabecalho">
-              <h3>{reserve ? "Editar Reserva" : "Nova Reserva"}</h3>
+      {modalAporteInvestimento !== null ? (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setModalAporteInvestimento(null)}>
+          <div className="surface-card w-full max-w-[520px] p-0" onClick={(e) => e.stopPropagation()}>
+            <div className="px-6 pt-6 pb-0 flex items-center justify-between gap-4">
+              <h3 className="text-lg font-semibold">Aporte no Investimento</h3>
+              <button
+                type="button"
+                onClick={() => setModalAporteInvestimento(null)}
+                className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-smooth focus-ring"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <form onSubmit={salvarReserva}>
-              <div className="form-group">
-                <label>Nome</label>
-                <input type="text" value={formReserva.name} onChange={(e) => setFormReserva({ ...formReserva, name: e.target.value })} required />
+            <form onSubmit={salvarAporteInvestimento} className="px-6 py-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label>
+                  <span className="block text-xs font-medium text-muted-foreground mb-1">Data</span>
+                  <input
+                    type="date"
+                    value={formAporte.date}
+                    onChange={(e) => setFormAporte({ ...formAporte, date: e.target.value })}
+                    required
+                    className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring tabular-nums"
+                  />
+                </label>
+                <label>
+                  <span className="block text-xs font-medium text-muted-foreground mb-1">Valor (R$)</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formAporte.amountCents}
+                    onChange={(e) => setFormAporte({ ...formAporte, amountCents: e.target.value })}
+                    required
+                    className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring tabular-nums"
+                  />
+                </label>
               </div>
-              <div className="modal-acoes">
-                <button type="button" onClick={() => setModalReserva(false)}>Cancelar</button>
-                <button type="submit" className="btn-primary" disabled={salvandoReserva}>{salvandoReserva ? "Salvando..." : "Salvar"}</button>
+              <div className="flex items-center justify-end gap-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setModalAporteInvestimento(null)}
+                  className="h-10 px-4 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={salvandoAporte}
+                  className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring disabled:opacity-60"
+                >
+                  {salvandoAporte ? "Salvando..." : "Salvar"}
+                </button>
               </div>
             </form>
           </div>
         </div>
-      )}
+      ) : null}
 
       <ModalConfirmacao
         aberto={confirmarExclusaoReserva !== null}
         titulo="Excluir Reserva"
-        mensagem="Tem certeza que deseja excluir a reserva? Todos os aportes serao removidos."
+        mensagem="Tem certeza que deseja excluir a reserva? Todos os aportes serão removidos."
         aoConfirmar={excluirReserva}
         aoCancelar={() => setConfirmarExclusaoReserva(null)}
         confirmando={excluindo}
@@ -484,7 +681,7 @@ export default function Investments() {
       <ModalConfirmacao
         aberto={confirmarExclusaoInv !== null}
         titulo="Excluir Investimento"
-        mensagem="Tem certeza que deseja excluir este investimento? Todos os aportes serao removidos."
+        mensagem="Tem certeza que deseja excluir este investimento? Todos os aportes serão removidos."
         aoConfirmar={excluirInvestimento}
         aoCancelar={() => setConfirmarExclusaoInv(null)}
         confirmando={excluindo}
@@ -510,3 +707,4 @@ export default function Investments() {
     </div>
   );
 }
+

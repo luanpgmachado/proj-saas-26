@@ -1,18 +1,15 @@
 import { useMemo, useState, useEffect } from "react";
+import { Link } from "wouter";
 import { api } from "../lib/api";
 import ModalLancamento, { DadosLancamento } from "../components/ModalLancamento";
 import ModalConfirmacao from "../components/ModalConfirmacao";
 import type { Transacao } from "../model/transacao";
 import { alternarPagoOptimista } from "../service/transacoes.service";
+import { CabecalhoConteudo } from "../components/CabecalhoConteudo";
+import { Search, Plus, Pencil, Trash2, Check } from "lucide-react";
 
-const formatCurrency = (cents: number) => {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
-};
-
-const parsearCentavosDeTexto = (valor: string) => {
-  const somenteDigitos = valor.replace(/\D/g, "");
-  return somenteDigitos ? parseInt(somenteDigitos, 10) : 0;
-};
+const formatCurrency = (cents: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 
 type Categoria = {
   id: number;
@@ -21,15 +18,27 @@ type Categoria = {
   monthlyBudgetCents: number | null;
 };
 
+type MetodoPagamento = { id: number; name: string };
+
+type ChipStatus = "todos" | "pagos" | "pendentes" | "atrasados";
+
+const mesAtual = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+};
+
+const hojeISO = () => new Date().toISOString().slice(0, 10);
+
 export default function Transactions() {
-  const [month, setMonth] = useState(() => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  });
+  const [month] = useState(mesAtual);
   const [transactions, setTransactions] = useState<Transacao[]>([]);
   const [categories, setCategories] = useState<Categoria[]>([]);
-  const [methods, setMethods] = useState<any[]>([]);
+  const [methods, setMethods] = useState<MetodoPagamento[]>([]);
   const [filters, setFilters] = useState({ categoryId: "", methodId: "", type: "" });
+
+  const [chip, setChip] = useState<ChipStatus>("todos");
+  const [busca, setBusca] = useState("");
+
   const [modalAberto, setModalAberto] = useState(false);
   const [transacaoEditando, setTransacaoEditando] = useState<Transacao | null>(null);
   const [confirmarExclusao, setConfirmarExclusao] = useState<number | null>(null);
@@ -38,17 +47,7 @@ export default function Transactions() {
   const [atualizandoPagoPorId, setAtualizandoPagoPorId] = useState<Record<number, boolean>>({});
   const [erroPagoPorId, setErroPagoPorId] = useState<Record<number, string>>({});
 
-  const [categoriaFormularioAberto, setCategoriaFormularioAberto] = useState(false);
-  const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null);
-  const [categoriaNome, setCategoriaNome] = useState("");
-  const [categoriaTipo, setCategoriaTipo] = useState<"income" | "expense">("expense");
-  const [categoriaOrcamentoCentavos, setCategoriaOrcamentoCentavos] = useState<number | null>(null);
-  const [categoriaSalvando, setCategoriaSalvando] = useState(false);
-  const [categoriaErro, setCategoriaErro] = useState("");
-  const [categoriaConfirmandoExclusao, setCategoriaConfirmandoExclusao] = useState(false);
-  const [categoriaExcluindo, setCategoriaExcluindo] = useState(false);
-
-  const carregarDados = () => {
+  const carregarTransacoes = () => {
     const params: Record<string, string> = { month };
     if (filters.categoryId) params.categoryId = filters.categoryId;
     if (filters.methodId) params.methodId = filters.methodId;
@@ -56,19 +55,14 @@ export default function Transactions() {
     api.getTransactions(params).then(setTransactions).catch(console.error);
   };
 
-  const carregarCategorias = async () => {
-    const cats = await api.getCategories();
-    setCategories(cats);
-  };
-
   useEffect(() => {
-    carregarCategorias().catch(console.error);
+    api.getCategories().then(setCategories).catch(console.error);
     api.getPaymentMethods().then(setMethods).catch(console.error);
   }, []);
 
   useEffect(() => {
-    carregarDados();
-  }, [month, filters]);
+    carregarTransacoes();
+  }, [filters]);
 
   const nomeCategoriaPorId = useMemo(() => {
     const mapa = new Map<number, string>();
@@ -82,103 +76,25 @@ export default function Transactions() {
     return mapa;
   }, [methods]);
 
-  const clearFilters = () => setFilters({ categoryId: "", methodId: "", type: "" });
+  const listaFiltrada = useMemo(() => {
+    const termo = busca.trim().toLowerCase();
+    const hoje = hojeISO();
 
-  const categoriaSelecionada = filters.categoryId
-    ? categories.find((c) => String(c.id) === filters.categoryId) ?? null
-    : null;
+    return transactions.filter((t) => {
+      if (termo && !t.description.toLowerCase().includes(termo)) return false;
 
-  const abrirFormularioCriarCategoria = () => {
-    setCategoriaErro("");
-    setCategoriaEditando(null);
-    setCategoriaNome("");
-    setCategoriaTipo("expense");
-    setCategoriaOrcamentoCentavos(null);
-    setCategoriaConfirmandoExclusao(false);
-    setCategoriaFormularioAberto(true);
-  };
-
-  const abrirFormularioEditarCategoria = () => {
-    if (!categoriaSelecionada) return;
-    setCategoriaErro("");
-    setCategoriaEditando(categoriaSelecionada);
-    setCategoriaNome(categoriaSelecionada.name);
-    setCategoriaTipo(categoriaSelecionada.kind);
-    setCategoriaOrcamentoCentavos(categoriaSelecionada.monthlyBudgetCents ?? null);
-    setCategoriaConfirmandoExclusao(false);
-    setCategoriaFormularioAberto(true);
-  };
-
-  const fecharFormularioCategoria = () => {
-    setCategoriaFormularioAberto(false);
-    setCategoriaEditando(null);
-    setCategoriaNome("");
-    setCategoriaTipo("expense");
-    setCategoriaOrcamentoCentavos(null);
-    setCategoriaErro("");
-  };
-
-  const salvarCategoria = async () => {
-    if (!categoriaNome.trim()) {
-      setCategoriaErro("Nome é obrigatório.");
-      return;
-    }
-
-    setCategoriaSalvando(true);
-    setCategoriaErro("");
-    try {
-      const payload = {
-        name: categoriaNome.trim(),
-        kind: categoriaTipo,
-        monthlyBudgetCents: categoriaOrcamentoCentavos,
-      };
-
-      const saved = categoriaEditando
-        ? await api.updateCategory(categoriaEditando.id, payload)
-        : await api.createCategory(payload);
-
-      await carregarCategorias();
-
-      if (!categoriaEditando && saved?.id) {
-        setFilters((prev) => ({ ...prev, categoryId: String(saved.id) }));
+      if (chip === "pagos") {
+        return t.type === "exit" && !!t.isPaid;
       }
-
-      fecharFormularioCategoria();
-    } catch (err: any) {
-      setCategoriaErro(err?.message || "Nao foi possivel salvar a categoria.");
-    } finally {
-      setCategoriaSalvando(false);
-    }
-  };
-
-  const iniciarExclusaoCategoria = () => {
-    if (!categoriaSelecionada) return;
-    setCategoriaErro("");
-    setCategoriaFormularioAberto(false);
-    setCategoriaConfirmandoExclusao(true);
-  };
-
-  const cancelarExclusaoCategoria = () => {
-    setCategoriaConfirmandoExclusao(false);
-    setCategoriaExcluindo(false);
-    setCategoriaErro("");
-  };
-
-  const excluirCategoria = async () => {
-    if (!categoriaSelecionada) return;
-    setCategoriaExcluindo(true);
-    setCategoriaErro("");
-    try {
-      await api.deleteCategory(categoriaSelecionada.id);
-      await carregarCategorias();
-      setCategoriaConfirmandoExclusao(false);
-      setFilters((prev) => ({ ...prev, categoryId: "" }));
-    } catch (err: any) {
-      setCategoriaErro(err?.message || "Nao foi possivel excluir a categoria.");
-    } finally {
-      setCategoriaExcluindo(false);
-    }
-  };
+      if (chip === "pendentes") {
+        return t.type === "exit" && !t.isPaid;
+      }
+      if (chip === "atrasados") {
+        return t.type === "exit" && !t.isPaid && String(t.date) < hoje;
+      }
+      return true;
+    });
+  }, [transactions, busca, chip]);
 
   const abrirNovo = () => {
     setTransacaoEditando(null);
@@ -197,7 +113,8 @@ export default function Transactions() {
       await api.createTransaction(dados);
     }
     setModalAberto(false);
-    carregarDados();
+    setTransacaoEditando(null);
+    carregarTransacoes();
   };
 
   const excluir = async () => {
@@ -206,7 +123,7 @@ export default function Transactions() {
     try {
       await api.deleteTransaction(confirmarExclusao);
       setConfirmarExclusao(null);
-      carregarDados();
+      carregarTransacoes();
     } catch (err) {
       console.error(err);
     } finally {
@@ -216,167 +133,257 @@ export default function Transactions() {
 
   const aoAlternarPago = async (id: number, marcar: boolean) => {
     setAtualizandoPagoPorId((prev) => ({ ...prev, [id]: true }));
-    setErroPagoPorId((prev) => {
-      if (!Object.prototype.hasOwnProperty.call(prev, id)) return prev;
-      const { [id]: _, ...rest } = prev;
-      return rest;
-    });
-
+    setErroPagoPorId((prev) => ({ ...prev, [id]: "" }));
     try {
       await alternarPagoOptimista({
         id,
         marcar,
         transacoes: transactions,
         setTransacoes: setTransactions,
-        atualizarTransacao: async (tid, patch) => api.updateTransaction(tid, patch),
+        atualizarTransacao: (transacaoId, patch) => api.updateTransaction(transacaoId, patch),
       });
     } catch (err: any) {
-      const mensagem = typeof err?.message === "string" ? err.message : "Nao foi possivel atualizar o pagamento.";
+      const mensagem = err?.message ? String(err.message) : "Erro ao atualizar.";
       setErroPagoPorId((prev) => ({ ...prev, [id]: mensagem }));
     } finally {
       setAtualizandoPagoPorId((prev) => ({ ...prev, [id]: false }));
     }
   };
 
+  const limparFiltros = () => setFilters({ categoryId: "", methodId: "", type: "" });
+
+  const chips: { label: string; value: ChipStatus }[] = [
+    { label: "Todos", value: "todos" },
+    { label: "Pagos", value: "pagos" },
+    { label: "Pendentes", value: "pendentes" },
+    { label: "Atrasados", value: "atrasados" },
+  ];
+
   return (
     <div>
-      <div className="barra-topo">
-        <h2>Lançamentos</h2>
-        <button className="btn-primary" onClick={abrirNovo}>+ Novo Lançamento</button>
-      </div>
-      
-      <div className="filters">
-        <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
-        <select value={filters.categoryId} onChange={(e) => setFilters({ ...filters, categoryId: e.target.value })}>
-          <option value="">Todas categorias</option>
-          {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <button onClick={abrirFormularioCriarCategoria}>+ Nova categoria</button>
-          {categoriaSelecionada ? (
-            <>
-              <button onClick={abrirFormularioEditarCategoria}>Editar categoria</button>
-              <button className="btn-danger" onClick={iniciarExclusaoCategoria}>Excluir categoria</button>
-            </>
-          ) : null}
-        </div>
-        <select value={filters.methodId} onChange={(e) => setFilters({ ...filters, methodId: e.target.value })}>
-          <option value="">Todos métodos</option>
-          {methods.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
-        </select>
-        <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value })}>
-          <option value="">Todos tipos</option>
-          <option value="entry">Entrada</option>
-          <option value="exit">Saída</option>
-        </select>
-        <button onClick={clearFilters}>Limpar filtros</button>
-      </div>
+      <CabecalhoConteudo
+        titulo="Lançamentos"
+        subtitulo="Gerencie suas receitas e despesas"
+        acaoDireita={
+          <button
+            type="button"
+            onClick={abrirNovo}
+            className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Novo Lançamento
+          </button>
+        }
+      />
 
-      {categoriaFormularioAberto ? (
-        <div className="card" style={{ marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <h3 style={{ margin: 0 }}>{categoriaEditando ? "Editar categoria" : "Nova categoria"}</h3>
-            <button onClick={fecharFormularioCategoria}>Fechar</button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: 12, alignItems: "end" }}>
-            <label>
-              Nome
-              <input value={categoriaNome} onChange={(e) => setCategoriaNome(e.target.value)} />
-            </label>
-            <label>
-              Tipo
-              <select value={categoriaTipo} onChange={(e) => setCategoriaTipo(e.target.value as any)}>
-                <option value="income">Receita</option>
-                <option value="expense">Despesa</option>
-              </select>
-            </label>
-            <label>
-              Orçamento mensal (R$)
-              <input
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={categoriaOrcamentoCentavos === null ? "" : formatCurrency(categoriaOrcamentoCentavos)}
-                onChange={(e) => {
-                  const centavos = parsearCentavosDeTexto(e.target.value);
-                  setCategoriaOrcamentoCentavos(e.target.value.trim() ? centavos : null);
-                }}
-              />
-            </label>
-            <button className="btn-primary" onClick={salvarCategoria} disabled={categoriaSalvando}>
-              {categoriaSalvando ? "Salvando..." : "Salvar"}
+      <div className="surface-card-sm p-3 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="flex gap-1.5">
+          {chips.map((c) => (
+            <button
+              key={c.value}
+              type="button"
+              onClick={() => setChip(c.value)}
+              className={[
+                "px-3 py-1.5 rounded-md text-xs font-medium transition-smooth",
+                chip === c.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary",
+              ].join(" ")}
+            >
+              {c.label}
             </button>
-          </div>
-          {categoriaErro ? <div style={{ marginTop: 10, color: "#b91c1c" }}>{categoriaErro}</div> : null}
+          ))}
         </div>
-      ) : null}
 
-      {categoriaConfirmandoExclusao && categoriaSelecionada ? (
-        <div className="card" style={{ marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-            <div>
-              <strong>Excluir categoria:</strong> {categoriaSelecionada.name}
-              <div style={{ fontSize: 12, opacity: 0.8 }}>
-                A exclusão é bloqueada se houver lançamentos ou recorrências usando essa categoria.
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={cancelarExclusaoCategoria} disabled={categoriaExcluindo}>Cancelar</button>
-              <button className="btn-danger" onClick={excluirCategoria} disabled={categoriaExcluindo}>
-                {categoriaExcluindo ? "Excluindo..." : "Confirmar exclusão"}
-              </button>
-            </div>
-          </div>
-          {categoriaErro ? <div style={{ marginTop: 10, color: "#b91c1c" }}>{categoriaErro}</div> : null}
+        <div className="relative ml-auto w-full sm:w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Buscar lançamento..."
+            className="w-full h-9 pl-9 pr-3 rounded-md bg-surface border border-input text-sm focus-ring"
+          />
         </div>
-      ) : null}
+      </div>
 
-      <div className="card">
-        {transactions.length === 0 ? (
-          <p>Nenhum lançamento encontrado.</p>
+      <div className="surface-card-sm p-3 mb-6 flex flex-col lg:flex-row gap-3 lg:items-end">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
+          <label className="text-sm">
+            <span className="block text-xs font-medium text-muted-foreground mb-1">Categoria</span>
+            <select
+              className="w-full h-9 rounded-md bg-surface border border-input px-3 text-sm focus-ring"
+              value={filters.categoryId}
+              onChange={(e) => setFilters({ ...filters, categoryId: e.target.value })}
+            >
+              <option value="">Todas</option>
+              {categories.map((c) => (
+                <option key={c.id} value={String(c.id)}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="block text-xs font-medium text-muted-foreground mb-1">Método</span>
+            <select
+              className="w-full h-9 rounded-md bg-surface border border-input px-3 text-sm focus-ring"
+              value={filters.methodId}
+              onChange={(e) => setFilters({ ...filters, methodId: e.target.value })}
+            >
+              <option value="">Todos</option>
+              {methods.map((m) => (
+                <option key={m.id} value={String(m.id)}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="block text-xs font-medium text-muted-foreground mb-1">Tipo</span>
+            <select
+              className="w-full h-9 rounded-md bg-surface border border-input px-3 text-sm focus-ring"
+              value={filters.type}
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+            >
+              <option value="">Todos</option>
+              <option value="entry">Entrada</option>
+              <option value="exit">Saída</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="flex items-center gap-2 justify-between lg:justify-end">
+          <Link
+            href="/categories"
+            className="text-sm font-medium text-primary hover:underline underline-offset-4"
+          >
+            Gerenciar categorias
+          </Link>
+          <button
+            type="button"
+            className="h-9 px-3 rounded-md border border-input bg-surface text-sm text-foreground hover:bg-secondary transition-smooth focus-ring"
+            onClick={limparFiltros}
+          >
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+
+      <div className="surface-card overflow-hidden">
+        {listaFiltrada.length === 0 ? (
+          <div className="p-6 text-sm text-muted-foreground">Nenhum lançamento encontrado.</div>
         ) : (
-          <div className="table-container tabela-scroll" aria-label="Tabela de lançamentos">
-            <table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
               <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Descrição</th>
-                  <th>Tipo</th>
-                  <th>Categoria</th>
-                  <th>Método</th>
-                  <th className="text-right">Valor</th>
-                  <th className="coluna-pago">Pago</th>
-                  <th></th>
+                <tr className="text-xs text-muted-foreground uppercase tracking-wider">
+                  <th className="text-left font-medium px-5 py-3">Data</th>
+                  <th className="text-left font-medium px-5 py-3">Descrição</th>
+                  <th className="text-left font-medium px-5 py-3">Tipo</th>
+                  <th className="text-left font-medium px-5 py-3">Categoria</th>
+                  <th className="text-left font-medium px-5 py-3">Método</th>
+                  <th className="text-right font-medium px-5 py-3">Valor</th>
+                  <th className="text-center font-medium px-5 py-3 w-24">Pago</th>
+                  <th className="text-right font-medium px-5 py-3 w-24"></th>
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((t) => (
-                  <tr key={t.id} className={t.type === "exit" && t.isPaid ? "linha-paga" : ""}>
-                    <td>{t.date}</td>
-                    <td>{t.description}</td>
-                    <td>{t.type === "entry" ? "Entrada" : "Saída"}</td>
-                    <td>{nomeCategoriaPorId.get(t.categoryId) || "-"}</td>
-                    <td>{nomeMetodoPorId.get(t.paymentMethodId) || "-"}</td>
-                    <td className="text-right">{formatCurrency(t.amountCents)}</td>
-                    <td className="coluna-pago">
-                      {t.type === "exit" ? (
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                          <input
-                            type="checkbox"
-                            checked={!!t.isPaid}
-                            disabled={!!atualizandoPagoPorId[t.id]}
-                            onChange={(e) => aoAlternarPago(t.id, e.target.checked)}
-                            aria-label={`Marcar lancamento ${t.description} como pago`}
-                          />
-                          {erroPagoPorId[t.id] ? <div className="erro-pago">{erroPagoPorId[t.id]}</div> : null}
+                {listaFiltrada.map((t, idx) => {
+                  const pago = t.type === "exit" && !!t.isPaid;
+                  const hoje = hojeISO();
+                  const atrasado = t.type === "exit" && !t.isPaid && String(t.date) < hoje;
+                  const pendente = t.type === "exit" && !t.isPaid;
+
+                  return (
+                    <tr
+                      key={t.id}
+                      className={[
+                        "group transition-smooth",
+                        idx < listaFiltrada.length - 1 ? "border-b" : "",
+                        "border-border",
+                        "hover:bg-muted/30",
+                        !pago && atrasado ? "bg-destructive/5" : "",
+                      ].join(" ")}
+                    >
+                      <td className="px-5 py-3.5 tabular-nums text-muted-foreground">{t.date}</td>
+                      <td className="px-5 py-3.5 font-medium">{t.description}</td>
+                      <td className="px-5 py-3.5 text-muted-foreground">
+                        {t.type === "entry" ? "Entrada" : "Saída"}
+                      </td>
+                      <td className="px-5 py-3.5 text-muted-foreground">
+                        {t.categoryId ? nomeCategoriaPorId.get(t.categoryId) ?? "-" : "-"}
+                      </td>
+                      <td className="px-5 py-3.5 text-muted-foreground">
+                        {t.paymentMethodId ? nomeMetodoPorId.get(t.paymentMethodId) ?? "-" : "-"}
+                      </td>
+                      <td
+                        className={[
+                          "px-5 py-3.5 text-right tabular-nums font-semibold",
+                          pago && t.type === "exit"
+                            ? "text-muted-foreground line-through"
+                            : t.type === "entry"
+                            ? "text-success"
+                            : "text-destructive",
+                        ].join(" ")}
+                      >
+                        {t.type === "entry" ? "+" : "-"} {formatCurrency(t.amountCents)}
+                      </td>
+                      <td className="px-5 py-3.5 text-center">
+                        {t.type === "exit" ? (
+                          <div className="flex flex-col items-center gap-1.5">
+                            <label className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                              <input
+                                type="checkbox"
+                                checked={!!t.isPaid}
+                                disabled={!!atualizandoPagoPorId[t.id]}
+                                onChange={(e) => aoAlternarPago(t.id, e.target.checked)}
+                                aria-label={`Marcar ${t.description} como pago`}
+                              />
+                              <span className="sr-only">
+                                {pago ? "Pago" : pendente ? "Pendente" : "Status"}
+                              </span>
+                            </label>
+                            {erroPagoPorId[t.id] ? (
+                              <div className="text-[11px] leading-tight text-destructive max-w-[140px]">
+                                {erroPagoPorId[t.id]}
+                              </div>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-smooth">
+                          {t.type === "exit" ? (
+                            <button
+                              type="button"
+                              onClick={() => aoAlternarPago(t.id, !t.isPaid)}
+                              className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-success transition-smooth focus-ring"
+                              title="Alternar pago"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => abrirEditar(t)}
+                            className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground transition-smooth focus-ring"
+                            title="Editar"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setConfirmarExclusao(t.id)}
+                            className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-smooth focus-ring"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                      ) : null}
-                    </td>
-                    <td className="text-right">
-                      <button onClick={() => abrirEditar(t)} style={{ marginRight: 8 }}>Editar</button>
-                      <button className="btn-danger" onClick={() => setConfirmarExclusao(t.id)}>Excluir</button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

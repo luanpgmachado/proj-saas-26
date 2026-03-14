@@ -1,0 +1,112 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e156]:
+      - generic [ref=e157]:
+        - generic [ref=e158]:
+          - heading "Categorias" [level=2] [ref=e159]
+          - paragraph [ref=e160]: Organize seus lançamentos por tipo
+        - button "Nova Categoria" [active] [ref=e162] [cursor=pointer]:
+          - img [ref=e163]
+          - text: Nova Categoria
+      - generic [ref=e164]:
+        - generic [ref=e165]:
+          - generic [ref=e166]:
+            - generic [ref=e167]:
+              - generic [ref=e168]: C
+              - generic [ref=e169]:
+                - paragraph [ref=e170]: CODX Categoria 20260313
+                - paragraph [ref=e171]: 2 lançamentos · Despesa
+            - generic [ref=e172]:
+              - button "Editar CODX Categoria 20260313" [ref=e173] [cursor=pointer]:
+                - img [ref=e174]
+              - button "Excluir CODX Categoria 20260313" [ref=e177] [cursor=pointer]:
+                - img [ref=e178]
+          - generic [ref=e183]:
+            - img [ref=e184]
+            - generic [ref=e188]: "Orçamento: R$ 1,00"
+        - generic [ref=e190]:
+          - generic [ref=e191]:
+            - generic [ref=e192]: C
+            - generic [ref=e193]:
+              - paragraph [ref=e194]: CODX Receita 20260313
+              - paragraph [ref=e195]: 1 lançamento · Receita
+          - generic [ref=e196]:
+            - button "Editar CODX Receita 20260313" [ref=e197] [cursor=pointer]:
+              - img [ref=e198]
+            - button "Excluir CODX Receita 20260313" [ref=e201] [cursor=pointer]:
+              - img [ref=e202]
+      - generic [ref=e208]:
+        - heading "Nova Categoria" [level=3] [ref=e210]
+        - generic [ref=e211]:
+          - generic [ref=e212]:
+            - generic [ref=e213]:
+              - generic [ref=e214]: Nome
+              - textbox "Nome" [ref=e215]:
+                - /placeholder: "Ex: Investimentos, Pets..."
+            - generic [ref=e216]:
+              - generic [ref=e217]: Tipo
+              - combobox "Tipo" [ref=e218]:
+                - option "Despesa" [selected]
+                - option "Receita"
+            - generic [ref=e219]:
+              - generic [ref=e220]: Orçamento mensal (R$)
+              - textbox "Orçamento mensal (R$)" [ref=e221]:
+                - /placeholder: R$ 0,00
+          - generic [ref=e222]:
+            - button "Cancelar" [ref=e223] [cursor=pointer]
+            - button "Salvar Categoria" [ref=e224] [cursor=pointer]

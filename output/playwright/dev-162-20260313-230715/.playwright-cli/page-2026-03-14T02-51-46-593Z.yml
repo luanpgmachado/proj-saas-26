@@ -1,0 +1,95 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e248]:
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - heading "Metas Financeiras" [level=2] [ref=e251]
+          - paragraph [ref=e252]: Acompanhe progresso e aportes
+        - button "Nova Meta" [ref=e254] [cursor=pointer]:
+          - img [ref=e255]
+          - text: Nova Meta
+      - generic [ref=e276]:
+        - generic [ref=e277]:
+          - generic [ref=e278]:
+            - paragraph [ref=e279]: CODX Meta 20260314-1
+            - paragraph [ref=e280]: R$ 100,00 de R$ 1.000,00
+          - generic [ref=e281]:
+            - button "Editar" [ref=e282] [cursor=pointer]
+            - button "Excluir" [ref=e283] [cursor=pointer]
+        - generic [ref=e284]:
+          - generic [ref=e286]:
+            - generic [ref=e287]:
+              - text: "Progresso:"
+              - generic [ref=e288]: 10%
+            - generic [ref=e289]:
+              - button "Ocultar Aportes" [active] [ref=e312] [cursor=pointer]
+              - button "+ Aporte" [ref=e291] [cursor=pointer]
+          - generic [ref=e313]:
+            - paragraph [ref=e315]: Aportes
+            - table [ref=e317]:
+              - rowgroup [ref=e318]:
+                - row "Data Valor" [ref=e319]:
+                  - columnheader "Data" [ref=e320]
+                  - columnheader "Valor" [ref=e321]
+                  - columnheader [ref=e322]
+              - rowgroup [ref=e323]:
+                - row "2026-03-14 R$ 100,00 Excluir" [ref=e324]:
+                  - cell "2026-03-14" [ref=e325]
+                  - cell "R$ 100,00" [ref=e326]
+                  - cell "Excluir" [ref=e327]:
+                    - button "Excluir" [ref=e328] [cursor=pointer]

@@ -6,21 +6,29 @@
 - Hierarquia visual orientada a leitura de numeros.
 - Sem animacoes e sem modais, exceto se explicitado.
 
+## Diretrizes visuais (Layout 3.0)
+- Tipografia: `Inter` como fonte principal.
+- Numeros: `tabular-nums` (alinhamento consistente em tabelas e cards).
+- Cartoes e secoes: usar "surface cards" (fundo claro, radius ~12px, borda sutil e sombra leve).
+- Interacoes: apenas `hover`/`focus` discretos; sem animacoes chamativas.
+
 ## Navegacao Global (Layout)
 - O app usa **menu lateral** (sidebar) para reduzir a quantidade de abas no topo e agrupar funcionalidades relacionadas.
 - Estrutura de tela (sempre):
-  - Topo fixo (header) com nome do produto.
-  - Menu lateral a esquerda com grupos e itens.
+  - Menu lateral a esquerda (sticky) com logo/nome do produto.
   - Area de conteudo a direita.
 - Comportamento de rolagem:
-  - Header e menu lateral permanecem visiveis (sticky).
+  - Menu lateral permanece visivel (sticky).
   - Apenas a area de conteudo rola.
 - O menu lateral:
-  - Mostra **grupos com titulos** e itens abaixo (sem colapsar, sem animacao).
+  - Mostra **grupos com titulos** e itens abaixo.
   - Destaca o item ativo claramente (fundo leve + borda/linha de acento).
   - Destaca o **grupo ativo** (grupo que contem a rota atual) de forma discreta.
   - Mantem foco visivel e suporte a teclado.
-  - Deve existir um link de acessibilidade "Pular para o conteudo" no header para navegacao por teclado.
+  - Pode ser **recolhivel** (toggle manual), reduzindo para icones.
+    - Persistir escolha do usuario (ex: `localStorage`).
+    - Sem animacao obrigatoria; transicao suave simples e aceitavel.
+  - Deve existir um link de acessibilidade "Pular para o conteudo" para navegacao por teclado (no topo da area de conteudo).
 
 ## Topo de Pagina (Padrao)
 - Toda tela deve iniciar com um bloco `.barra-topo` para manter previsibilidade.
@@ -28,64 +36,63 @@
   - Esquerda: titulo da tela (h2) e, quando aplicavel, controles de contexto (ex: seletor de mês/ano).
   - Direita: ação principal da tela (ex: `+ Novo Lançamento`, `+ Nova Recorrência`), quando existir.
 - O bloco de filtros (quando existir) vem logo abaixo do `.barra-topo` (sem grudar no header global).
+ - No Layout 3.0, este topo pode ser implementado como um componente `CabecalhoConteudo` com:
+   - `titulo` + `subtitulo` (opcional)
+   - `acoes` (direita)
+   - seletor de mês/ano quando aplicavel
 
 ### Mapa de navegacao (grupos)
-- **Visão**
-  - Visão do Mês (`/`)
-  - Panorama Anual (`/annual`)
-- **Operação**
+- **Principal**
+  - Dashboard / Visão do Mês (`/`)
   - Lançamentos (`/transactions`)
   - Recorrências (`/recurrences`)
-- **Planejamento**
+  - Panorama Anual (`/annual`)
   - Metas (`/goals`)
   - Investimentos / Reserva (`/investments`)
-- **Cadastros**
+- **Configurações**
+  - Categorias (`/categories`)
   - Métodos de Pagamento (`/payment-methods`)
 
 ## Tela Principal - Visão do Mês
-- Topo fixo com seletor de mês/ano a esquerda e botao "+ Novo Lançamento" a direita.
-- Quatro cards horizontais: Entradas, Saidas, Valor Pago, Saldo Real (saldo com maior destaque).
-- Saldo Projetado (Entradas - Saidas) aparece como informacao secundaria na area de saldo, sem virar card principal.
-- Bloco "Gastos por Categoria" em tabela simples.
-- A coluna Diferenca so ganha destaque quando estourar orcamento.
-- Abas horizontais: Fixos, Variaveis, Parcelados, Entradas.
-- Apenas uma aba visivel por vez, troca instantanea e sem efeito.
-- Ao clicar em "+ Novo Lançamento", abrir modal de cadastro de lançamento.
-  - Campos: descricao, valor (R$), tipo, grupo, data, categoria, método de pagamento.
-  - Se tipo for "entry", grupo fica fixo como "entry".
+- Topo com seletor de mês/ano a direita e titulo/subtitulo a esquerda (Layout 3.0).
+- Quatro cards horizontais: Entradas, Saidas, Saldo Real, Saldo Projetado.
+- Blocos abaixo (duas colunas no desktop):
+  - "Distribuição por Categoria" como grafico simples tipo donut + legenda.
+  - "Próximos Vencimentos" como lista dos proximos lançamentos `exit` nao pagos no mês (top 5).
+- Ao final, um insight simples (mensagem de reforco) pode aparecer como card pequeno.
+- Ao clicar em "+ Novo Lançamento", abrir modal de cadastro de lançamento (explicitado).
+  - Campos: descricao, valor (R$), data, categoria, método de pagamento, tipo.
+  - Observacao: a regra `type=entry => group=entry` continua valida, mesmo que o campo `group` nao esteja exposto no modal.
 
 ## Tela de Lançamentos
-- Filtros em linha no topo: categoria, metodo, tipo.
-- Botao "Limpar filtros".
-- Ao lado do filtro de categoria:
-  - Botao "+ Nova categoria" (abre formulario inline abaixo dos filtros).
-  - Quando houver uma categoria selecionada no filtro (diferente de "Todas"):
-    - Botao "Editar categoria" (abre formulario inline com dados preenchidos).
-    - Botao "Excluir categoria" com confirmacao inline (sem modal): primeiro clique entra em modo de confirmacao com botoes "Confirmar exclusao" e "Cancelar".
-- Tabela com cabecalho fixo e scroll apenas no corpo.
-- Edicao inline: clique edita, Enter salva, Esc cancela.
-- Ações por linha discretas e sem chamar atencao.
-- Coluna "Pago" apos coluna "Valor".
-  - Checkbox apenas para `type = exit`.
-  - Para `type = entry`, nao exibir checkbox.
-  - Atualizacao instantanea ao marcar/desmarcar (otimista).
-  - Nenhum modal e nenhuma animacao.
-  - Feedback visual discreto na linha quando estiver paga.
+- Topo com titulo/subtitulo e botao "+ Novo Lançamento".
+- Barra de filtros:
+  - Chips: Todos, Pagos, Pendentes, Atrasados (visual; mapeamento interno pode usar `type`/`isPaid` quando aplicavel).
+  - Busca por descricao (cliente).
+- Tabela principal em surface card:
+  - Colunas: descricao, categoria, metodo, data, status, valor, acoes.
+  - Acoes por linha discretas (aparecem no hover/focus, mas acessiveis por teclado).
+- Gerenciamento de categorias nao ocorre aqui:
+  - Exibir link/botao "Gerenciar categorias" que leva para `/categories`.
 
-### Formulario inline de categoria (Tela de Lançamentos)
-- Campos:
-  - Nome (obrigatorio)
-  - Tipo: `income` | `expense` (obrigatorio)
-  - Orçamento mensal (R$, opcional)
-- Ao salvar:
-  - Recarregar lista de categorias.
-  - Se estiver criando, selecionar automaticamente a categoria criada no filtro.
+## Tela de Categorias
+- Grid de cards (desktop-first), cada card mostra:
+  - Nome da categoria
+  - Tipo (Receita/Despesa)
+  - Contagem de lançamentos no mês atual (opcional, calculado no cliente).
+- Acoes por card discretas: editar, excluir.
+- Botao "+ Nova Categoria" abre modal de criacao (explicitado).
+  - Campos: Nome, Tipo (income/expense), Orcamento mensal (R$, opcional).
+  - Ao salvar: recarregar lista.
+- Exclusao com confirmacao (sem modal de sistema); pode usar um modal leve de confirmacao (explicitado) para manter previsibilidade.
 
 ## Tela de Métodos de Pagamento
-- Tabela unica.
-- Metodos nao-cartao primeiro, cartoes agrupados abaixo.
-- Checkbox "pago no mês" visivel e funcional.
+- Exibir cartoes como cards (sem "limite/usado" se nao existir dado no backend).
+- Exibir "Contas e Outros" como lista em surface card.
+- Acoes discretas: editar/excluir (sem chamar atencao).
+- "Pago no mês" visivel e funcional.
 - Campos de fechamento e vencimento apenas para cartoes.
+- Criar/editar metodo usa modal existente (explicitado).
 
 ## Tela de Panorama Anual
 - Tabela anual como elemento principal (12 linhas).

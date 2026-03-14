@@ -1,0 +1,95 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e77]:
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - heading "Lançamentos" [level=2] [ref=e80]
+          - paragraph [ref=e81]: Gerencie suas receitas e despesas
+        - button "Novo Lançamento" [ref=e83] [cursor=pointer]:
+          - img [ref=e84]
+          - text: Novo Lançamento
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - button "Todos" [ref=e87] [cursor=pointer]
+          - button "Pagos" [ref=e88] [cursor=pointer]
+          - button "Pendentes" [ref=e89] [cursor=pointer]
+          - button "Atrasados" [ref=e90] [cursor=pointer]
+        - generic [ref=e91]:
+          - img [ref=e92]
+          - textbox "Buscar lançamento..." [ref=e95]
+      - generic [ref=e96]:
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]: Categoria
+            - combobox "Categoria" [ref=e100]:
+              - option "Todas" [selected]
+          - generic [ref=e101]:
+            - generic [ref=e102]: Método
+            - combobox "Método" [ref=e103]:
+              - option "Todos" [selected]
+          - generic [ref=e104]:
+            - generic [ref=e105]: Tipo
+            - combobox "Tipo" [ref=e106]:
+              - option "Todos" [selected]
+              - option "Entrada"
+              - option "Saída"
+        - generic [ref=e107]:
+          - link "Gerenciar categorias" [ref=e108] [cursor=pointer]:
+            - /url: /categories
+          - button "Limpar filtros" [ref=e109] [cursor=pointer]
+      - generic [ref=e111]: Nenhum lançamento encontrado.

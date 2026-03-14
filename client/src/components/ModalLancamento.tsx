@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { api } from "../lib/api";
+import { X } from "lucide-react";
 
 export type DadosLancamento = {
   description: string;
@@ -143,63 +144,62 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoI
   const modoEdicao = !!transacaoInicial;
 
   return (
-    <div className="modal-fundo" onClick={aoFechar}>
-      <div className="modal-caixa" onClick={(event) => event.stopPropagation()}>
-        <div className="modal-cabecalho">
-          <h3>{modoEdicao ? "Editar lançamento" : "Novo lançamento"}</h3>
-          <button type="button" onClick={aoFechar}>Fechar</button>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={aoFechar}>
+      <div className="surface-card w-full max-w-[600px] p-0" onClick={(event) => event.stopPropagation()}>
+        <div className="px-6 pt-6 pb-0 flex items-center justify-between gap-4">
+          <h3 className="text-lg font-semibold">{modoEdicao ? "Editar lançamento" : "Novo lançamento"}</h3>
+          <button
+            type="button"
+            onClick={aoFechar}
+            className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-smooth focus-ring"
+            aria-label="Fechar"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
-        <form onSubmit={aoSalvarFormulario}>
-          <div className="formulario-grade">
-            <label className="formulario-campo linha-inteira">
-              Descrição
+
+        <form onSubmit={aoSalvarFormulario} className="px-6 py-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label className="sm:col-span-2">
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Descrição</span>
               <input
                 type="text"
                 value={descricao}
                 onChange={(event) => setDescricao(event.target.value)}
+                placeholder="Ex: Supermercado, Aluguel, Freelance..."
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
               />
             </label>
-            <label className="formulario-campo">
-              Valor (R$)
+
+            <label>
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Valor (R$)</span>
               <input
                 type="text"
                 inputMode="numeric"
                 placeholder="R$ 0,00"
                 value={textoValor}
                 onChange={(event) => aoAlterarValor(event.target.value)}
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring tabular-nums"
               />
             </label>
-            <label className="formulario-campo">
-              Tipo
+
+            <label>
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Data</span>
+              <input
+                type="date"
+                value={data}
+                onChange={(event) => setData(event.target.value)}
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring tabular-nums"
+              />
+            </label>
+
+            <label>
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Categoria</span>
               <select
-                value={tipo}
-                onChange={(event) => aoAlterarTipo(event.target.value as "entry" | "exit")}
+                value={categoriaId}
+                onChange={(event) => setCategoriaId(event.target.value)}
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
               >
-                <option value="entry">Entrada</option>
-                <option value="exit">Saída</option>
-              </select>
-            </label>
-            <label className="formulario-campo">
-              Grupo
-              <select
-                value={grupo}
-                onChange={(event) => setGrupo(event.target.value as "fixed" | "variable" | "installment" | "entry")}
-                disabled={tipo === "entry"}
-              >
-                {gruposDisponiveis.map((grupoItem) => (
-                  <option key={grupoItem.value} value={grupoItem.value}>
-                    {grupoItem.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="formulario-campo">
-              Data
-              <input type="date" value={data} onChange={(event) => setData(event.target.value)} />
-            </label>
-            <label className="formulario-campo">
-              Categoria
-              <select value={categoriaId} onChange={(event) => setCategoriaId(event.target.value)}>
                 <option value="">Selecione</option>
                 {categorias.map((categoria) => (
                   <option key={categoria.id} value={categoria.id}>
@@ -208,9 +208,14 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoI
                 ))}
               </select>
             </label>
-            <label className="formulario-campo linha-inteira">
-              Método de pagamento
-              <select value={metodoPagamentoId} onChange={(event) => setMetodoPagamentoId(event.target.value)}>
+
+            <label>
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Método de pagamento</span>
+              <select
+                value={metodoPagamentoId}
+                onChange={(event) => setMetodoPagamentoId(event.target.value)}
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
+              >
                 <option value="">Selecione</option>
                 {metodosPagamento.map((metodo) => (
                   <option key={metodo.id} value={metodo.id}>
@@ -219,11 +224,56 @@ export default function ModalLancamento({ aberto, aoFechar, aoSalvar, transacaoI
                 ))}
               </select>
             </label>
+
+            <label>
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Tipo</span>
+              <select
+                value={tipo}
+                onChange={(event) => aoAlterarTipo(event.target.value as "entry" | "exit")}
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring"
+              >
+                <option value="entry">Entrada</option>
+                <option value="exit">Saída</option>
+              </select>
+            </label>
+
+            <label>
+              <span className="block text-xs font-medium text-muted-foreground mb-1">Grupo</span>
+              <select
+                value={grupo}
+                onChange={(event) => setGrupo(event.target.value as "fixed" | "variable" | "installment" | "entry")}
+                disabled={tipo === "entry"}
+                className="w-full h-10 px-3 rounded-md bg-surface border border-input text-sm focus-ring disabled:opacity-60"
+              >
+                {gruposDisponiveis.map((grupoItem) => (
+                  <option key={grupoItem.value} value={grupoItem.value}>
+                    {grupoItem.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-          {erro ? <div className="modal-erro">{erro}</div> : null}
-          <div className="modal-acoes">
-            <button type="button" onClick={aoFechar}>Cancelar</button>
-            <button type="submit" className="primary" disabled={!podeSalvar || salvando}>
+
+          {erro ? (
+            <div className="mt-4 p-3 rounded-md border border-destructive/30 bg-destructive/10 text-destructive text-sm font-medium">
+              {erro}
+            </div>
+          ) : null}
+
+          <div className="flex items-center justify-end gap-2 mt-6">
+            <button
+              type="button"
+              onClick={aoFechar}
+              className="h-10 px-4 rounded-md border border-input bg-surface text-sm font-medium text-foreground hover:bg-secondary transition-smooth focus-ring"
+              disabled={salvando}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={!podeSalvar || salvando}
+              className="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-card-sm transition-smooth hover:brightness-[0.98] focus-ring disabled:opacity-60"
+            >
               {salvando ? "Salvando..." : modoEdicao ? "Atualizar" : "Salvar"}
             </button>
           </div>

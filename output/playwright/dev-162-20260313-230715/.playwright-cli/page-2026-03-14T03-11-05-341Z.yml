@@ -1,0 +1,219 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e841]:
+      - generic [ref=e842]:
+        - generic [ref=e843]:
+          - heading "Lançamentos" [level=2] [ref=e844]
+          - paragraph [ref=e845]: Gerencie suas receitas e despesas
+        - button "Novo Lançamento" [ref=e847] [cursor=pointer]:
+          - img [ref=e848]
+          - text: Novo Lançamento
+      - generic [ref=e849]:
+        - generic [ref=e850]:
+          - button "Todos" [ref=e851] [cursor=pointer]
+          - button "Pagos" [ref=e852] [cursor=pointer]
+          - button "Pendentes" [ref=e853] [cursor=pointer]
+          - button "Atrasados" [ref=e854] [cursor=pointer]
+        - generic [ref=e855]:
+          - img [ref=e856]
+          - textbox "Buscar lançamento..." [ref=e859]
+      - generic [ref=e860]:
+        - generic [ref=e861]:
+          - generic [ref=e862]:
+            - generic [ref=e863]: Categoria
+            - combobox "Categoria" [ref=e864]:
+              - option "Todas" [selected]
+              - option "CODX Categoria 20260313"
+              - option "CODX Receita 20260313"
+              - option "CODX Cat Em Uso 20260314-1"
+          - generic [ref=e865]:
+            - generic [ref=e866]: Método
+            - combobox "Método" [ref=e867]:
+              - option "Todos" [selected]
+              - option "CODX PIX 20260313"
+          - generic [ref=e868]:
+            - generic [ref=e869]: Tipo
+            - combobox "Tipo" [ref=e870]:
+              - option "Todos" [selected]
+              - option "Entrada"
+              - option "Saída"
+        - generic [ref=e871]:
+          - link "Gerenciar categorias" [ref=e872] [cursor=pointer]:
+            - /url: /categories
+          - button "Limpar filtros" [ref=e873] [cursor=pointer]
+      - table [ref=e876]:
+        - rowgroup [ref=e877]:
+          - row "Data Descrição Tipo Categoria Método Valor Pago" [ref=e878]:
+            - columnheader "Data" [ref=e879]
+            - columnheader "Descrição" [ref=e880]
+            - columnheader "Tipo" [ref=e881]
+            - columnheader "Categoria" [ref=e882]
+            - columnheader "Método" [ref=e883]
+            - columnheader "Valor" [ref=e884]
+            - columnheader "Pago" [ref=e885]
+            - columnheader [ref=e886]
+        - rowgroup [ref=e887]:
+          - row "2026-03-13 CODX Lanche Saída CODX Categoria 20260313 CODX PIX 20260313 - R$ 0,10 Marcar CODX Lanche como pago Pago" [ref=e888]:
+            - cell "2026-03-13" [ref=e889]
+            - cell "CODX Lanche" [ref=e890]
+            - cell "Saída" [ref=e891]
+            - cell "CODX Categoria 20260313" [ref=e892]
+            - cell "CODX PIX 20260313" [ref=e893]
+            - cell "- R$ 0,10" [ref=e894]
+            - cell "Marcar CODX Lanche como pago Pago" [ref=e895]:
+              - generic [ref=e897]:
+                - checkbox "Marcar CODX Lanche como pago" [checked] [ref=e898]
+                - generic [ref=e899]: Pago
+            - cell [ref=e900]:
+              - generic [ref=e901]:
+                - button "Alternar pago" [ref=e902] [cursor=pointer]:
+                  - img [ref=e903]
+                - button "Editar" [ref=e905] [cursor=pointer]:
+                  - img [ref=e906]
+                - button "Excluir" [ref=e909] [cursor=pointer]:
+                  - img [ref=e910]
+          - row "2026-03-13 CODX Salário Entrada CODX Receita 20260313 CODX PIX 20260313 + R$ 1,00" [ref=e913]:
+            - cell "2026-03-13" [ref=e914]
+            - cell "CODX Salário" [ref=e915]
+            - cell "Entrada" [ref=e916]
+            - cell "CODX Receita 20260313" [ref=e917]
+            - cell "CODX PIX 20260313" [ref=e918]
+            - cell "+ R$ 1,00" [ref=e919]
+            - cell [ref=e920]
+            - cell [ref=e921]:
+              - generic [ref=e922]:
+                - button "Editar" [ref=e923] [cursor=pointer]:
+                  - img [ref=e924]
+                - button "Excluir" [ref=e927] [cursor=pointer]:
+                  - img [ref=e928]
+          - row "2026-03-05 CODX Internet Saída CODX Categoria 20260313 CODX PIX 20260313 - R$ 50,00 Marcar CODX Internet como pago Pago" [ref=e931]:
+            - cell "2026-03-05" [ref=e932]
+            - cell "CODX Internet" [ref=e933]
+            - cell "Saída" [ref=e934]
+            - cell "CODX Categoria 20260313" [ref=e935]
+            - cell "CODX PIX 20260313" [ref=e936]
+            - cell "- R$ 50,00" [ref=e937]
+            - cell "Marcar CODX Internet como pago Pago" [ref=e938]:
+              - generic [ref=e940]:
+                - checkbox "Marcar CODX Internet como pago" [checked] [ref=e941]
+                - generic [ref=e942]: Pago
+            - cell [ref=e943]:
+              - generic [ref=e944]:
+                - button "Alternar pago" [ref=e945] [cursor=pointer]:
+                  - img [ref=e946]
+                - button "Editar" [ref=e948] [cursor=pointer]:
+                  - img [ref=e949]
+                - button "Excluir" [ref=e952] [cursor=pointer]:
+                  - img [ref=e953]
+          - row "2026-03-20 CODX Recorrência 20260314-1 Saída CODX Categoria 20260313 CODX PIX 20260313 - R$ 99,99 Marcar CODX Recorrência 20260314-1 como pago Pendente" [ref=e956]:
+            - cell "2026-03-20" [ref=e957]
+            - cell "CODX Recorrência 20260314-1" [ref=e958]
+            - cell "Saída" [ref=e959]
+            - cell "CODX Categoria 20260313" [ref=e960]
+            - cell "CODX PIX 20260313" [ref=e961]
+            - cell "- R$ 99,99" [ref=e962]
+            - cell "Marcar CODX Recorrência 20260314-1 como pago Pendente" [ref=e963]:
+              - generic [ref=e965]:
+                - checkbox "Marcar CODX Recorrência 20260314-1 como pago" [ref=e966]
+                - generic [ref=e967]: Pendente
+            - cell [ref=e968]:
+              - generic [ref=e969]:
+                - button "Alternar pago" [ref=e970] [cursor=pointer]:
+                  - img [ref=e971]
+                - button "Editar" [ref=e973] [cursor=pointer]:
+                  - img [ref=e974]
+                - button "Excluir" [ref=e977] [cursor=pointer]:
+                  - img [ref=e978]
+          - row "2026-03-21 CODX Recorrência 20260314-1 Saída CODX Categoria 20260313 CODX PIX 20260313 - R$ 120,00 Marcar CODX Recorrência 20260314-1 como pago Pendente" [ref=e981]:
+            - cell "2026-03-21" [ref=e982]
+            - cell "CODX Recorrência 20260314-1" [ref=e983]
+            - cell "Saída" [ref=e984]
+            - cell "CODX Categoria 20260313" [ref=e985]
+            - cell "CODX PIX 20260313" [ref=e986]
+            - cell "- R$ 120,00" [ref=e987]
+            - cell "Marcar CODX Recorrência 20260314-1 como pago Pendente" [ref=e988]:
+              - generic [ref=e990]:
+                - checkbox "Marcar CODX Recorrência 20260314-1 como pago" [ref=e991]
+                - generic [ref=e992]: Pendente
+            - cell [ref=e993]:
+              - generic [ref=e994]:
+                - button "Alternar pago" [ref=e995] [cursor=pointer]:
+                  - img [ref=e996]
+                - button "Editar" [ref=e998] [cursor=pointer]:
+                  - img [ref=e999]
+                - button "Excluir" [ref=e1002] [cursor=pointer]:
+                  - img [ref=e1003]
+          - row "2026-03-14 CODX Tx Cat Em Uso 20260314-1 Saída CODX Cat Em Uso 20260314-1 CODX PIX 20260313 - R$ 1,00 Marcar CODX Tx Cat Em Uso 20260314-1 como pago Pendente" [ref=e1040]:
+            - cell "2026-03-14" [ref=e1041]
+            - cell "CODX Tx Cat Em Uso 20260314-1" [ref=e1042]
+            - cell "Saída" [ref=e1043]
+            - cell "CODX Cat Em Uso 20260314-1" [ref=e1044]
+            - cell "CODX PIX 20260313" [ref=e1045]
+            - cell "- R$ 1,00" [ref=e1046]
+            - cell "Marcar CODX Tx Cat Em Uso 20260314-1 como pago Pendente" [ref=e1047]:
+              - generic [ref=e1049]:
+                - checkbox "Marcar CODX Tx Cat Em Uso 20260314-1 como pago" [ref=e1050]
+                - generic [ref=e1051]: Pendente
+            - cell [ref=e1052]:
+              - generic [ref=e1053]:
+                - button "Alternar pago" [ref=e1054] [cursor=pointer]:
+                  - img [ref=e1055]
+                - button "Editar" [ref=e1057] [cursor=pointer]:
+                  - img [ref=e1058]
+                - button "Excluir" [ref=e1061] [cursor=pointer]:
+                  - img [ref=e1062]

@@ -1,0 +1,89 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e367]:
+      - generic [ref=e368]:
+        - generic [ref=e369]:
+          - heading "Investimentos / Reserva" [level=2] [ref=e370]
+          - paragraph [ref=e371]: Acompanhe sua reserva e contas de investimento
+        - button "Novo Investimento" [ref=e373] [cursor=pointer]:
+          - img [ref=e374]
+          - text: Novo Investimento
+      - generic [ref=e375]:
+        - generic [ref=e377]:
+          - generic [ref=e378]:
+            - paragraph [ref=e379]: Reserva de Emergência
+            - paragraph [ref=e380]: "Total: R$ 0,00"
+          - generic [ref=e381]:
+            - button "Criar" [active] [ref=e382] [cursor=pointer]
+            - button "+ Aporte" [disabled] [ref=e383]
+            - button "Ver Aportes" [ref=e384] [cursor=pointer]
+        - generic [ref=e385]:
+          - paragraph [ref=e386]: Investimentos
+          - paragraph [ref=e387]: Nenhum investimento cadastrado.
+      - generic [ref=e389]:
+        - generic [ref=e390]:
+          - heading "Nova Reserva" [level=3] [ref=e391]
+          - button "Fechar" [ref=e392] [cursor=pointer]:
+            - img [ref=e393]
+        - generic [ref=e396]:
+          - generic [ref=e397]:
+            - generic [ref=e398]: Nome
+            - textbox "Nome" [ref=e399]: Reserva de Emergência
+          - generic [ref=e400]:
+            - button "Cancelar" [ref=e401] [cursor=pointer]
+            - button "Salvar" [ref=e402] [cursor=pointer]

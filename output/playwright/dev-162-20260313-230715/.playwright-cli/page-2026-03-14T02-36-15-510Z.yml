@@ -1,0 +1,127 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e329]:
+      - generic [ref=e330]:
+        - generic [ref=e331]:
+          - heading "Métodos de Pagamento" [level=2] [ref=e332]
+          - paragraph [ref=e333]: Gerencie seus cartões e contas
+        - button "Novo Método" [ref=e335] [cursor=pointer]:
+          - img [ref=e336]
+          - text: Novo Método
+      - generic [ref=e337]:
+        - heading "Cartões de Crédito" [level=3] [ref=e338]:
+          - img [ref=e339]
+          - text: Cartões de Crédito
+        - generic [ref=e467]:
+          - generic [ref=e468]:
+            - button "Editar CODX Card 20260314-1" [ref=e469] [cursor=pointer]:
+              - img [ref=e470]
+            - button "Excluir CODX Card 20260314-1" [ref=e473] [cursor=pointer]:
+              - img [ref=e474]
+          - generic [ref=e477]:
+            - generic [ref=e478]:
+              - paragraph [ref=e479]: Cartão de crédito
+              - paragraph [ref=e480]: CODX Card 20260314-1
+            - generic [ref=e481]:
+              - paragraph [ref=e482]: "Fechamento: dia 10 · Vencimento: dia 15"
+              - paragraph [ref=e483]: "Pago no mês: Sim"
+      - generic [ref=e342]:
+        - heading "Contas e Outros" [level=3] [ref=e343]:
+          - img [ref=e344]
+          - text: Contas e Outros
+        - generic [ref=e348]:
+          - generic [ref=e349]:
+            - img [ref=e351]
+            - generic [ref=e354]:
+              - paragraph [ref=e355]: CODX PIX 20260313
+              - paragraph [ref=e356]: PIX
+          - generic [ref=e357]:
+            - button "Editar CODX PIX 20260313" [ref=e358] [cursor=pointer]:
+              - img [ref=e359]
+            - button "Excluir CODX PIX 20260313" [ref=e362] [cursor=pointer]:
+              - img [ref=e363]
+      - generic [ref=e485]:
+        - heading "Editar Método" [level=3] [ref=e487]
+        - generic [ref=e488]:
+          - generic [ref=e489]:
+            - generic [ref=e490]:
+              - generic [ref=e491]: Nome
+              - textbox "Nome" [ref=e492]: CODX Card 20260314-1
+            - generic [ref=e493]:
+              - generic [ref=e494]: Tipo
+              - combobox "Tipo" [ref=e495]:
+                - option "Dinheiro"
+                - option "Transferência"
+                - option "Débito"
+                - option "Cartão de crédito" [selected]
+                - option "Outro"
+            - generic [ref=e496]:
+              - checkbox "É um cartão de crédito" [checked] [ref=e497]
+              - generic [ref=e498]: É um cartão de crédito
+            - generic [ref=e499]:
+              - generic [ref=e500]: Dia de fechamento
+              - spinbutton "Dia de fechamento" [ref=e501]: "10"
+            - generic [ref=e502]:
+              - generic [ref=e503]: Dia de vencimento
+              - spinbutton "Dia de vencimento" [ref=e504]: "15"
+            - generic [ref=e505]:
+              - checkbox "Pago no mês" [checked] [ref=e506]
+              - generic [ref=e507]: Pago no mês
+          - generic [ref=e508]:
+            - button "Cancelar" [ref=e509] [cursor=pointer]
+            - button "Salvar" [ref=e510] [cursor=pointer]

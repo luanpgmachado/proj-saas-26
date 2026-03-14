@@ -1,5 +1,13 @@
 # Registro PDCA
 
+## 2026-03-14 — Migracao visual Layout 3.0 (Tailwind + novo layout global) (DEV-162)
+- **Plan:** Replicar layout visual do repo de referencia (sidebar recolhivel, content header, surface cards, tabelas e modais) mantendo regras de negocio e contrato da API.
+- **Do:** (em andamento)
+  - Docs: `docs/UX_BLUEPRINT.md` atualizado para refletir layout 3.0, nova tela de Categorias e ajustes de Metodos de Pagamento/Lancamentos.
+  - Frontend: migracao para Tailwind + tokens visuais e refatoracao de layout/telas para fidelidade aos prints.
+- **Check:** Validacao visual por screenshots Playwright (Layout 3.0) + smoke dos CRUDs (sem mudancas de endpoints).
+- **Act:** Registrar divergencias restantes e criar follow-ups no Linear se houver gaps de contrato/dados (ex: limites de cartao).
+
 ## 2026-01-27 — CRUD Reserva de Emergencia
 - **Plan:** Escopo definido para adicionar operacoes de editar/excluir na Reserva de Emergencia, seguindo padrao ja existente em Goals e Investments.
 - **Do:**

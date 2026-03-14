@@ -1,0 +1,85 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e329]:
+      - generic [ref=e330]:
+        - generic [ref=e331]:
+          - heading "Métodos de Pagamento" [level=2] [ref=e332]
+          - paragraph [ref=e333]: Gerencie seus cartões e contas
+        - button "Novo Método" [ref=e335] [cursor=pointer]:
+          - img [ref=e336]
+          - text: Novo Método
+      - generic [ref=e337]:
+        - heading "Cartões de Crédito" [level=3] [ref=e338]:
+          - img [ref=e339]
+          - text: Cartões de Crédito
+        - generic [ref=e341]: Nenhum cartão cadastrado.
+      - generic [ref=e342]:
+        - heading "Contas e Outros" [level=3] [ref=e343]:
+          - img [ref=e344]
+          - text: Contas e Outros
+        - generic [ref=e348]:
+          - generic [ref=e349]:
+            - img [ref=e351]
+            - generic [ref=e354]:
+              - paragraph [ref=e355]: CODX PIX 20260313
+              - paragraph [ref=e356]: PIX
+          - generic [ref=e357]:
+            - button "Editar CODX PIX 20260313" [ref=e358] [cursor=pointer]:
+              - img [ref=e359]
+            - button "Excluir CODX PIX 20260313" [ref=e362] [cursor=pointer]:
+              - img [ref=e363]

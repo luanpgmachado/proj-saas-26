@@ -1,0 +1,150 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Principal
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+              - generic [ref=e22]: Dashboard
+          - listitem [ref=e23]:
+            - link "Lançamentos" [ref=e24] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e25]
+              - generic [ref=e28]: Lançamentos
+          - listitem [ref=e29]:
+            - link "Recorrências" [ref=e30] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e31]
+              - generic [ref=e36]: Recorrências
+          - listitem [ref=e37]:
+            - link "Panorama Anual" [ref=e38] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e39]
+              - generic [ref=e42]: Panorama Anual
+          - listitem [ref=e43]:
+            - link "Metas" [ref=e44] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e45]
+              - generic [ref=e49]: Metas
+          - listitem [ref=e50]:
+            - link "Investimentos" [ref=e51] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e52]
+              - generic [ref=e55]: Investimentos
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Configurações
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Categorias" [ref=e60] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e61]
+              - generic [ref=e65]: Categorias
+          - listitem [ref=e66]:
+            - link "Métodos de Pagamento" [ref=e67] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e68]
+              - generic [ref=e70]: Métodos de Pagamento
+    - button "Recolher menu lateral" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]
+  - main [ref=e74]:
+    - link "Pular para o conteúdo" [ref=e75] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - heading "Recorrências" [level=2] [ref=e81]
+          - paragraph [ref=e82]: Lançamentos automáticos mensais
+        - generic [ref=e83]:
+          - textbox "Mês para gerar" [ref=e84]: 2026-03
+          - generic [ref=e85]:
+            - button "Gerar Mês" [ref=e86] [cursor=pointer]:
+              - img [ref=e87]
+              - text: Gerar Mês
+            - button "Nova Recorrência" [ref=e90] [cursor=pointer]:
+              - img [ref=e91]
+              - text: Nova Recorrência
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - img [ref=e94]
+          - generic [ref=e99]: 1 recorrências ativas
+        - generic [ref=e100]: "Total mensal estimado: R$ 50,00"
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - heading "Nova Recorrência" [level=3] [ref=e130]
+          - button "Fechar" [ref=e131] [cursor=pointer]
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - generic [ref=e134]: Descrição
+            - textbox "Descrição" [ref=e135]:
+              - /placeholder: "Ex: Aluguel, Netflix..."
+              - text: CODX Recorrência 20260314-1
+          - generic [ref=e136]:
+            - generic [ref=e137]: Tipo
+            - combobox "Tipo" [ref=e138]:
+              - option "Saída" [selected]
+              - option "Entrada"
+          - generic [ref=e139]:
+            - generic [ref=e140]: Grupo
+            - combobox "Grupo" [ref=e141]:
+              - option "Fixo" [selected]
+              - option "Parcelado"
+              - option "Entrada"
+          - generic [ref=e142]:
+            - generic [ref=e143]: Valor (R$)
+            - textbox "Valor (R$)" [active] [ref=e144]:
+              - /placeholder: 0,00
+              - text: 99,99
+          - generic [ref=e145]:
+            - generic [ref=e146]: Categoria
+            - combobox "Categoria" [ref=e147]:
+              - option "Selecione"
+              - option "CODX Categoria 20260313" [selected]
+              - option "CODX Receita 20260313"
+          - generic [ref=e148]:
+            - generic [ref=e149]: Método
+            - combobox "Método" [ref=e150]:
+              - option "Selecione"
+              - option "CODX PIX 20260313" [selected]
+          - generic [ref=e151]:
+            - generic [ref=e152]: Data início
+            - textbox "Data início" [ref=e153]
+          - generic [ref=e154]:
+            - generic [ref=e155]: Data fim (opcional)
+            - textbox "Data fim (opcional)" [ref=e156]
+          - generic [ref=e157]:
+            - generic [ref=e158]: Dia do mês
+            - spinbutton "Dia do mês" [ref=e159]: "1"
+        - generic [ref=e160]:
+          - button "Cancelar" [ref=e161] [cursor=pointer]
+          - button "Criar" [ref=e162] [cursor=pointer]
+      - table [ref=e103]:
+        - rowgroup [ref=e104]:
+          - row "Descrição Categoria Método Dia Status Valor" [ref=e105]:
+            - columnheader "Descrição" [ref=e106]
+            - columnheader "Categoria" [ref=e107]
+            - columnheader "Método" [ref=e108]
+            - columnheader "Dia" [ref=e109]
+            - columnheader "Status" [ref=e110]
+            - columnheader "Valor" [ref=e111]
+            - columnheader [ref=e112]
+        - rowgroup [ref=e113]:
+          - row "CODX Internet CODX Categoria 20260313 CODX PIX 20260313 5 Ativa Fixo R$ 50,00 Editar Pausar Cancelar" [ref=e114]:
+            - cell "CODX Internet" [ref=e115]
+            - cell "CODX Categoria 20260313" [ref=e116]
+            - cell "CODX PIX 20260313" [ref=e117]
+            - cell "5" [ref=e118]
+            - cell "Ativa Fixo" [ref=e119]:
+              - generic [ref=e120]: Ativa
+              - generic [ref=e121]: Fixo
+            - cell "R$ 50,00" [ref=e122]
+            - cell "Editar Pausar Cancelar" [ref=e123]:
+              - generic [ref=e124]:
+                - button "Editar" [ref=e125] [cursor=pointer]
+                - button "Pausar" [ref=e126] [cursor=pointer]
+                - button "Cancelar" [ref=e127] [cursor=pointer]
