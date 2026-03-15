@@ -54,6 +54,13 @@ function normalizeRecurrenceText(value: string | undefined | null): string | und
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function normalizeRecurrenceStatus(value: unknown): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "string") return undefined;
+  if (value === "canceled") return "paused";
+  return value;
+}
+
 function normalizeCategoryName(value: unknown): string | undefined {
   if (value === undefined || value === null) return undefined;
   if (typeof value !== "string") return undefined;
@@ -578,6 +585,7 @@ export class DatabaseStorage implements IStorage {
     const normalized = {
       ...recurrence,
       description: normalizeRecurrenceText(recurrence.description) ?? "",
+      status: normalizeRecurrenceStatus((recurrence as any).status) ?? (recurrence as any).status,
     };
     assertRecurrenceRules(normalized);
     const [created] = await db.insert(recurrences).values(normalized).returning();
@@ -593,6 +601,9 @@ export class DatabaseStorage implements IStorage {
     const normalizedPatch: Partial<InsertRecurrence> = { ...recurrence };
     if (recurrence.description !== undefined) {
       normalizedPatch.description = normalizeRecurrenceText(recurrence.description) ?? "";
+    }
+    if (recurrence.status !== undefined) {
+      normalizedPatch.status = normalizeRecurrenceStatus(recurrence.status) as any;
     }
     if (existing.status === "canceled" && normalizedPatch.status === undefined) {
       normalizedPatch.status = "paused";
