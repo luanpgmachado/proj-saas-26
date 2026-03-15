@@ -44,7 +44,7 @@ class HttpError extends Error {
 
 const recurrenceTypes = new Set(["entry", "exit"]);
 const recurrenceGroups = new Set(["fixed", "installment", "entry"]);
-const recurrenceStatuses = new Set(["active", "paused", "canceled"]);
+const recurrenceStatuses = new Set(["active", "paused"]);
 const categoryKinds = new Set(["income", "expense"]);
 const transactionTypes = new Set(["entry", "exit"]);
 
@@ -52,6 +52,13 @@ function normalizeRecurrenceText(value: string | undefined | null): string | und
   if (value === undefined || value === null) return undefined;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function normalizeRecurrenceStatus(value: unknown): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "string") return undefined;
+  if (value === "canceled") return "paused";
+  return value;
 }
 
 function normalizeCategoryName(value: unknown): string | undefined {
@@ -192,6 +199,7 @@ export interface IStorage {
   getRecurrences(): Promise<Recurrence[]>;
   createRecurrence(recurrence: InsertRecurrence): Promise<Recurrence>;
   updateRecurrence(id: number, recurrence: Partial<InsertRecurrence>): Promise<Recurrence | undefined>;
+  deleteRecurrence(id: number): Promise<{ deletedUnpaidTransactions: number; detachedPaidTransactions: number } | undefined>;
   generateRecurrenceTransactions(month: string): Promise<Transaction[]>;
   getMonthSummary(month: string): Promise<{ entriesCents: number; exitsCents: number; paidExitsCents: number; balanceCents: number; realBalanceCents: number }>;
   getCategorySpend(month: string): Promise<{ categoryId: number; categoryName: string; budgetCents: number | null; spentCents: number; diffCents: number }[]>;
@@ -566,13 +574,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRecurrences(): Promise<Recurrence[]> {
-    return db.select().from(recurrences);
+    const result = await db.select().from(recurrences);
+    return result.map((r) => ({
+      ...r,
+      status: r.status === "canceled" ? "paused" : r.status,
+    }));
   }
 
   async createRecurrence(recurrence: InsertRecurrence): Promise<Recurrence> {
     const normalized = {
       ...recurrence,
       description: normalizeRecurrenceText(recurrence.description) ?? "",
+      status: normalizeRecurrenceStatus((recurrence as any).status) ?? (recurrence as any).status,
     };
     assertRecurrenceRules(normalized);
     const [created] = await db.insert(recurrences).values(normalized).returning();
@@ -589,6 +602,12 @@ export class DatabaseStorage implements IStorage {
     if (recurrence.description !== undefined) {
       normalizedPatch.description = normalizeRecurrenceText(recurrence.description) ?? "";
     }
+    if (recurrence.status !== undefined) {
+      normalizedPatch.status = normalizeRecurrenceStatus(recurrence.status) as any;
+    }
+    if (existing.status === "canceled" && normalizedPatch.status === undefined) {
+      normalizedPatch.status = "paused";
+    }
 
     const merged = { ...existing, ...normalizedPatch };
     assertRecurrenceRules(merged);
@@ -598,6 +617,28 @@ export class DatabaseStorage implements IStorage {
       await this.executarGeracaoAutomaticaRecorrencia(updated);
     }
     return updated;
+  }
+
+  async deleteRecurrence(id: number): Promise<{ deletedUnpaidTransactions: number; detachedPaidTransactions: number } | undefined> {
+    return db.transaction(async (tx) => {
+      const [existing] = await tx.select({ id: recurrences.id }).from(recurrences).where(eq(recurrences.id, id));
+      if (!existing) return undefined;
+
+      const detached = await tx
+        .update(transactions)
+        .set({ recurrenceId: null })
+        .where(and(eq(transactions.recurrenceId, id), eq(transactions.isPaid, true)))
+        .returning({ id: transactions.id });
+
+      const deleted = await tx
+        .delete(transactions)
+        .where(and(eq(transactions.recurrenceId, id), eq(transactions.isPaid, false)))
+        .returning({ id: transactions.id });
+
+      await tx.delete(recurrences).where(eq(recurrences.id, id));
+
+      return { deletedUnpaidTransactions: deleted.length, detachedPaidTransactions: detached.length };
+    });
   }
 
   async generateRecurrenceTransactions(month: string): Promise<Transaction[]> {

@@ -52,7 +52,7 @@
 - endDate (opcional; obrigatorio quando `group = installment`)
 - dayOfMonth
 - installmentTotal (opcional; obrigatorio quando `group = installment`)
-- status: `active` | `paused` | `canceled`
+- status: `active` | `paused`
 
 ### MonthSummary
 - month
@@ -139,12 +139,18 @@ Erros:
 - GET `/api/recurrences` -> Recurrence[]
 - POST `/api/recurrences` -> Recurrence
 - PATCH `/api/recurrences/{id}` -> Recurrence
+- DELETE `/api/recurrences/{id}` -> `{ success: true, deletedUnpaidTransactions: number, detachedPaidTransactions: number }`
 - POST `/api/recurrences/generate?month={YYYY-MM}` -> Transaction[]
 
 Regras:
 - `group = installment` exige `endDate` e `installmentTotal`.
 - `POST /api/recurrences` e `PATCH /api/recurrences/{id}` disparam geracao automatica de transacoes conforme regras de recorrencia.
 - Para `group = fixed` com `endDate = null`, a geracao automatica cobre 24 meses a partir de `startDate`.
+- Ao deletar uma recorrencia:
+  - a recorrencia e removida do sistema;
+  - transacoes vinculadas (`transactions.recurrenceId`) com `isPaid = false` sao excluidas;
+  - transacoes vinculadas com `isPaid = true` **nao** sao excluidas e sao **desvinculadas** (`recurrenceId = null`) para preservar integridade historica.
+  - `404` quando `id` nao existir.
 
 ## Relatorios e recorrencias
 - Relatorios mensais e anuais usam apenas `transactions` como fonte de verdade.
@@ -157,7 +163,7 @@ Regras:
   - `group = fixed`, `endDate = null`, `dayOfMonth` no dia de vencimento.
 - Reajuste de valor:
   - Criar nova recorrencia com novo `amountCents` e `startDate`.
-  - Pausar/cancelar a recorrencia anterior para preservar historico.
+  - Pausar a recorrencia anterior para preservar historico.
 
 ### Metodos de pagamento
 - GET `/api/payment-methods` -> PaymentMethod[]
