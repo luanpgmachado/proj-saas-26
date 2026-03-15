@@ -1,5 +1,11 @@
 # Registro PDCA
 
+## 2026-03-15 — Deploy producao (Coolify Hostinger) (DEV-166)
+- **Plan:** Disparar deploy em producao via Coolify respeitando o guardrail de dados (sem comandos de escrita de banco).
+- **Do:** Deploy acionado no Coolify para `proj-financa-v1` (build pack Dockerfile) sem executar `db:push`/`db:seed`/backfill.
+- **Check:** Smoke HTTP/HTTPS do dominio + validacao de `/api` retornando `404` imediato (sem timeout).
+- **Act:** Runbook atualizado com fallback de deploy via API do Coolify; issue encerrada no Linear.
+
 ## 2026-03-14 — Migracao visual Layout 3.0 (Tailwind + novo layout global) (DEV-162)
 - **Plan:** Replicar layout visual do repo de referencia (sidebar recolhivel, content header, surface cards, tabelas e modais) mantendo regras de negocio e contrato da API.
 - **Do:** (em andamento)

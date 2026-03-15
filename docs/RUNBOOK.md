@@ -66,6 +66,36 @@ Se app nova:
 - Acompanhar status em `deployment action=get` ate `finished` (ou erro).
 - Inspecionar logs de deploy para diagnosticar falhas.
 
+### 3b) Fallback sem MCP (API do Coolify)
+Use apenas para disparar/monitorar deploy (nao altera `DATABASE_URL` e nao executa scripts de banco).
+
+1) Obter `uuid` da aplicacao (por nome) via API:
+```powershell
+$env:COOLIFY_BASE_URL="http://31.97.240.105:8000"
+$env:COOLIFY_ACCESS_TOKEN="<token>"
+
+$base = $env:COOLIFY_BASE_URL.TrimEnd("/")
+$api = "$base/api/v1"
+$headers = @{ Authorization = "Bearer $env:COOLIFY_ACCESS_TOKEN" }
+
+Invoke-RestMethod -Method Get -Uri "$api/applications" -Headers $headers |
+  Where-Object { $_.name -eq "proj-financa-v1" } |
+  Select-Object name, uuid, git_repository, git_branch
+```
+
+2) Disparar deploy por `uuid`:
+```powershell
+$uuid = "<uuid>"
+Invoke-RestMethod -Method Get -Uri "$api/deploy?uuid=$uuid" -Headers $headers
+```
+
+3) Monitorar status ate `finished`:
+```powershell
+$deploymentUuid = "<deployment_uuid>"
+Invoke-RestMethod -Method Get -Uri "$api/deployments/$deploymentUuid" -Headers $headers |
+  Select-Object status, created_at, updated_at
+```
+
 ### 4) DNS manual na Hostinger (acao do usuario)
 Como MCP da Hostinger nao esta disponivel:
 1. Abrir painel Hostinger -> DNS / Nameservers.
