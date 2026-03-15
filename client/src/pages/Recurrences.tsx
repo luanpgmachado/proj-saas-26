@@ -17,7 +17,7 @@ type Recurrence = {
   endDate: string | null;
   dayOfMonth: number;
   installmentTotal: number | null;
-  status: "active" | "paused" | "canceled";
+  status: "active" | "paused";
 };
 
 type Category = { id: number; name: string };
@@ -40,8 +40,7 @@ const traduzirGrupo = (grupo: string) => {
 
 const traduzirStatus = (status: string) => {
   if (status === "active") return "Ativa";
-  if (status === "paused") return "Pausada";
-  return "Cancelada";
+  return "Pausada";
 };
 
 export default function Recurrences() {
@@ -68,6 +67,7 @@ export default function Recurrences() {
   const [erroFormulario, setErroFormulario] = useState<string | null>(null);
 
   const [confirmarGeracao, setConfirmarGeracao] = useState(false);
+  const [confirmarDelecao, setConfirmarDelecao] = useState<Recurrence | null>(null);
 
   useEffect(() => {
     carregarDados().catch(console.error);
@@ -194,7 +194,7 @@ export default function Recurrences() {
     }
   };
 
-  const alterarStatus = async (id: number, status: "active" | "paused" | "canceled") => {
+  const alterarStatus = async (id: number, status: "active" | "paused") => {
     setCarregando(true);
     setMensagem(null);
     try {
@@ -205,6 +205,27 @@ export default function Recurrences() {
       console.error(err);
       setMensagem("Erro ao atualizar status.");
     } finally {
+      setCarregando(false);
+    }
+  };
+
+  const deletarRecorrencia = async () => {
+    if (!confirmarDelecao) return;
+    setCarregando(true);
+    setMensagem(null);
+    try {
+      const result = await api.deleteRecurrence(confirmarDelecao.id);
+      await carregarDados();
+      const deletadas = Number(result?.deletedUnpaidTransactions ?? 0);
+      const desvinculadas = Number(result?.detachedPaidTransactions ?? 0);
+      setMensagem(
+        `Recorrência deletada. ${deletadas} transação(ões) não paga(s) removida(s) e ${desvinculadas} paga(s) preservada(s).`,
+      );
+    } catch (err) {
+      console.error(err);
+      setMensagem("Erro ao deletar recorrência.");
+    } finally {
+      setConfirmarDelecao(null);
       setCarregando(false);
     }
   };
@@ -507,9 +528,9 @@ export default function Recurrences() {
                           <button
                             type="button"
                             className="text-xs font-medium text-muted-foreground hover:text-destructive transition-smooth focus-ring rounded-md px-2 py-1"
-                            onClick={() => alterarStatus(rec.id, "canceled")}
+                            onClick={() => setConfirmarDelecao(rec)}
                           >
-                            Cancelar
+                            Deletar
                           </button>
                         </>
                       ) : rec.status === "paused" ? (
@@ -524,9 +545,9 @@ export default function Recurrences() {
                           <button
                             type="button"
                             className="text-xs font-medium text-muted-foreground hover:text-destructive transition-smooth focus-ring rounded-md px-2 py-1"
-                            onClick={() => alterarStatus(rec.id, "canceled")}
+                            onClick={() => setConfirmarDelecao(rec)}
                           >
-                            Cancelar
+                            Deletar
                           </button>
                         </>
                       ) : (
@@ -554,6 +575,22 @@ export default function Recurrences() {
           </table>
         </div>
       </div>
+
+      <ModalConfirmacao
+        aberto={Boolean(confirmarDelecao)}
+        titulo="Deletar Recorrência"
+        mensagem={
+          confirmarDelecao
+            ? `Isso deletará a recorrência “${confirmarDelecao.description}” e removerá todas as transações vinculadas não pagas. Transações pagas serão preservadas no histórico. Deseja confirmar?`
+            : ""
+        }
+        aoConfirmar={deletarRecorrencia}
+        aoCancelar={() => setConfirmarDelecao(null)}
+        confirmando={carregando}
+        textoConfirmar="Deletar"
+        textoCancelar="Cancelar"
+        varianteConfirmar="destrutivo"
+      />
 
       <ModalConfirmacao
         aberto={confirmarGeracao}

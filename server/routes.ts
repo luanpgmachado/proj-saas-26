@@ -125,6 +125,13 @@ router.patch("/recurrences/:id", asyncHandler(async (req, res) => {
   res.json(recurrence);
 }));
 
+router.delete("/recurrences/:id", asyncHandler(async (req, res) => {
+  const id = getParamString(req.params.id);
+  const result = await storage.deleteRecurrence(parseInt(id));
+  if (!result) return res.status(404).json({ error: "Not found" });
+  res.json({ success: true, ...result });
+}));
+
 router.post("/recurrences/generate", asyncHandler(async (req, res) => {
   const month = getQueryString(req.query.month);
   if (!month) return res.status(400).json({ error: "month é obrigatório" });

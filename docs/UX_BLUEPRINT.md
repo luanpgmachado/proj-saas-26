@@ -123,7 +123,8 @@
 - Ao clicar "Gerar Mês", usar a competencia mensal ativa para chamar o endpoint de geracao e exibir mensagem com quantidade de transacoes criadas.
 - Abaixo, tabela com todas as recorrencias cadastradas.
 - Colunas: descricao, tipo, grupo, valor, categoria, metodo, dia, status, inicio, fim, acoes.
-- Ações por linha discretas: editar, pausar, cancelar, reativar (conforme status atual).
+- Ações por linha discretas: editar, pausar, deletar, reativar (conforme status atual).
+  - Ao clicar em deletar: pedir confirmacao e informar que transacoes vinculadas nao pagas serao removidas.
 - Botao "Editar" abre formulario inline no topo da tabela com os dados preenchidos.
 - Botao "+ Nova Recorrência" abre formulario inline no topo da tabela (sem modal).
 - Formulario de nova recorrencia/edicao:
@@ -134,7 +135,7 @@
   - Ao salvar criacao/edicao, o backend deve disparar geracao automatica de transacoes conforme as regras de recorrencia.
 - Validacoes:
   - group permitido: fixed | installment | entry.
-  - status permitido: active | paused | canceled.
+  - status permitido: active | paused.
   - type=entry => group=entry.
   - type=exit => group != entry.
   - group=installment => endDate e installmentTotal obrigatorios.

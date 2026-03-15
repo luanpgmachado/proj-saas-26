@@ -38,6 +38,7 @@ export const api = {
   getRecurrences: () => request<any[]>("/recurrences"),
   createRecurrence: (data: any) => request<any>("/recurrences", { method: "POST", body: JSON.stringify(data) }),
   updateRecurrence: (id: number, data: any) => request<any>(`/recurrences/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteRecurrence: (id: number) => request<any>(`/recurrences/${id}`, { method: "DELETE" }),
   generateRecurrences: (month: string) => request<any[]>(`/recurrences/generate?month=${month}`, { method: "POST" }),
   getCategories: () => request<any[]>("/categories"),
   createCategory: (data: any) => request<any>("/categories", { method: "POST", body: JSON.stringify(data) }),

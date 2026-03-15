@@ -16,7 +16,10 @@
 1. **[2026-03-13] Infra nao mexe em regra de negocio**
    Do instead: limitar mudancas a build/deploy/automacao/ferramentas e registrar no `docs/PDCA_LOG.md`.
 
+## Shell & Command Reliability
+1. **[2026-03-15] `nl` nao existe no PowerShell do Windows**
+   Do instead: usar `Get-Content` + contador para imprimir arquivo com numeros de linha quando precisar referenciar trechos.
+
 ## Skills Locais do Repo
 1. **[2026-03-13] Skills locais vivem em `.codex/skills/`**
    Do instead: criar/atualizar skills no repo com `SKILL.md` + `agents/openai.yaml` e validar com `quick_validate.py` da skill-creator.
-

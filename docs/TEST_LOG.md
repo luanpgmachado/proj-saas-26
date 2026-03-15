@@ -17,7 +17,7 @@
   - Categorias (`/categories`): criar/editar/excluir + bloqueio `409` ao excluir em uso.
   - Lancamentos (`/transactions`): criar/editar/excluir + toggle `Pago` apenas para `exit` (entrada sem checkbox).
   - Metodos de Pagamento (`/payment-methods`): criar/editar/excluir (nao-cartao e cartao com fechamento/vencimento).
-  - Recorrencias (`/recurrences`): criar/editar/pausar/cancelar/reativar + `Gerar Mes` (`POST /api/recurrences/generate?month=YYYY-MM`).
+  - Recorrencias (`/recurrences`): criar/editar/pausar/deletar/reativar + `Gerar Mes` (`POST /api/recurrences/generate?month=YYYY-MM`).
 - Fluxos validados (matriz secundaria):
   - Metas (`/goals`): criar/editar/excluir + criar/excluir aporte.
   - Reserva/Investimentos (`/investments`): criar/editar/excluir reserva + aporte; criar/editar/excluir investimento + aporte.

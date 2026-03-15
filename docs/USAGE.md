@@ -82,7 +82,7 @@
   - Pausar recorrencia:
     - `Invoke-RestMethod -Method Patch -Uri http://localhost:3001/api/recurrences/1 -ContentType "application/json" -Body '{"status":"paused"}'`
   - Cancelar recorrencia:
-    - `Invoke-RestMethod -Method Patch -Uri http://localhost:3001/api/recurrences/1 -ContentType "application/json" -Body '{"status":"canceled"}'`
+    - `Invoke-RestMethod -Method Delete -Uri http://localhost:3001/api/recurrences/1`
 
 ## Observacoes
 - Historico de testes: `docs/TEST_LOG.md`.
