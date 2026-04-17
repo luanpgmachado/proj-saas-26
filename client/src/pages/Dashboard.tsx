@@ -153,6 +153,8 @@ export default function Dashboard() {
     await recarregarDados();
   };
 
+  const faltaPagarCents = Math.max(summary.exitsCents - summary.paidExitsCents, 0);
+
   return (
     <div>
       <CabecalhoConteudo
@@ -187,17 +189,17 @@ export default function Dashboard() {
           classIcone="bg-destructive/10 text-destructive"
         />
         <CartaoMetrica
-          titulo="Saldo Real"
-          valor={formatarMoeda(summary.realBalanceCents)}
-          variacao="Já pago/recebido"
+          titulo="Já Pago"
+          valor={formatarMoeda(summary.paidExitsCents)}
+          variacao="Saídas liquidadas no mês"
           tipoVariacao="neutra"
           Icone={CheckCircle2}
-          classIcone="bg-primary/10 text-primary"
+          classIcone="bg-success/10 text-success"
         />
         <CartaoMetrica
-          titulo="Saldo Projetado"
-          valor={formatarMoeda(summary.balanceCents)}
-          variacao="Incluindo pendências"
+          titulo="Falta Pagar"
+          valor={formatarMoeda(faltaPagarCents)}
+          variacao="Pendências de saída no mês"
           tipoVariacao="neutra"
           Icone={Wallet}
           classIcone="bg-warning/10 text-warning"

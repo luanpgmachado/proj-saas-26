@@ -1,5 +1,23 @@
 # Registro PDCA
 
+## 2026-04-16 — Leitura rápida no Dashboard e Lançamentos (DEV-222, DEV-223)
+- **Plan:** Registrar projeto/escopo no Linear antes da execução, atualizar docs canônicos e implementar melhoria de leitura operacional sem alterar API.
+- **Do:**
+  - Linear: criado projeto **Leitura rápida: Dashboard e Transações** e issues `DEV-222` (Dashboard) e `DEV-223` (Lançamentos), ambas em **Em Andamento**.
+  - Docs: atualizado `docs/UX_BLUEPRINT.md` com:
+    - cards do Dashboard: Entradas, Saídas, Já Pago, Falta Pagar;
+    - barra de resumo em Lançamentos (posição e fórmulas de Total Geral/Total Pago).
+  - Frontend:
+    - `client/src/pages/Dashboard.tsx`: substituídos cards de Saldo Real/Saldo Projetado por Já Pago/Falta Pagar.
+    - `client/src/pages/Transactions.tsx`: adicionada barra de totais abaixo dos chips, baseada na lista filtrada visível.
+- **Check:**
+  - Build executado com sucesso: `npm run build`.
+  - Validação visual rápida com Playwright em `/` e `/transactions` confirmou presença dos novos cards e da nova barra.
+  - Limitação do ambiente local: API com `ECONNREFUSED ::1:5433`, impedindo validação com massa real de dados nesta sessão.
+- **Act:**
+  - Registro de testes atualizado em `docs/TEST_LOG.md`.
+  - Próximo passo operacional: validar em ambiente com banco ativo para confirmar recálculo com dados reais e finalizar issues no Linear.
+
 ## 2026-03-15 — Deploy producao (Coolify Hostinger) (DEV-166)
 - **Plan:** Disparar deploy em producao via Coolify respeitando o guardrail de dados (sem comandos de escrita de banco).
 - **Do:** Deploy acionado no Coolify para `proj-financa-v1` (build pack Dockerfile) sem executar `db:push`/`db:seed`/backfill.

@@ -1,5 +1,19 @@
 # Registro de Testes
 
+## 2026-04-16 — DEV-222/DEV-223: Dashboard (Já Pago/Falta Pagar) + barra de totais em Lançamentos
+- Ambiente: local (build de produção + servidor Node em `http://127.0.0.1:3001`).
+- Verificações:
+  - `npm run build` OK.
+  - Dashboard (`/`): cards visíveis com os novos rótulos `Já Pago` e `Falta Pagar`.
+  - Lançamentos (`/transactions`): barra de resumo visível abaixo dos chips com `Total Geral` e `Total Pago`.
+  - Lançamentos (`/transactions`): troca de aba para `Pagos` mantém barra e estado atualizado da lista filtrada.
+- Evidência de navegação (Playwright snapshot textual):
+  - `/`: presença de `Já Pago`, `Falta Pagar` e subtítulos operacionais.
+  - `/transactions`: presença de `Total Geral`, `Total Pago` e texto `Resumo da lista filtrada visível.`.
+- Limitação da rodada:
+  - API local indisponível por banco não conectado (`ECONNREFUSED ::1:5433`), resultando em dados zerados.
+  - Com isso, esta rodada valida layout, posicionamento e renderização; recálculo com massa real permanece pendente de ambiente com DB ativo.
+
 ## 2026-03-14 — Migracao visual Layout 3.0 (DEV-162)
 - Ambiente: local (Vite + Express).
 - Verificacoes:

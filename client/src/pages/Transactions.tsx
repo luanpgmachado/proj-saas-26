@@ -92,6 +92,21 @@ export default function Transactions() {
     });
   }, [transactions, busca, chip]);
 
+  const resumoTotais = useMemo(() => {
+    return listaFiltrada.reduce(
+      (acc, t) => {
+        if (t.type === "entry") {
+          acc.totalGeralCents += t.amountCents;
+        } else {
+          acc.totalGeralCents -= t.amountCents;
+          if (t.isPaid) acc.totalPagoCents += t.amountCents;
+        }
+        return acc;
+      },
+      { totalGeralCents: 0, totalPagoCents: 0 },
+    );
+  }, [listaFiltrada]);
+
   const abrirNovo = () => {
     setTransacaoEditando(null);
     setModalAberto(true);
@@ -155,6 +170,13 @@ export default function Transactions() {
     { label: "Atrasados", value: "atrasados" },
   ];
 
+  const classeTotalGeral =
+    resumoTotais.totalGeralCents > 0
+      ? "text-success"
+      : resumoTotais.totalGeralCents < 0
+      ? "text-destructive"
+      : "text-muted-foreground";
+
   return (
     <div>
       <CabecalhoConteudo
@@ -198,6 +220,24 @@ export default function Transactions() {
             className="w-full h-9 pl-9 pr-3 rounded-md bg-surface border border-input text-sm focus-ring"
           />
         </div>
+      </div>
+
+      <div className="surface-card-sm p-3 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        <div>
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Total Geral</p>
+          <p className={`text-base font-semibold tabular-nums ${classeTotalGeral}`}>
+            {formatCurrency(resumoTotais.totalGeralCents)}
+          </p>
+        </div>
+        <div>
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Total Pago</p>
+          <p className="text-base font-semibold tabular-nums text-success">
+            {formatCurrency(resumoTotais.totalPagoCents)}
+          </p>
+        </div>
+        <p className="text-xs text-muted-foreground sm:ml-auto">
+          Resumo da lista filtrada visível.
+        </p>
       </div>
 
       <div className="surface-card-sm p-3 mb-6 flex flex-col lg:flex-row gap-3 lg:items-end">

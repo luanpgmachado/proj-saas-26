@@ -60,7 +60,9 @@
 ## Tela Principal - Visão do Mês
 - Topo com titulo/subtitulo a esquerda e acao principal a direita (Layout 3.0).
 - A competencia mensal e controlada pelo seletor global da sidebar.
-- Quatro cards horizontais: Entradas, Saidas, Saldo Real, Saldo Projetado.
+- Quatro cards horizontais: Entradas, Saidas, Ja Pago, Falta Pagar.
+  - `Ja Pago` = soma de lancamentos `exit` pagos no mes (`paidExitsCents`).
+  - `Falta Pagar` = `exitsCents - paidExitsCents`.
 - Blocos abaixo (duas colunas no desktop):
   - "Distribuição por Categoria" como grafico simples tipo donut + legenda.
   - "Próximos Vencimentos" como lista dos proximos lançamentos `exit` nao pagos no mês (top 5).
@@ -75,6 +77,9 @@
 - Barra de filtros:
   - Chips: Todos, Pagos, Pendentes, Atrasados (visual; mapeamento interno pode usar `type`/`isPaid` quando aplicavel).
   - Busca por descricao (cliente).
+- Barra de resumo rapido (abaixo dos chips e acima dos filtros avancados):
+  - `Total Geral` (liquido da lista filtrada visivel) = somatorio de entradas menos somatorio de saidas.
+  - `Total Pago` = somatorio de lancamentos `exit` com `isPaid = true` na lista filtrada visivel.
 - Tabela principal em surface card:
   - Colunas: descricao, categoria, metodo, data, status, valor, acoes.
   - Acoes por linha discretas (aparecem no hover/focus, mas acessiveis por teclado).
