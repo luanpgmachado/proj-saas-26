@@ -1,5 +1,7 @@
 -- Modelo Financeiro B&L (PT-BR) - PostgreSQL
 -- Observação: valores monetários em CENTAVOS (int) pra evitar ponto flutuante.
+-- Referencia conceitual PT-BR (nao-runtime).
+-- Fonte canonica tecnica: docs/canonicos/MODELO_DADOS.md e docs/canonicos/API_CONTRACT.md.
 
 BEGIN;
 
@@ -60,7 +62,7 @@ CREATE TABLE recorrencias (
   data_fim DATE NULL CHECK (data_fim IS NULL OR data_fim >= data_inicio),
   dia_mes INT NOT NULL CHECK (dia_mes BETWEEN 1 AND 31),
   parcela_total INT NULL CHECK (parcela_total IS NULL OR parcela_total >= 1),
-  status VARCHAR(10) NOT NULL CHECK (status IN ('ativa', 'pausada', 'cancelada')),
+  status VARCHAR(10) NOT NULL CHECK (status IN ('ativa', 'pausada')),
 
   CHECK (
     (tipo = 'entrada' AND grupo = 'entrada')
@@ -92,12 +94,19 @@ CREATE TABLE lancamentos (
   parcela_indice INT NULL CHECK (parcela_indice IS NULL OR parcela_indice >= 1),
   parcela_total INT NULL CHECK (parcela_total IS NULL OR parcela_total >= 1),
   recorrencia_id INT NULL REFERENCES recorrencias(id) ON UPDATE CASCADE ON DELETE SET NULL,
+  pago BOOLEAN NOT NULL DEFAULT FALSE,
+  pago_em DATE NULL,
 
   -- coerência de parcelamento
   CHECK (
     (grupo <> 'parcelado' AND grupo_parcelamento_id IS NULL AND parcela_indice IS NULL AND parcela_total IS NULL)
     OR
     (grupo = 'parcelado' AND grupo_parcelamento_id IS NOT NULL AND parcela_indice IS NOT NULL AND parcela_total IS NOT NULL AND parcela_indice <= parcela_total)
+  ),
+  -- regra de pagamento
+  CHECK (
+    (tipo = 'saida')
+    OR (tipo = 'entrada' AND pago = FALSE AND pago_em IS NULL)
   )
 );
 

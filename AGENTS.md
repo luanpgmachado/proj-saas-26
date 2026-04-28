@@ -58,4 +58,5 @@ Act:
 
 ## Regras de comunicacao
 - Chat em PT-BR.
-- Nomes de entidades/variaveis/arquivos em PT-BR.
+- Em UX e dominio de negocio, usar nomes novos em PT-BR.
+- Em contrato tecnico canonico (API/schema/campos), preservar naming tecnico existente para compatibilidade.

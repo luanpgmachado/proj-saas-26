@@ -11,7 +11,7 @@ Leituras obrigatorias
 Escopo
 - Implementar apenas front-end.
 - Desktop-first, leitura clara de numeros e interacao direta.
-- Sem animacoes, sem modais e sem elementos nao descritos.
+- Sem animacoes; modais apenas quando explicitados no `docs/canonicos/UX_BLUEPRINT.md`; sem elementos nao descritos.
 - Usar dados mockados somente para viabilizar as telas.
 
 Limites

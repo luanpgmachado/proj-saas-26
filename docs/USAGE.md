@@ -92,22 +92,13 @@
   - VPS Ubuntu 24.04 LTS em `31.97.240.105`
   - Coolify em `http://31.97.240.105:8000/`
 - Fluxo:
-  - Garantir codigo no GitHub (`git push origin main`).
+  - Seguir o workflow oficial em `docs/canonicos/RUNBOOK.md` (secoes "Deploy em VPS Hostinger com Coolify" e "Guardrail obrigatorio").
+  - Garantir codigo no GitHub (`git push origin main`) antes do deploy.
   - Validar variaveis de banco na sessao local (`DATABASE_URL`/`REPLIT_DB_URL`) antes de qualquer comando.
-  - No Coolify (via MCP), criar/atualizar app com `build_pack=dockerfile` e porta `3001`.
-  - Configurar envs da app:
-    - `PORT=3001`
-    - `NODE_ENV=production`
-    - `DATABASE_URL=<url do postgres>`
-  - Disparar deploy e monitorar logs ate `finished`.
-  - Nao executar comandos de escrita em banco de producao.
 - DNS manual (Hostinger):
   - Criar registro `A` para dominio/subdominio apontando para `31.97.240.105`.
   - Depois configurar o dominio no campo **Domains** do app no Coolify.
   - Executar redeploy para emitir SSL.
 
 ### Comandos proibidos em producao
-- `npm run db:push`
-- `npm run db:seed`
-- `tsx server/backfill_recorrencias.ts`
-- SQL manual de alteracao (DDL/DML)
+- Lista canonica em `docs/canonicos/RUNBOOK.md` (Guardrail obrigatorio).

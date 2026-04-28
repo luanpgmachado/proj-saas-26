@@ -1,6 +1,6 @@
 Project financeiro_bl {
   database_type: "PostgreSQL"
-  Note: "Modelo lógico (tradução PT-BR) baseado no seu ERD."
+  Note: "Referencia conceitual PT-BR (nao-runtime). Fonte canonica tecnica: docs/canonicos/MODELO_DADOS.md e docs/canonicos/API_CONTRACT.md."
 }
 
 Table categorias {
@@ -32,7 +32,7 @@ Table recorrencias {
   data_fim date [note: "nullable"]
   dia_mes int [not null, note: "1-31 (ajusta para ultimo dia do mes)"]
   parcela_total int [note: "nullable"]
-  status varchar [not null, note: "ativa|pausada|cancelada"]
+  status varchar [not null, note: "ativa|pausada"]
 }
 
 Table lancamentos {
@@ -48,6 +48,8 @@ Table lancamentos {
   parcela_indice int [note: "nullable (1..parcela_total)"]
   parcela_total int [note: "nullable"]
   recorrencia_id int [note: "nullable"]
+  pago boolean [not null, default: false, note: "somente para saida"]
+  pago_em date [note: "nullable (ISO YYYY-MM-DD)"]
 }
 
 Table metas {

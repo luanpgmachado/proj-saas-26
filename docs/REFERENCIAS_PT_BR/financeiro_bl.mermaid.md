@@ -1,3 +1,5 @@
+> Referencia conceitual em PT-BR (nao-runtime). Fonte canonica tecnica: `docs/canonicos/MODELO_DADOS.md` e `docs/canonicos/API_CONTRACT.md`.
+
 ```mermaid
 erDiagram
   CATEGORIAS o|--o{ LANCAMENTOS : categoria
@@ -36,7 +38,7 @@ erDiagram
     date data_fim "nulo"
     int dia_mes
     int parcela_total "nulo"
-    varchar status  "ativa|pausada|cancelada"
+    varchar status  "ativa|pausada"
   }
 
   LANCAMENTOS {
@@ -52,6 +54,8 @@ erDiagram
     int parcela_indice "nulo"
     int parcela_total "nulo"
     int recorrencia_id "nulo"
+    boolean pago "somente saida"
+    date pago_em "nulo; ISO YYYY-MM-DD"
   }
 
   METAS {
