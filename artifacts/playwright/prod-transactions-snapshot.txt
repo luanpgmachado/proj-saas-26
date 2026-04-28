@@ -1,0 +1,561 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+      - button "Recolher menu lateral" [ref=e11] [cursor=pointer]:
+        - img [ref=e12]
+    - navigation [ref=e14]:
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: Principal
+        - list [ref=e17]:
+          - listitem [ref=e18]:
+            - link "Dashboard" [ref=e19] [cursor=pointer]:
+              - /url: /
+              - img [ref=e20]
+              - generic [ref=e25]: Dashboard
+          - listitem [ref=e26]:
+            - link "Lançamentos" [ref=e27] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e28]
+              - generic [ref=e31]: Lançamentos
+          - listitem [ref=e32]:
+            - link "Recorrências" [ref=e33] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e34]
+              - generic [ref=e39]: Recorrências
+          - listitem [ref=e40]:
+            - link "Panorama Anual" [ref=e41] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e42]
+              - generic [ref=e45]: Panorama Anual
+          - listitem [ref=e46]:
+            - link "Metas" [ref=e47] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e48]
+              - generic [ref=e52]: Metas
+          - listitem [ref=e53]:
+            - link "Investimentos" [ref=e54] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e55]
+              - generic [ref=e58]: Investimentos
+      - generic [ref=e59]:
+        - paragraph [ref=e60]: Configurações
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - link "Categorias" [ref=e63] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e64]
+              - generic [ref=e68]: Categorias
+          - listitem [ref=e69]:
+            - link "Métodos de Pagamento" [ref=e70] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e71]
+              - generic [ref=e73]: Métodos de Pagamento
+    - generic "Competência mensal" [ref=e74]:
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - img [ref=e77]
+          - generic [ref=e79]: Competência
+        - generic [ref=e80]:
+          - button "Competência anterior" [ref=e81] [cursor=pointer]:
+            - img [ref=e82]
+          - generic [ref=e84]:
+            - generic [ref=e85]: Competência mensal ativa
+            - generic [ref=e86]: 04/2026
+            - textbox "Competência mensal ativa" [ref=e87] [cursor=pointer]: 2026-04
+          - button "Próxima competência" [ref=e88] [cursor=pointer]:
+            - img [ref=e89]
+  - main [ref=e91]:
+    - link "Pular para o conteúdo" [ref=e92] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e95]:
+      - generic [ref=e96]:
+        - generic [ref=e97]:
+          - heading "Lançamentos" [level=2] [ref=e98]
+          - paragraph [ref=e99]: Gerencie suas receitas e despesas
+        - button "Novo Lançamento" [ref=e101] [cursor=pointer]:
+          - img [ref=e102]
+          - text: Novo Lançamento
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - button "Todos" [ref=e105] [cursor=pointer]
+          - button "Pagos" [ref=e106] [cursor=pointer]
+          - button "Pendentes" [ref=e107] [cursor=pointer]
+          - button "Atrasados" [ref=e108] [cursor=pointer]
+        - generic [ref=e109]:
+          - img [ref=e110]
+          - textbox "Buscar lançamento..." [ref=e113]
+      - generic [ref=e114]:
+        - generic [ref=e115]:
+          - paragraph [ref=e116]: Total Geral
+          - paragraph [ref=e117]: "-R$ 2.396,00"
+        - generic [ref=e118]:
+          - paragraph [ref=e119]: Total Pago
+          - paragraph [ref=e120]: R$ 15.369,00
+        - paragraph [ref=e121]: Resumo da lista filtrada visível.
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e125]: Categoria
+            - combobox "Categoria" [ref=e126]:
+              - option "Todas" [selected]
+              - option "Mercado"
+              - option "Necessidades"
+              - option "Eletrônicos"
+              - option "Assinaturas"
+              - option "Roupa"
+              - option "Beleza"
+              - option "Presentes"
+              - option "Saúde"
+              - option "Despesas eventuais"
+              - option "Desenvolvimento"
+              - option "Uber/transporte"
+              - option "IFood/restaurante"
+              - option "Lazer"
+              - option "Moradia"
+              - option "Outro"
+              - option "Salário"
+              - option "Freelance"
+              - option "Rendimentos"
+              - option "Reembolso"
+              - option "Outros ganhos"
+              - option "Cartão de Crédito"
+          - generic [ref=e127]:
+            - generic [ref=e128]: Método
+            - combobox "Método" [ref=e129]:
+              - option "Todos" [selected]
+              - option "Boleto"
+              - option "Pix"
+              - option "Débito"
+              - option "Crédito"
+          - generic [ref=e130]:
+            - generic [ref=e131]: Tipo
+            - combobox "Tipo" [ref=e132]:
+              - option "Todos" [selected]
+              - option "Entrada"
+              - option "Saída"
+        - generic [ref=e133]:
+          - link "Gerenciar categorias" [ref=e134] [cursor=pointer]:
+            - /url: /categories
+          - button "Limpar filtros" [ref=e135] [cursor=pointer]
+      - table [ref=e138]:
+        - rowgroup [ref=e139]:
+          - row "Data Descrição Tipo Categoria Método Valor Pago" [ref=e140]:
+            - columnheader "Data" [ref=e141]
+            - columnheader "Descrição" [ref=e142]
+            - columnheader "Tipo" [ref=e143]
+            - columnheader "Categoria" [ref=e144]
+            - columnheader "Método" [ref=e145]
+            - columnheader "Valor" [ref=e146]
+            - columnheader "Pago" [ref=e147]
+            - columnheader [ref=e148]
+        - rowgroup [ref=e149]:
+          - row "2026-04-02 Banco do Brasil Saída Cartão de Crédito Pix - R$ 873,00 Marcar Banco do Brasil como pago Pago" [ref=e150]:
+            - cell "2026-04-02" [ref=e151]
+            - cell "Banco do Brasil" [ref=e152]
+            - cell "Saída" [ref=e153]
+            - cell "Cartão de Crédito" [ref=e154]
+            - cell "Pix" [ref=e155]
+            - cell "- R$ 873,00" [ref=e156]
+            - cell "Marcar Banco do Brasil como pago Pago" [ref=e157]:
+              - generic [ref=e159]:
+                - checkbox "Marcar Banco do Brasil como pago" [checked] [ref=e160]
+                - generic [ref=e161]: Pago
+            - cell [ref=e162]:
+              - generic [ref=e163]:
+                - button "Alternar pago" [ref=e164] [cursor=pointer]:
+                  - img [ref=e165]
+                - button "Editar" [ref=e167] [cursor=pointer]:
+                  - img [ref=e168]
+                - button "Excluir" [ref=e171] [cursor=pointer]:
+                  - img [ref=e172]
+          - row "2026-04-15 Salário Luan Entrada Salário Pix + R$ 8.255,00" [ref=e175]:
+            - cell "2026-04-15" [ref=e176]
+            - cell "Salário Luan" [ref=e177]
+            - cell "Entrada" [ref=e178]
+            - cell "Salário" [ref=e179]
+            - cell "Pix" [ref=e180]
+            - cell "+ R$ 8.255,00" [ref=e181]
+            - cell [ref=e182]
+            - cell [ref=e183]:
+              - generic [ref=e184]:
+                - button "Editar" [ref=e185] [cursor=pointer]:
+                  - img [ref=e186]
+                - button "Excluir" [ref=e189] [cursor=pointer]:
+                  - img [ref=e190]
+          - row "2026-04-10 Telefone Iza Saída Necessidades Pix - R$ 60,00 Marcar Telefone Iza como pago Pago" [ref=e193]:
+            - cell "2026-04-10" [ref=e194]
+            - cell "Telefone Iza" [ref=e195]
+            - cell "Saída" [ref=e196]
+            - cell "Necessidades" [ref=e197]
+            - cell "Pix" [ref=e198]
+            - cell "- R$ 60,00" [ref=e199]
+            - cell "Marcar Telefone Iza como pago Pago" [ref=e200]:
+              - generic [ref=e202]:
+                - checkbox "Marcar Telefone Iza como pago" [checked] [ref=e203]
+                - generic [ref=e204]: Pago
+            - cell [ref=e205]:
+              - generic [ref=e206]:
+                - button "Alternar pago" [ref=e207] [cursor=pointer]:
+                  - img [ref=e208]
+                - button "Editar" [ref=e210] [cursor=pointer]:
+                  - img [ref=e211]
+                - button "Excluir" [ref=e214] [cursor=pointer]:
+                  - img [ref=e215]
+          - row "2026-04-10 Aluguel Saída Moradia Pix - R$ 2.260,00 Marcar Aluguel como pago Pago" [ref=e218]:
+            - cell "2026-04-10" [ref=e219]
+            - cell "Aluguel" [ref=e220]
+            - cell "Saída" [ref=e221]
+            - cell "Moradia" [ref=e222]
+            - cell "Pix" [ref=e223]
+            - cell "- R$ 2.260,00" [ref=e224]
+            - cell "Marcar Aluguel como pago Pago" [ref=e225]:
+              - generic [ref=e227]:
+                - checkbox "Marcar Aluguel como pago" [checked] [ref=e228]
+                - generic [ref=e229]: Pago
+            - cell [ref=e230]:
+              - generic [ref=e231]:
+                - button "Alternar pago" [ref=e232] [cursor=pointer]:
+                  - img [ref=e233]
+                - button "Editar" [ref=e235] [cursor=pointer]:
+                  - img [ref=e236]
+                - button "Excluir" [ref=e239] [cursor=pointer]:
+                  - img [ref=e240]
+          - row "2026-04-10 Star Saída Uber/transporte Pix - R$ 147,00 Marcar Star como pago Pago" [ref=e243]:
+            - cell "2026-04-10" [ref=e244]
+            - cell "Star" [ref=e245]
+            - cell "Saída" [ref=e246]
+            - cell "Uber/transporte" [ref=e247]
+            - cell "Pix" [ref=e248]
+            - cell "- R$ 147,00" [ref=e249]
+            - cell "Marcar Star como pago Pago" [ref=e250]:
+              - generic [ref=e252]:
+                - checkbox "Marcar Star como pago" [checked] [ref=e253]
+                - generic [ref=e254]: Pago
+            - cell [ref=e255]:
+              - generic [ref=e256]:
+                - button "Alternar pago" [ref=e257] [cursor=pointer]:
+                  - img [ref=e258]
+                - button "Editar" [ref=e260] [cursor=pointer]:
+                  - img [ref=e261]
+                - button "Excluir" [ref=e264] [cursor=pointer]:
+                  - img [ref=e265]
+          - row "2026-04-02 Acerto Luz Saída Necessidades Pix - R$ 72,00 Marcar Acerto Luz como pago Pago" [ref=e268]:
+            - cell "2026-04-02" [ref=e269]
+            - cell "Acerto Luz" [ref=e270]
+            - cell "Saída" [ref=e271]
+            - cell "Necessidades" [ref=e272]
+            - cell "Pix" [ref=e273]
+            - cell "- R$ 72,00" [ref=e274]
+            - cell "Marcar Acerto Luz como pago Pago" [ref=e275]:
+              - generic [ref=e277]:
+                - checkbox "Marcar Acerto Luz como pago" [checked] [ref=e278]
+                - generic [ref=e279]: Pago
+            - cell [ref=e280]:
+              - generic [ref=e281]:
+                - button "Alternar pago" [ref=e282] [cursor=pointer]:
+                  - img [ref=e283]
+                - button "Editar" [ref=e285] [cursor=pointer]:
+                  - img [ref=e286]
+                - button "Excluir" [ref=e289] [cursor=pointer]:
+                  - img [ref=e290]
+          - row "2026-04-01 Havan Saída Cartão de Crédito Pix - R$ 298,00 Marcar Havan como pago Pago" [ref=e293]:
+            - cell "2026-04-01" [ref=e294]
+            - cell "Havan" [ref=e295]
+            - cell "Saída" [ref=e296]
+            - cell "Cartão de Crédito" [ref=e297]
+            - cell "Pix" [ref=e298]
+            - cell "- R$ 298,00" [ref=e299]
+            - cell "Marcar Havan como pago Pago" [ref=e300]:
+              - generic [ref=e302]:
+                - checkbox "Marcar Havan como pago" [checked] [ref=e303]
+                - generic [ref=e304]: Pago
+            - cell [ref=e305]:
+              - generic [ref=e306]:
+                - button "Alternar pago" [ref=e307] [cursor=pointer]:
+                  - img [ref=e308]
+                - button "Editar" [ref=e310] [cursor=pointer]:
+                  - img [ref=e311]
+                - button "Excluir" [ref=e314] [cursor=pointer]:
+                  - img [ref=e315]
+          - row "2026-04-15 Futebol Saída Lazer Pix - R$ 70,00 Marcar Futebol como pago Pago" [ref=e318]:
+            - cell "2026-04-15" [ref=e319]
+            - cell "Futebol" [ref=e320]
+            - cell "Saída" [ref=e321]
+            - cell "Lazer" [ref=e322]
+            - cell "Pix" [ref=e323]
+            - cell "- R$ 70,00" [ref=e324]
+            - cell "Marcar Futebol como pago Pago" [ref=e325]:
+              - generic [ref=e327]:
+                - checkbox "Marcar Futebol como pago" [checked] [ref=e328]
+                - generic [ref=e329]: Pago
+            - cell [ref=e330]:
+              - generic [ref=e331]:
+                - button "Alternar pago" [ref=e332] [cursor=pointer]:
+                  - img [ref=e333]
+                - button "Editar" [ref=e335] [cursor=pointer]:
+                  - img [ref=e336]
+                - button "Excluir" [ref=e339] [cursor=pointer]:
+                  - img [ref=e340]
+          - row "2026-04-18 Telefone Luan Saída Necessidades Pix - R$ 70,00 Marcar Telefone Luan como pago Pendente" [ref=e343]:
+            - cell "2026-04-18" [ref=e344]
+            - cell "Telefone Luan" [ref=e345]
+            - cell "Saída" [ref=e346]
+            - cell "Necessidades" [ref=e347]
+            - cell "Pix" [ref=e348]
+            - cell "- R$ 70,00" [ref=e349]
+            - cell "Marcar Telefone Luan como pago Pendente" [ref=e350]:
+              - generic [ref=e352]:
+                - checkbox "Marcar Telefone Luan como pago" [ref=e353]
+                - generic [ref=e354]: Pendente
+            - cell [ref=e355]:
+              - generic [ref=e356]:
+                - button "Alternar pago" [ref=e357] [cursor=pointer]:
+                  - img [ref=e358]
+                - button "Editar" [ref=e360] [cursor=pointer]:
+                  - img [ref=e361]
+                - button "Excluir" [ref=e364] [cursor=pointer]:
+                  - img [ref=e365]
+          - row "2026-04-01 Salário Iza Entrada Salário Pix + R$ 4.900,00" [ref=e368]:
+            - cell "2026-04-01" [ref=e369]
+            - cell "Salário Iza" [ref=e370]
+            - cell "Entrada" [ref=e371]
+            - cell "Salário" [ref=e372]
+            - cell "Pix" [ref=e373]
+            - cell "+ R$ 4.900,00" [ref=e374]
+            - cell [ref=e375]
+            - cell [ref=e376]:
+              - generic [ref=e377]:
+                - button "Editar" [ref=e378] [cursor=pointer]:
+                  - img [ref=e379]
+                - button "Excluir" [ref=e382] [cursor=pointer]:
+                  - img [ref=e383]
+          - row "2026-04-15 Nubank mercado Saída Mercado Pix - R$ 4.411,00 Marcar Nubank mercado como pago Pago" [ref=e386]:
+            - cell "2026-04-15" [ref=e387]
+            - cell "Nubank mercado" [ref=e388]
+            - cell "Saída" [ref=e389]
+            - cell "Mercado" [ref=e390]
+            - cell "Pix" [ref=e391]
+            - cell "- R$ 4.411,00" [ref=e392]
+            - cell "Marcar Nubank mercado como pago Pago" [ref=e393]:
+              - generic [ref=e395]:
+                - checkbox "Marcar Nubank mercado como pago" [checked] [ref=e396]
+                - generic [ref=e397]: Pago
+            - cell [ref=e398]:
+              - generic [ref=e399]:
+                - button "Alternar pago" [ref=e400] [cursor=pointer]:
+                  - img [ref=e401]
+                - button "Editar" [ref=e403] [cursor=pointer]:
+                  - img [ref=e404]
+                - button "Excluir" [ref=e407] [cursor=pointer]:
+                  - img [ref=e408]
+          - row "2026-04-15 Internet Saída Moradia Boleto - R$ 160,00 Marcar Internet como pago Pago" [ref=e411]:
+            - cell "2026-04-15" [ref=e412]
+            - cell "Internet" [ref=e413]
+            - cell "Saída" [ref=e414]
+            - cell "Moradia" [ref=e415]
+            - cell "Boleto" [ref=e416]
+            - cell "- R$ 160,00" [ref=e417]
+            - cell "Marcar Internet como pago Pago" [ref=e418]:
+              - generic [ref=e420]:
+                - checkbox "Marcar Internet como pago" [checked] [ref=e421]
+                - generic [ref=e422]: Pago
+            - cell [ref=e423]:
+              - generic [ref=e424]:
+                - button "Alternar pago" [ref=e425] [cursor=pointer]:
+                  - img [ref=e426]
+                - button "Editar" [ref=e428] [cursor=pointer]:
+                  - img [ref=e429]
+                - button "Excluir" [ref=e432] [cursor=pointer]:
+                  - img [ref=e433]
+          - row "2026-04-12 ITAU Saída Cartão de Crédito Pix - R$ 3.408,00 Marcar ITAU como pago Pago" [ref=e436]:
+            - cell "2026-04-12" [ref=e437]
+            - cell "ITAU" [ref=e438]
+            - cell "Saída" [ref=e439]
+            - cell "Cartão de Crédito" [ref=e440]
+            - cell "Pix" [ref=e441]
+            - cell "- R$ 3.408,00" [ref=e442]
+            - cell "Marcar ITAU como pago Pago" [ref=e443]:
+              - generic [ref=e445]:
+                - checkbox "Marcar ITAU como pago" [checked] [ref=e446]
+                - generic [ref=e447]: Pago
+            - cell [ref=e448]:
+              - generic [ref=e449]:
+                - button "Alternar pago" [ref=e450] [cursor=pointer]:
+                  - img [ref=e451]
+                - button "Editar" [ref=e453] [cursor=pointer]:
+                  - img [ref=e454]
+                - button "Excluir" [ref=e457] [cursor=pointer]:
+                  - img [ref=e458]
+          - row "2026-04-15 Condominio Saída Moradia Pix - R$ 300,00 Marcar Condominio como pago Pago" [ref=e461]:
+            - cell "2026-04-15" [ref=e462]
+            - cell "Condominio" [ref=e463]
+            - cell "Saída" [ref=e464]
+            - cell "Moradia" [ref=e465]
+            - cell "Pix" [ref=e466]
+            - cell "- R$ 300,00" [ref=e467]
+            - cell "Marcar Condominio como pago Pago" [ref=e468]:
+              - generic [ref=e470]:
+                - checkbox "Marcar Condominio como pago" [checked] [ref=e471]
+                - generic [ref=e472]: Pago
+            - cell [ref=e473]:
+              - generic [ref=e474]:
+                - button "Alternar pago" [ref=e475] [cursor=pointer]:
+                  - img [ref=e476]
+                - button "Editar" [ref=e478] [cursor=pointer]:
+                  - img [ref=e479]
+                - button "Excluir" [ref=e482] [cursor=pointer]:
+                  - img [ref=e483]
+          - row "2026-04-01 Carro Saída Uber/transporte Pix - R$ 1.638,00 Marcar Carro como pago Pago" [ref=e486]:
+            - cell "2026-04-01" [ref=e487]
+            - cell "Carro" [ref=e488]
+            - cell "Saída" [ref=e489]
+            - cell "Uber/transporte" [ref=e490]
+            - cell "Pix" [ref=e491]
+            - cell "- R$ 1.638,00" [ref=e492]
+            - cell "Marcar Carro como pago Pago" [ref=e493]:
+              - generic [ref=e495]:
+                - checkbox "Marcar Carro como pago" [checked] [ref=e496]
+                - generic [ref=e497]: Pago
+            - cell [ref=e498]:
+              - generic [ref=e499]:
+                - button "Alternar pago" [ref=e500] [cursor=pointer]:
+                  - img [ref=e501]
+                - button "Editar" [ref=e503] [cursor=pointer]:
+                  - img [ref=e504]
+                - button "Excluir" [ref=e507] [cursor=pointer]:
+                  - img [ref=e508]
+          - row "2026-04-29 Boticário Saída Beleza Boleto - R$ 120,00 Marcar Boticário como pago Pago" [ref=e511]:
+            - cell "2026-04-29" [ref=e512]
+            - cell "Boticário" [ref=e513]
+            - cell "Saída" [ref=e514]
+            - cell "Beleza" [ref=e515]
+            - cell "Boleto" [ref=e516]
+            - cell "- R$ 120,00" [ref=e517]
+            - cell "Marcar Boticário como pago Pago" [ref=e518]:
+              - generic [ref=e520]:
+                - checkbox "Marcar Boticário como pago" [checked] [ref=e521]
+                - generic [ref=e522]: Pago
+            - cell [ref=e523]:
+              - generic [ref=e524]:
+                - button "Alternar pago" [ref=e525] [cursor=pointer]:
+                  - img [ref=e526]
+                - button "Editar" [ref=e528] [cursor=pointer]:
+                  - img [ref=e529]
+                - button "Excluir" [ref=e532] [cursor=pointer]:
+                  - img [ref=e533]
+          - row "2026-04-10 massagem Saída Necessidades Boleto - R$ 125,00 Marcar massagem como pago Pago" [ref=e536]:
+            - cell "2026-04-10" [ref=e537]
+            - cell "massagem" [ref=e538]
+            - cell "Saída" [ref=e539]
+            - cell "Necessidades" [ref=e540]
+            - cell "Boleto" [ref=e541]
+            - cell "- R$ 125,00" [ref=e542]
+            - cell "Marcar massagem como pago Pago" [ref=e543]:
+              - generic [ref=e545]:
+                - checkbox "Marcar massagem como pago" [checked] [ref=e546]
+                - generic [ref=e547]: Pago
+            - cell [ref=e548]:
+              - generic [ref=e549]:
+                - button "Alternar pago" [ref=e550] [cursor=pointer]:
+                  - img [ref=e551]
+                - button "Editar" [ref=e553] [cursor=pointer]:
+                  - img [ref=e554]
+                - button "Excluir" [ref=e557] [cursor=pointer]:
+                  - img [ref=e558]
+          - row "2026-04-15 Sicredi Saída Cartão de Crédito Débito - R$ 800,00 Marcar Sicredi como pago Pago" [ref=e561]:
+            - cell "2026-04-15" [ref=e562]
+            - cell "Sicredi" [ref=e563]
+            - cell "Saída" [ref=e564]
+            - cell "Cartão de Crédito" [ref=e565]
+            - cell "Débito" [ref=e566]
+            - cell "- R$ 800,00" [ref=e567]
+            - cell "Marcar Sicredi como pago Pago" [ref=e568]:
+              - generic [ref=e570]:
+                - checkbox "Marcar Sicredi como pago" [checked] [ref=e571]
+                - generic [ref=e572]: Pago
+            - cell [ref=e573]:
+              - generic [ref=e574]:
+                - button "Alternar pago" [ref=e575] [cursor=pointer]:
+                  - img [ref=e576]
+                - button "Editar" [ref=e578] [cursor=pointer]:
+                  - img [ref=e579]
+                - button "Excluir" [ref=e582] [cursor=pointer]:
+                  - img [ref=e583]
+          - row "2026-04-18 Mercado Pago Saída Cartão de Crédito Pix - R$ 112,00 Marcar Mercado Pago como pago Pendente" [ref=e586]:
+            - cell "2026-04-18" [ref=e587]
+            - cell "Mercado Pago" [ref=e588]
+            - cell "Saída" [ref=e589]
+            - cell "Cartão de Crédito" [ref=e590]
+            - cell "Pix" [ref=e591]
+            - cell "- R$ 112,00" [ref=e592]
+            - cell "Marcar Mercado Pago como pago Pendente" [ref=e593]:
+              - generic [ref=e595]:
+                - checkbox "Marcar Mercado Pago como pago" [ref=e596]
+                - generic [ref=e597]: Pendente
+            - cell [ref=e598]:
+              - generic [ref=e599]:
+                - button "Alternar pago" [ref=e600] [cursor=pointer]:
+                  - img [ref=e601]
+                - button "Editar" [ref=e603] [cursor=pointer]:
+                  - img [ref=e604]
+                - button "Excluir" [ref=e607] [cursor=pointer]:
+                  - img [ref=e608]
+          - row "2026-04-15 Natação João Saída Lazer Boleto - R$ 200,00 Marcar Natação João como pago Pago" [ref=e611]:
+            - cell "2026-04-15" [ref=e612]
+            - cell "Natação João" [ref=e613]
+            - cell "Saída" [ref=e614]
+            - cell "Lazer" [ref=e615]
+            - cell "Boleto" [ref=e616]
+            - cell "- R$ 200,00" [ref=e617]
+            - cell "Marcar Natação João como pago Pago" [ref=e618]:
+              - generic [ref=e620]:
+                - checkbox "Marcar Natação João como pago" [checked] [ref=e621]
+                - generic [ref=e622]: Pago
+            - cell [ref=e623]:
+              - generic [ref=e624]:
+                - button "Alternar pago" [ref=e625] [cursor=pointer]:
+                  - img [ref=e626]
+                - button "Editar" [ref=e628] [cursor=pointer]:
+                  - img [ref=e629]
+                - button "Excluir" [ref=e632] [cursor=pointer]:
+                  - img [ref=e633]
+          - row "2026-04-16 Magazine Saída Cartão de Crédito Pix - R$ 312,00 Marcar Magazine como pago Pago" [ref=e636]:
+            - cell "2026-04-16" [ref=e637]
+            - cell "Magazine" [ref=e638]
+            - cell "Saída" [ref=e639]
+            - cell "Cartão de Crédito" [ref=e640]
+            - cell "Pix" [ref=e641]
+            - cell "- R$ 312,00" [ref=e642]
+            - cell "Marcar Magazine como pago Pago" [ref=e643]:
+              - generic [ref=e645]:
+                - checkbox "Marcar Magazine como pago" [checked] [ref=e646]
+                - generic [ref=e647]: Pago
+            - cell [ref=e648]:
+              - generic [ref=e649]:
+                - button "Alternar pago" [ref=e650] [cursor=pointer]:
+                  - img [ref=e651]
+                - button "Editar" [ref=e653] [cursor=pointer]:
+                  - img [ref=e654]
+                - button "Excluir" [ref=e657] [cursor=pointer]:
+                  - img [ref=e658]
+          - row "2026-04-16 Nubank Saída Cartão de Crédito Pix - R$ 115,00 Marcar Nubank como pago Pago" [ref=e661]:
+            - cell "2026-04-16" [ref=e662]
+            - cell "Nubank" [ref=e663]
+            - cell "Saída" [ref=e664]
+            - cell "Cartão de Crédito" [ref=e665]
+            - cell "Pix" [ref=e666]
+            - cell "- R$ 115,00" [ref=e667]
+            - cell "Marcar Nubank como pago Pago" [ref=e668]:
+              - generic [ref=e670]:
+                - checkbox "Marcar Nubank como pago" [checked] [ref=e671]
+                - generic [ref=e672]: Pago
+            - cell [ref=e673]:
+              - generic [ref=e674]:
+                - button "Alternar pago" [ref=e675] [cursor=pointer]:
+                  - img [ref=e676]
+                - button "Editar" [ref=e678] [cursor=pointer]:
+                  - img [ref=e679]
+                - button "Excluir" [ref=e682] [cursor=pointer]:
+                  - img [ref=e683]

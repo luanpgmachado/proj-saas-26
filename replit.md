@@ -9,7 +9,7 @@ A family finance SaaS application (desktop-first) for managing monthly income an
 - `server/` - Express backend API
 - `shared/` - Shared types and database schema (Drizzle ORM)
 - `docs/` - Design documentation and specifications
-  - `docs/MODELO_DADOS.md` - Data model and relationships
+  - `docs/canonicos/MODELO_DADOS.md` - Data model and relationships
 
 ## Tech Stack
 - **Frontend**: React 18, Wouter (routing), Vite
@@ -46,11 +46,11 @@ Current setup:
 
 ### Documentacao e logs
 - Mapa de docs: `docs/INDEX.md`
-- Registro PDCA: `docs/PDCA_LOG.md`
-- Registro de testes: `docs/TEST_LOG.md`
+- Registro PDCA: `docs/logs/PDCA_LOG.md`
+- Registro de testes: `docs/logs/TEST_LOG.md`
 
 ## API Endpoints
-See `docs/API_CONTRACT.md` for full API documentation.
+See `docs/canonicos/API_CONTRACT.md` for full API documentation.
 
 Main endpoints:
 - `GET /api/months/{month}/summary` - Monthly summary
@@ -84,7 +84,7 @@ Main endpoints:
   - Padronizacao de schema: uso exclusivo de `shared/schema.ts` em runtime
 - 2026-01-31: Reorganizacao de documentacao
   - Mapa de docs em `docs/INDEX.md`
-  - Historicos separados em `docs/PDCA_LOG.md` e `docs/TEST_LOG.md`
+  - Historicos separados em `docs/logs/PDCA_LOG.md` e `docs/logs/TEST_LOG.md`
 
 
 ### 2026-01-31: Testes de API no Replit
@@ -128,6 +128,6 @@ Main endpoints:
   - Botao "Gerar Mes" com feedback de quantidade de transacoes criadas.
   - Adicionada rota /recurrences no App.tsx.
   - Adicionado link "Recorrencias" no Header.tsx.
-  - Atualizado docs/UX_BLUEPRINT.md com especificacao da tela.
+  - Atualizado docs/canonicos/UX_BLUEPRINT.md com especificacao da tela.
 - **Check:** Tela funcionando, validacoes aplicadas, acoes de status corretas.
 - **Act:** Documentacao UX_BLUEPRINT.md atualizada. PDCA registrado.

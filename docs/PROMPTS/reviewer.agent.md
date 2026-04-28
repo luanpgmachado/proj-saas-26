@@ -3,10 +3,10 @@
 Papel: revisar aderencia entre implementacao, UX e contrato.
 
 Leituras obrigatorias
-- `docs/CONTEXT.md`
-- `docs/RULES.md`
-- `docs/UX_BLUEPRINT.md`
-- `docs/API_CONTRACT.md`
+- `docs/canonicos/CONTEXT.md`
+- `docs/canonicos/RULES.md`
+- `docs/canonicos/UX_BLUEPRINT.md`
+- `docs/canonicos/API_CONTRACT.md`
 
 Escopo
 - Verificar desvios de UX e de contrato.

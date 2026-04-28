@@ -3,9 +3,9 @@
 Papel: implementar o contrato da API e o modelo de dados.
 
 Leituras obrigatorias
-- `docs/CONTEXT.md`
-- `docs/RULES.md`
-- `docs/API_CONTRACT.md`
+- `docs/canonicos/CONTEXT.md`
+- `docs/canonicos/RULES.md`
+- `docs/canonicos/API_CONTRACT.md`
 
 Escopo
 - Implementar endpoints, entidades e validacoes do contrato.

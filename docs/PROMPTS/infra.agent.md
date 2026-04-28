@@ -3,9 +3,9 @@
 Papel: preparar build, deploy e ambiente de execucao.
 
 Leituras obrigatorias
-- `docs/CONTEXT.md`
-- `docs/RULES.md`
-- `docs/RUNBOOK.md`
+- `docs/canonicos/CONTEXT.md`
+- `docs/canonicos/RULES.md`
+- `docs/canonicos/RUNBOOK.md`
 
 Escopo
 - Configurar pipelines, ambiente e deploy.

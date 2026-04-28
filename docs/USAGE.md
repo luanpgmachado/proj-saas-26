@@ -85,7 +85,7 @@
     - `Invoke-RestMethod -Method Delete -Uri http://localhost:3001/api/recurrences/1`
 
 ## Observacoes
-- Historico de testes: `docs/TEST_LOG.md`.
+- Historico de testes: `docs/logs/TEST_LOG.md`.
 
 ## 11) Deploy em producao (Coolify + Hostinger)
 - Ambiente alvo:

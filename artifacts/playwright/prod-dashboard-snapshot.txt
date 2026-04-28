@@ -1,0 +1,149 @@
+- generic [ref=e3]:
+  - complementary "Menu principal" [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e10]: Finança Familiar
+      - button "Recolher menu lateral" [ref=e11] [cursor=pointer]:
+        - img [ref=e12]
+    - navigation [ref=e14]:
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: Principal
+        - list [ref=e17]:
+          - listitem [ref=e18]:
+            - link "Dashboard" [ref=e19] [cursor=pointer]:
+              - /url: /
+              - img [ref=e20]
+              - generic [ref=e25]: Dashboard
+          - listitem [ref=e26]:
+            - link "Lançamentos" [ref=e27] [cursor=pointer]:
+              - /url: /transactions
+              - img [ref=e28]
+              - generic [ref=e31]: Lançamentos
+          - listitem [ref=e32]:
+            - link "Recorrências" [ref=e33] [cursor=pointer]:
+              - /url: /recurrences
+              - img [ref=e34]
+              - generic [ref=e39]: Recorrências
+          - listitem [ref=e40]:
+            - link "Panorama Anual" [ref=e41] [cursor=pointer]:
+              - /url: /annual
+              - img [ref=e42]
+              - generic [ref=e45]: Panorama Anual
+          - listitem [ref=e46]:
+            - link "Metas" [ref=e47] [cursor=pointer]:
+              - /url: /goals
+              - img [ref=e48]
+              - generic [ref=e52]: Metas
+          - listitem [ref=e53]:
+            - link "Investimentos" [ref=e54] [cursor=pointer]:
+              - /url: /investments
+              - img [ref=e55]
+              - generic [ref=e58]: Investimentos
+      - generic [ref=e59]:
+        - paragraph [ref=e60]: Configurações
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - link "Categorias" [ref=e63] [cursor=pointer]:
+              - /url: /categories
+              - img [ref=e64]
+              - generic [ref=e68]: Categorias
+          - listitem [ref=e69]:
+            - link "Métodos de Pagamento" [ref=e70] [cursor=pointer]:
+              - /url: /payment-methods
+              - img [ref=e71]
+              - generic [ref=e73]: Métodos de Pagamento
+    - generic "Competência mensal" [ref=e74]:
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - img [ref=e77]
+          - generic [ref=e79]: Competência
+        - generic [ref=e80]:
+          - button "Competência anterior" [ref=e81] [cursor=pointer]:
+            - img [ref=e82]
+          - generic [ref=e84]:
+            - generic [ref=e85]: Competência mensal ativa
+            - generic [ref=e86]: 04/2026
+            - textbox "Competência mensal ativa" [ref=e87] [cursor=pointer]: 2026-04
+          - button "Próxima competência" [ref=e88] [cursor=pointer]:
+            - img [ref=e89]
+  - main [ref=e91]:
+    - link "Pular para o conteúdo" [ref=e92] [cursor=pointer]:
+      - /url: "#conteudo"
+    - generic [ref=e94]:
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - heading "Dashboard" [level=2] [ref=e97]
+          - paragraph [ref=e98]: Visão geral das suas finanças
+        - button "+ Novo Lançamento" [ref=e100] [cursor=pointer]
+      - generic [ref=e101]:
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - paragraph [ref=e105]: Entradas
+            - paragraph [ref=e106]: R$ 13.155,00
+            - paragraph [ref=e107]: Leitura do mês selecionado
+          - img [ref=e109]
+        - generic [ref=e113]:
+          - generic [ref=e114]:
+            - paragraph [ref=e115]: Saídas
+            - paragraph [ref=e116]: R$ 15.551,00
+            - paragraph [ref=e117]: Total de despesas do mês
+          - img [ref=e119]
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - paragraph [ref=e125]: Já Pago
+            - paragraph [ref=e126]: R$ 15.369,00
+            - paragraph [ref=e127]: Saídas liquidadas no mês
+          - img [ref=e129]
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - paragraph [ref=e135]: Falta Pagar
+            - paragraph [ref=e136]: R$ 182,00
+            - paragraph [ref=e137]: Pendências de saída no mês
+          - img [ref=e139]
+      - generic [ref=e142]:
+        - generic [ref=e143]:
+          - heading "Distribuição por Categoria" [level=3] [ref=e144]
+          - generic [ref=e148]:
+            - generic [ref=e162]:
+              - generic [ref=e164]: Mercado
+              - generic [ref=e165]: R$ 4.411,00
+            - generic [ref=e166]:
+              - generic [ref=e168]: Necessidades
+              - generic [ref=e169]: R$ 327,00
+            - generic [ref=e170]:
+              - generic [ref=e172]: Beleza
+              - generic [ref=e173]: R$ 120,00
+            - generic [ref=e174]:
+              - generic [ref=e176]: Uber/transporte
+              - generic [ref=e177]: R$ 1.785,00
+            - generic [ref=e178]:
+              - generic [ref=e180]: Lazer
+              - generic [ref=e181]: R$ 270,00
+            - generic [ref=e182]:
+              - generic [ref=e184]: Moradia
+              - generic [ref=e185]: R$ 2.720,00
+            - generic [ref=e186]:
+              - generic [ref=e188]: Cartão de Crédito
+              - generic [ref=e189]: R$ 5.918,00
+        - generic [ref=e150]:
+          - generic [ref=e151]:
+            - heading "Próximos Vencimentos" [level=3] [ref=e152]
+            - generic [ref=e153]: 2 pendentes
+          - generic [ref=e154]:
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - img [ref=e193]
+                - generic [ref=e195]:
+                  - paragraph [ref=e196]: Telefone Luan
+                  - paragraph [ref=e197]: Necessidades · Vence 18/04
+              - generic [ref=e198]: R$ 70,00
+            - generic [ref=e199]:
+              - generic [ref=e200]:
+                - img [ref=e202]
+                - generic [ref=e204]:
+                  - paragraph [ref=e205]: Mercado Pago
+                  - paragraph [ref=e206]: Cartão de Crédito · Vence 18/04
+              - generic [ref=e207]: R$ 112,00
+      - generic [ref=e156]:
+        - img [ref=e158]
+        - paragraph [ref=e161]: Acompanhe pendências e mantenha o controle do mês com previsibilidade.

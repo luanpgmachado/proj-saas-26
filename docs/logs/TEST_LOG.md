@@ -21,12 +21,12 @@
   - Rotas renderizando com novo layout: `/`, `/transactions`, `/recurrences`, `/categories`, `/payment-methods`, `/annual`, `/goals`, `/investments`.
   - Modais reestilizados: lancamento e confirmacao (exclusoes/geracao).
 - Validacao visual:
-  - Comparar manualmente com os prints em `output/playwright/layout-3.0-lovable/`.
+  - Comparar manualmente com os prints em `artifacts/playwright/layout-3.0-lovable/`.
 
 ## 2026-03-14 — DEV-162: Validacao CRUD visual + contrato (Playwright) — Layout 3.0
 - Ambiente: local (`http://localhost:5000`).
 - Sessao Playwright: `dev162`.
-- Evidencias: `output/playwright/dev-162-20260313-230715/.playwright-cli/`.
+- Evidencias: `artifacts/playwright/dev-162-20260313-230715/.playwright-cli/`.
 - Fluxos validados (matriz prioritaria):
   - Categorias (`/categories`): criar/editar/excluir + bloqueio `409` ao excluir em uso.
   - Lancamentos (`/transactions`): criar/editar/excluir + toggle `Pago` apenas para `exit` (entrada sem checkbox).
@@ -70,7 +70,7 @@
   - recurrenceId presente em todas as transacoes geradas.
   - installmentIndex incrementando corretamente (2, 3, ...).
   - installmentTotal consistente com a recorrencia (18 e 5).
-- Conclusao: Backend funcionando conforme `docs/API_CONTRACT.md` e `docs/MODELO_DADOS.md`.
+- Conclusao: Backend funcionando conforme `docs/canonicos/API_CONTRACT.md` e `docs/canonicos/MODELO_DADOS.md`.
 
 ## 2026-02-06 — Categorias (CRUD via Tela de Lancamentos)
 - Ambiente: local (frontend Vite + backend Express).
@@ -143,16 +143,16 @@
   - Lançamentos (criar saída `CODX Lanche`; marcar como pago; criar entrada `CODX Salário` e confirmar ausência de checkbox de pago).
   - Recorrências (criar `CODX Internet`; acionar `Gerar Mês`).
 - Evidências (artefatos Playwright):
-  - `output/playwright/dev-154-20260313/01-dashboard.png`
-  - `output/playwright/dev-154-20260313/02-transactions.png`
-  - `output/playwright/dev-154-20260313/07-metodo-criado.png`
-  - `output/playwright/dev-154-20260313/10-transacao-criada.png`
-  - `output/playwright/dev-154-20260313/11-transacao-paga.png`
-  - `output/playwright/dev-154-20260313/15-transacao-entry-criada.png`
-  - `output/playwright/dev-154-20260313/18-recurrence-criada-2.png`
-  - `output/playwright/dev-154-20260313/19-gerar-mes.png`
+  - `artifacts/playwright/dev-154-20260313/01-dashboard.png`
+  - `artifacts/playwright/dev-154-20260313/02-transactions.png`
+  - `artifacts/playwright/dev-154-20260313/07-metodo-criado.png`
+  - `artifacts/playwright/dev-154-20260313/10-transacao-criada.png`
+  - `artifacts/playwright/dev-154-20260313/11-transacao-paga.png`
+  - `artifacts/playwright/dev-154-20260313/15-transacao-entry-criada.png`
+  - `artifacts/playwright/dev-154-20260313/18-recurrence-criada-2.png`
+  - `artifacts/playwright/dev-154-20260313/19-gerar-mes.png`
 - Observacoes de divergencia (para follow-up, fora do escopo do DEV-154):
-  - Tela de Métodos de Pagamento expõe `type` em PT-BR (PIX/Dinheiro/...) enquanto `docs/API_CONTRACT.md` define `cash|transfer|debit|credit_card|other`.
+  - Tela de Métodos de Pagamento expõe `type` em PT-BR (PIX/Dinheiro/...) enquanto `docs/canonicos/API_CONTRACT.md` define `cash|transfer|debit|credit_card|other`.
   - Rede capturada via `playwright-cli network` registra verbos/URLs/status, mas não inclui payload completo (para auditoria de payload, usar captura adicional no backend ou interceptação dedicada).
 
 ## 2026-02-18 — Recorrencias (endDate obrigatorio para parcelado)
@@ -178,8 +178,8 @@
 ## 2026-02-19 — Validacao de regra operacional (nao alterar banco de producao)
 - Ambiente: documentacao canonica.
 - Verificacoes:
-  - `docs/RULES.md` contem proibicao explicita de alteracao de banco em producao.
-  - `docs/RUNBOOK.md` contem checklist pre-deploy e comandos proibidos.
+  - `docs/canonicos/RULES.md` contem proibicao explicita de alteracao de banco em producao.
+  - `docs/canonicos/RUNBOOK.md` contem checklist pre-deploy e comandos proibidos.
   - `docs/USAGE.md` nao instrui mais escrita em banco de producao e lista comandos proibidos.
 - Resultado:
   - Regra operacional consolidada para prevenir nova sobrescrita de dados em producao.

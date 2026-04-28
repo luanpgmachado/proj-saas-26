@@ -4,16 +4,16 @@
 Definir fluxo PDCA e regras de engenharia de contexto para manter docs e codigo alinhados.
 
 ## Canonicos
-- docs/CONTEXT.md
-- docs/RULES.md
-- docs/UX_BLUEPRINT.md
-- docs/API_CONTRACT.md
-- docs/MODELO_DADOS.md
-- docs/RUNBOOK.md
+- docs/canonicos/CONTEXT.md
+- docs/canonicos/RULES.md
+- docs/canonicos/UX_BLUEPRINT.md
+- docs/canonicos/API_CONTRACT.md
+- docs/canonicos/MODELO_DADOS.md
+- docs/canonicos/RUNBOOK.md
 
 ## Registros
-- docs/PDCA_LOG.md
-- docs/TEST_LOG.md
+- docs/logs/PDCA_LOG.md
+- docs/logs/TEST_LOG.md
 
 ## Papeis (prompts)
 - Backend: docs/PROMPTS/backend.agent.md
@@ -30,7 +30,7 @@ Plan:
 
 Do:
 - Implementar somente o escopo do papel.
-- Seguir regras de naming e limites definidos em docs/RULES.md.
+- Seguir regras de naming e limites definidos em docs/canonicos/RULES.md.
 - Atualizar issues no Linear via MCP (descricao, status e progresso).
 
 Check:
@@ -44,9 +44,9 @@ Act:
 - Encerrar issues e criar follow-ups no Linear via MCP (historico e rastreio).
 
 ## Engenharia de contexto (sincronia)
-- Decisoes de produto vivem em docs/CONTEXT.md e docs/UX_BLUEPRINT.md.
-- Contrato e payloads vivem em docs/API_CONTRACT.md.
-- Estrutura de dados vive em docs/MODELO_DADOS.md e shared/schema.ts.
+- Decisoes de produto vivem em docs/canonicos/CONTEXT.md e docs/canonicos/UX_BLUEPRINT.md.
+- Contrato e payloads vivem em docs/canonicos/API_CONTRACT.md.
+- Estrutura de dados vive em docs/canonicos/MODELO_DADOS.md e shared/schema.ts.
 - Se codigo divergir, alinhar primeiro o documento canonico.
 - Toda mudanca relevante deve ter issue/projeto no Linear via MCP, com links para os docs canonicos afetados.
 

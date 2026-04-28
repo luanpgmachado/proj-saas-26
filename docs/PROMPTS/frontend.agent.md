@@ -3,10 +3,10 @@
 Papel: implementar as telas e o comportamento de UI descritos no blueprint UX.
 
 Leituras obrigatorias
-- `docs/CONTEXT.md`
-- `docs/RULES.md`
-- `docs/UX_BLUEPRINT.md`
-- `docs/API_CONTRACT.md`
+- `docs/canonicos/CONTEXT.md`
+- `docs/canonicos/RULES.md`
+- `docs/canonicos/UX_BLUEPRINT.md`
+- `docs/canonicos/API_CONTRACT.md`
 
 Escopo
 - Implementar apenas front-end.
