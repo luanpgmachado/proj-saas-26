@@ -4,3 +4,6 @@ dist/
 *.log
 .DS_Store
 drizzle/
+.playwright-cli/
+.codex/napkin.md
+.codex/skills/design-frontend-claude-code/SKILL.md
