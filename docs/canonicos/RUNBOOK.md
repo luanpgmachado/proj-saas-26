@@ -3,12 +3,12 @@
 ## Ordem de trabalho
 1. Leia `AGENTS.md` para fluxo PDCA e engenharia de contexto.
 2. Consulte `docs/INDEX.md` para mapa da documentacao.
-3. Leia `README.md` para entender a estrutura.
+3. Leia `README.md` para entender estrutura.
 4. Leia `docs/canonicos/CONTEXT.md` e `docs/canonicos/RULES.md`.
-5. Escolha o prompt adequado em `docs/PROMPTS/`.
+5. Escolha prompt em `docs/PROMPTS/`.
 6. Abra projeto e issues no Linear via MCP para registrar escopo, riscos e dependencias.
-7. Execute a tarefa respeitando `docs/canonicos/UX_BLUEPRINT.md` e `docs/canonicos/API_CONTRACT.md`.
-8. Se requisitos mudarem, atualize os documentos canonicos antes do codigo.
+7. Execute tarefa respeitando `docs/canonicos/UX_BLUEPRINT.md` e `docs/canonicos/API_CONTRACT.md`.
+8. Se requisitos mudarem, atualize documentos canonicos antes do codigo.
 
 ## Uso do ambiente
 - Guia operacional: `docs/USAGE.md`.
@@ -33,7 +33,7 @@ Ambiente atual:
 
 ### Guardrail obrigatorio (banco de producao)
 - Banco de producao nao pode ser alterado neste fluxo.
-- Antes do deploy, validar o alvo:
+- Antes do deploy, validar alvo:
   - Confirmar `DATABASE_URL`/`REPLIT_DB_URL` da sessao atual.
   - Se apontar para producao, bloquear comandos de escrita de banco.
 - Comandos proibidos em producao:
@@ -59,7 +59,7 @@ Padrao:
 Se app nova:
 - criar projeto (se necessario)
 - criar environment `production`
-- criar app com `application action=create_public` apontando para o repo
+- criar app com `application action=create_public` apontando para repo
 
 ### 3) Deploy inicial via MCP
 - Disparar `deploy` para UUID da aplicacao.
@@ -67,7 +67,7 @@ Se app nova:
 - Inspecionar logs de deploy para diagnosticar falhas.
 
 ### 3b) Fallback sem MCP (API do Coolify)
-Use apenas para disparar/monitorar deploy (nao altera `DATABASE_URL` e nao executa scripts de banco).
+Usar apenas para disparar/monitorar deploy (nao altera `DATABASE_URL`, nao executa scripts de banco).
 
 1) Obter `uuid` da aplicacao (por nome) via API:
 ```powershell
@@ -97,24 +97,24 @@ Invoke-RestMethod -Method Get -Uri "$api/deployments/$deploymentUuid" -Headers $
 ```
 
 ### 4) DNS manual na Hostinger (acao do usuario)
-Como MCP da Hostinger nao esta disponivel:
+MCP da Hostinger indisponivel:
 1. Abrir painel Hostinger -> DNS / Nameservers.
 2. Criar registro `A`.
 3. Nome: subdominio (ex: `app`) ou `@`.
 4. Valor: IP da VPS (`31.97.240.105`).
 
 ### 5) Dominio e SSL no Coolify
-1. Tentar atualizar `fqdn` automaticamente via MCP (`application action=update`).
+1. Tentar atualizar `fqdn` via MCP (`application action=update`).
 2. Fallback proativo: se falhar, abrir pagina do app no Coolify:
 `https://31.97.240.105:8000/project/[PROJECT-UUID]/environment/[ENV-NAME]/application/[APP-UUID]#configuration`
 3. No campo **Domains**, salvar URL completa com HTTPS (ex: `https://seu-dominio.com`).
 4. Executar **Redeploy**.
 
 ### 6) Banco de dados
-- Para este projeto, a API exige `DATABASE_URL` (ou `REPLIT_DB_URL`).
+- API exige `DATABASE_URL` (ou `REPLIT_DB_URL`).
 - Recomendado: criar PostgreSQL no Coolify e usar `internal_db_url` como `DATABASE_URL`.
 - Nao executar migracoes/escritas de banco em producao neste fluxo.
-- Se schema/provisionamento estiver incorreto, abrir incidente de infra e tratar fora do deploy padrao.
+- Se schema/provisionamento incorreto, abrir incidente de infra e tratar fora do deploy padrao.
 
 ### 7) Validacao final
 - URL HTTP provisoria (Coolify/sslip) deve responder.

@@ -1,26 +1,26 @@
 # Index de Documentacao (Diataxis)
 
-Este mapa organiza a documentacao por tipo, para reduzir contexto e manter o fluxo PDCA enxuto.
+Mapa doc por tipo. Reduz contexto, mantém fluxo PDCA enxuto.
 
 ## Tutorial (aprendizado)
-- Nao mantemos tutoriais longos no momento. Se precisar, crie em `docs/TUTORIALS/`.
+Sem tutoriais longos. Se precisar, crie em `docs/TUTORIALS/`.
 
 ## How-to (fazer algo)
-- `docs/USAGE.md` — como subir ambiente e executar tarefas locais.
-- `docs/canonicos/RUNBOOK.md` — ordem operacional e fluxo de trabalho.
+- `docs/USAGE.md` — subir ambiente, executar tarefas locais.
+- `docs/canonicos/RUNBOOK.md` — ordem operacional e fluxo.
 
 ## Referencia (contratos e especificacao)
 - `docs/canonicos/API_CONTRACT.md` — contratos e endpoints.
 - `docs/canonicos/MODELO_DADOS.md` — modelo e regras de dados.
-- `docs/canonicos/UX_BLUEPRINT.md` — regras de UI/UX.
+- `docs/canonicos/UX_BLUEPRINT.md` — regras UI/UX.
 - `docs/canonicos/RULES.md` — regras gerais e limites.
 
 ## Explicacao (decisoes e contexto)
 - `docs/canonicos/CONTEXT.md` — visao de produto e principios.
 
 ## Logs e historico
-- `docs/logs/PDCA_LOG.md` — historico de PDCA.
-- `docs/logs/TEST_LOG.md` — historico de testes.
+- `docs/logs/PDCA_LOG.md` — historico PDCA.
+- `docs/logs/TEST_LOG.md` — historico testes.
 
 ## Referencias PT-BR (nao usar em runtime)
 - `docs/REFERENCIAS_PT_BR/financeiro_bl.dbml`

@@ -2,7 +2,7 @@
 
 ## Convencoes
 - Base path: `/api`.
-- JSON em todas as respostas e requisicoes.
+- JSON em todas respostas e requisicoes.
 - Datas em ISO 8601 (`YYYY-MM-DD`).
 - Mes em formato `YYYY-MM`.
 - Valores monetarios em centavos (inteiro), sufixo `Cents`.
@@ -129,11 +129,11 @@ Campos editaveis no PATCH: date, description, amountCents, categoryId,
 paymentMethodId, type, group, installmentIndex, installmentTotal, isPaid, paidAt.
 
 Regras:
-- Apenas `type = exit` pode receber `isPaid = true`.
-- Se `type = entry`, o backend deve manter `isPaid = false` e `paidAt = null`.
+- Somente `type = exit` aceita `isPaid = true`.
+- Se `type = entry`, backend mantem `isPaid = false` e `paidAt = null`.
 
 Erros:
-- `400` ao tentar marcar `isPaid = true` em lancamento `type = entry`.
+- `400` ao marcar `isPaid = true` em lancamento `type = entry`.
 
 ### Recorrencias
 - GET `/api/recurrences` -> Recurrence[]
@@ -144,26 +144,23 @@ Erros:
 
 Regras:
 - `group = installment` exige `endDate` e `installmentTotal`.
-- `POST /api/recurrences` e `PATCH /api/recurrences/{id}` disparam geracao automatica de transacoes conforme regras de recorrencia.
-- Para `group = fixed` com `endDate = null`, a geracao automatica cobre 24 meses a partir de `startDate`.
-- Ao deletar uma recorrencia:
-  - a recorrencia e removida do sistema;
-  - transacoes vinculadas (`transactions.recurrenceId`) com `isPaid = false` sao excluidas;
-  - transacoes vinculadas com `isPaid = true` **nao** sao excluidas e sao **desvinculadas** (`recurrenceId = null`) para preservar integridade historica.
+- `POST /api/recurrences` e `PATCH /api/recurrences/{id}` disparam geracao automatica de transacoes.
+- `group = fixed` com `endDate = null`: geracao cobre 24 meses a partir de `startDate`.
+- Ao deletar recorrencia:
+  - recorrencia removida;
+  - transacoes vinculadas com `isPaid = false` excluidas;
+  - transacoes vinculadas com `isPaid = true` **nao** excluidas, **desvinculadas** (`recurrenceId = null`) para preservar historico.
   - `404` quando `id` nao existir.
 
 ## Relatorios e recorrencias
-- Relatorios mensais e anuais usam apenas `transactions` como fonte de verdade.
+- Relatorios mensais/anuais usam somente `transactions` como fonte de verdade.
 - Recorrencias nao geradas nao impactam totais nem categorias.
-- Geracao ocorre automaticamente no CRUD de recorrencias e tambem pode ser acionada explicitamente via endpoint mensal.
-- Gerar meses futuros reflete nos totais de panorama anual quando houver transacoes criadas.
+- Geracao ocorre automaticamente no CRUD de recorrencias; tambem acionavel via endpoint mensal.
+- Meses futuros gerados refletem nos totais do panorama anual.
 
 ## Padrao recomendado para recorrencias fixas
-- Para despesas fixas de longo prazo (aluguel, internet), usar:
-  - `group = fixed`, `endDate = null`, `dayOfMonth` no dia de vencimento.
-- Reajuste de valor:
-  - Criar nova recorrencia com novo `amountCents` e `startDate`.
-  - Pausar a recorrencia anterior para preservar historico.
+- Despesas fixas longas (aluguel, internet): `group = fixed`, `endDate = null`, `dayOfMonth` no vencimento.
+- Reajuste de valor: criar nova recorrencia com novo `amountCents` e `startDate`; pausar recorrencia anterior.
 
 ### Metodos de pagamento
 - GET `/api/payment-methods` -> PaymentMethod[]
@@ -183,9 +180,9 @@ Payloads:
   - Campos editaveis: `name`, `kind`, `monthlyBudgetCents`
 
 Erros:
-- `400` quando payload invalido (ex: `name` vazio, `kind` fora de `income|expense`, `monthlyBudgetCents` negativo).
+- `400` payload invalido (ex: `name` vazio, `kind` fora de `income|expense`, `monthlyBudgetCents` negativo).
 - `404` quando `id` nao existir.
-- `409` ao tentar excluir categoria em uso por `transactions` ou `recurrences`.
+- `409` ao excluir categoria em uso por `transactions` ou `recurrences`.
 
 ### Panorama anual
 - GET `/api/years/{year}/summary` -> AnnualSummaryRow[]

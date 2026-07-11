@@ -1,7 +1,7 @@
 # AGENTS
 
 ## Objetivo
-Definir fluxo PDCA e regras de engenharia de contexto para manter docs e codigo alinhados.
+Define fluxo PDCA e regras engenharia contexto — manter docs e codigo alinhados.
 
 ## Canonicos
 - docs/canonicos/CONTEXT.md
@@ -25,38 +25,73 @@ Definir fluxo PDCA e regras de engenharia de contexto para manter docs e codigo 
 Plan:
 - Ler canonicos e prompt do papel.
 - Definir escopo, riscos e dependencias.
-- Criar projeto e issues no Linear via MCP (registrar escopo, riscos e dependencias).
-- Se houver mudanca de requisito, atualizar docs canonicos antes do codigo.
+- Criar projeto e issues no Linear via MCP (registrar escopo, riscos, dependencias).
+- Mudanca de requisito: atualizar docs canonicos antes do codigo.
 
 Do:
-- Implementar somente o escopo do papel.
-- Seguir regras de naming e limites definidos em docs/canonicos/RULES.md.
-- Atualizar issues no Linear via MCP (descricao, status e progresso).
+- Implementar somente escopo do papel.
+- Seguir naming e limites em docs/canonicos/RULES.md.
+- Atualizar issues no Linear via MCP (descricao, status, progresso).
 
 Check:
 - Validar aderencia com UX e contrato (Reviewer ou auto-check).
 - Registrar desvios e pendencias.
-- Mover issues no Linear via MCP para o estado adequado (ex: Review/Blocked).
+- Mover issues no Linear via MCP para estado adequado (ex: Review/Blocked).
 
 Act:
 - Atualizar docs canonicos quando necessario.
-- Registrar itens pendentes (ex: gaps de infra/DB/testes).
+- Registrar pendencias (ex: gaps infra/DB/testes).
 - Encerrar issues e criar follow-ups no Linear via MCP (historico e rastreio).
 
 ## Engenharia de contexto (sincronia)
-- Decisoes de produto vivem em docs/canonicos/CONTEXT.md e docs/canonicos/UX_BLUEPRINT.md.
-- Contrato e payloads vivem em docs/canonicos/API_CONTRACT.md.
-- Estrutura de dados vive em docs/canonicos/MODELO_DADOS.md e shared/schema.ts.
-- Se codigo divergir, alinhar primeiro o documento canonico.
-- Toda mudanca relevante deve ter issue/projeto no Linear via MCP, com links para os docs canonicos afetados.
+- Decisoes produto: docs/canonicos/CONTEXT.md e docs/canonicos/UX_BLUEPRINT.md.
+- Contrato e payloads: docs/canonicos/API_CONTRACT.md.
+- Estrutura dados: docs/canonicos/MODELO_DADOS.md e shared/schema.ts.
+- Codigo divergiu: alinhar doc canonico primeiro.
+- Mudanca relevante: issue/projeto no Linear via MCP com links docs canonicos afetados.
 
 ## Definition of Done (DoD)
 - Docs canonicos consistentes entre si.
-- Frontend segue o UX_BLUEPRINT.
-- Backend segue o API_CONTRACT e MODELO_DADOS.
+- Frontend segue UX_BLUEPRINT.
+- Backend segue API_CONTRACT e MODELO_DADOS.
 - Reviewer confirma aderencia e aponta desvios restantes.
 
 ## Regras de comunicacao
 - Chat em PT-BR.
-- Em UX e dominio de negocio, usar nomes novos em PT-BR.
-- Em contrato tecnico canonico (API/schema/campos), preservar naming tecnico existente para compatibilidade.
+- UX e dominio negocio: nomes novos em PT-BR.
+- Contrato tecnico canonico (API/schema/campos): preservar naming tecnico existente para compatibilidade.
+
+## Git / Versionamento (operacional)
+
+Repo usa Git via SSH.
+
+Regras obrigatorias antes de qualquer commit/push:
+
+- Verificar remote:
+  ```bash
+  git remote -v
+  ```
+
+- Remote esperado:
+  ```bash
+  git@github-luanpgmachado:luanpgmachado/proj-saas-26.git
+  ```
+
+- Verificar identidade local:
+  ```bash
+  git config user.name
+  git config user.email
+  ```
+
+- Testar autenticacao SSH:
+  ```bash
+  ssh -T git@github-luanpgmachado
+  ```
+
+Regras:
+- Nao alterar remote sem autorizacao.
+- Nao usar HTTPS.
+- Nao usar outra conta GitHub.
+- Nao alterar configs globais Git.
+
+Obs: alias SSH (`github-luanpgmachado`) definido em `~/.ssh/config`. Repo nao armazena chaves nem configs sensiveis.

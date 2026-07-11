@@ -98,13 +98,13 @@ erDiagram
 ```
 
 ## Conceitual
-- Categoria classifica lancamentos e define tipo (income/expense) e orcamento mensal.
-- Metodo de pagamento define o meio de pagamento e dados de cartao quando aplicavel.
-- Lancamento registra entradas e saidas por data, valor e grupo (fixo/variavel/parcelado/entrada).
-- Recorrencia define um lancamento mensal recorrente (fixo ou parcelado) e gera transacoes.
-- Meta financeira recebe aportes que somam o valor atual.
-- Reserva e um container unico de emergencia com seus aportes.
-- Investimento representa contas de investimento com seus aportes.
+- Categoria classifica lancamentos, define tipo (income/expense) e orcamento mensal.
+- Metodo pagamento define meio e dados cartao quando aplicavel.
+- Lancamento registra entradas/saidas por data, valor e grupo (fixo/variavel/parcelado/entrada).
+- Recorrencia define lancamento mensal recorrente (fixo ou parcelado), gera transacoes.
+- Meta financeira recebe aportes que somam valor atual.
+- Reserva: container unico emergencia + aportes.
+- Investimento: conta investimento + aportes.
 
 ## Logico (tabelas e campos)
 - categories: id, name, kind, monthlyBudgetCents.
@@ -120,9 +120,9 @@ erDiagram
 - investment_contributions: id, investmentId, date, amountCents.
 
 ## Relacoes e cardinalidade
-- categories 1 -> 0..N transactions (categoryId opcional no lancamento).
-- payment_methods 1 -> 0..N transactions (paymentMethodId opcional no lancamento).
-- recurrences 1 -> 0..N transactions (recurrenceId opcional no lancamento).
+- categories 1 -> 0..N transactions (categoryId opcional).
+- payment_methods 1 -> 0..N transactions (paymentMethodId opcional).
+- recurrences 1 -> 0..N transactions (recurrenceId opcional).
 - goals 1 -> 0..N goal_contributions (obrigatorio).
 - reserves 1 -> 0..N reserve_contributions (obrigatorio).
 - investments 1 -> 0..N investment_contributions (obrigatorio).
@@ -137,23 +137,23 @@ erDiagram
 - recurrences.status: active | paused.
 
 ## Regras de recorrencia (dados)
-- Recorrencia e um template; transacoes sao a fonte de verdade para relatorios.
-- Geracao de transacoes ocorre automaticamente no CRUD de recorrencias (create/update), conforme regras de grupo, datas e status.
-- Edicoes na recorrencia afetam apenas ocorrencias futuras.
-- Ao deletar uma recorrencia, remover o template e limpar transacoes vinculadas nao pagas (preservar transacoes pagas).
-- Para parcelamento: group = installment, endDate e installmentTotal obrigatorios.
-- Para receita: type = entry e group = entry.
-- dayOfMonth maior que o ultimo dia do mes usa o ultimo dia do mes.
-- Recorrencia fixa de longo prazo usa endDate = null (ex: aluguel, internet).
-- Para recorrencia fixa com endDate nulo, a geracao automatica cobre 24 meses a partir de startDate.
-- Reajuste de valor: preferir criar nova recorrencia com novo amountCents e startDate, e pausar a anterior para preservar historico.
+- Recorrencia = template; transacoes = fonte verdade para relatorios.
+- Geracao transacoes: automatica no CRUD recorrencias (create/update), por grupo/datas/status.
+- Edicoes afetam so ocorrencias futuras.
+- Delete: remove template + limpa transacoes vinculadas nao pagas (preserva pagas).
+- Parcelamento: group = installment, endDate e installmentTotal obrigatorios.
+- Receita: type = entry e group = entry.
+- dayOfMonth > ultimo dia mes usa ultimo dia mes.
+- Recorrencia fixa longa usa endDate = null (ex: aluguel, internet).
+- endDate nulo: geracao cobre 24 meses a partir de startDate.
+- Reajuste valor: criar nova recorrencia com novo amountCents e startDate, pausar anterior (preserva historico).
 
 ## Regras de pagamento (dados)
-- Apenas `transactions.type = exit` pode ser marcado como pago.
-- `transactions.type = entry` exige `isPaid = false` e `paidAt = null` (backend deve auto-limpar se o tipo for alterado).
+- So `transactions.type = exit` pode ser marcado pago.
+- `transactions.type = entry` exige `isPaid = false` e `paidAt = null` (backend auto-limpa se tipo alterado).
 
 ## Migracao incremental (dados)
-- Manter installmentGroupId, installmentIndex e installmentTotal como legado.
+- Manter installmentGroupId, installmentIndex, installmentTotal como legado.
 - Adicionar recurrenceId opcional em transactions para novos recorrentes.
-- Gerar recurrences a partir de installmentGroupId apenas quando dados forem consistentes.
-- Preencher recurrenceId nas transacoes migradas sem alterar valores existentes.
+- Gerar recurrences de installmentGroupId so quando dados consistentes.
+- Preencher recurrenceId em transacoes migradas sem alterar valores existentes.

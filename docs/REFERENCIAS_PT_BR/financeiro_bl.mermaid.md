@@ -1,4 +1,4 @@
-> Referencia conceitual em PT-BR (nao-runtime). Fonte canonica tecnica: `docs/canonicos/MODELO_DADOS.md` e `docs/canonicos/API_CONTRACT.md`.
+> Ref conceitual PT-BR (não-runtime). Fonte canônica: `docs/canonicos/MODELO_DADOS.md` e `docs/canonicos/API_CONTRACT.md`.
 
 ```mermaid
 erDiagram

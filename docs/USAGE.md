@@ -6,69 +6,69 @@
 - PostgreSQL 16+
 
 ## 1) Subir ambiente completo local
-- `npm install` Instala dependencias do projeto.
-- Se usar VM com tunel SSH, abra o tunel em outro terminal:
+- `npm install` Instala dependencias.
+- VM com tunel SSH, abra tunel em outro terminal:
   - `ssh -i "C:\Users\luanp\.ssh\oracle_dev_luan_private.key" -N -L 5433:localhost:5432 ubuntu@IP_DA_VM`
-- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define a conexao local do banco.
-- `npm run db:push` Cria/atualiza as tabelas no banco local.
-- `npm run dev` Sobe front-end e back-end juntos.
+- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define conexao banco.
+- `npm run db:push` Cria/atualiza tabelas.
+- `npm run dev` Sobe front+back.
 
 ## 2) Subir somente o front-end local
-- `npm install` Instala dependencias do projeto.
-- `npm run dev:client` Sobe o Vite em `http://localhost:5000`.
+- `npm install` Instala dependencias.
+- `npm run dev:client` Sobe Vite em `http://localhost:5000`.
 
 ## 3) Subir somente o back-end local
-- `npm install` Instala dependencias do projeto.
-- Se usar VM com tunel SSH, abra o tunel em outro terminal:
+- `npm install` Instala dependencias.
+- VM com tunel SSH, abra tunel em outro terminal:
   - `ssh -i "C:\Users\luanp\.ssh\oracle_dev_luan_private.key" -N -L 5433:localhost:5432 ubuntu@IP_DA_VM`
-- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define a conexao local do banco.
-- `npm run dev:server` Sobe a API em `http://localhost:3001/api`.
+- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define conexao banco.
+- `npm run dev:server` Sobe API em `http://localhost:3001/api`.
 
 ## 4) Subir o banco de dados local
 - `psql -U postgres` Entra no Postgres local.
-- `CREATE DATABASE financeiro_bl;` Cria o banco local.
+- `CREATE DATABASE financeiro_bl;` Cria banco.
 
 ## 5) Criar environments no PowerShell (local)
-- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Exporta a variavel na sessao atual.
-- `[Environment]::SetEnvironmentVariable("DATABASE_URL","postgres://usuario:senha@localhost:5433/financeiro_bl","User")` Persiste a variavel no perfil do usuario.
+- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Exporta variavel na sessao.
+- `[Environment]::SetEnvironmentVariable("DATABASE_URL","postgres://usuario:senha@localhost:5433/financeiro_bl","User")` Persiste no perfil usuario.
 
 ## 6) Fluxo completo para deixar o ambiente no ar (local)
-- `psql -U postgres` Entra no Postgres local.
-- `CREATE DATABASE financeiro_bl;` Cria o banco.
-- Se usar VM com tunel SSH, abra o tunel em outro terminal:
+- `psql -U postgres` Entra no Postgres.
+- `CREATE DATABASE financeiro_bl;` Cria banco.
+- VM com tunel SSH, abra tunel em outro terminal:
   - `ssh -i "C:\Users\luanp\.ssh\oracle_dev_luan_private.key" -N -L 5433:localhost:5432 ubuntu@IP_DA_VM`
-- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define a conexao local.
+- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define conexao.
 - `npm install` Instala dependencias.
-- `npm run db:push` Aplica o schema no banco.
-- `npm run dev` Sobe front-end e back-end.
+- `npm run db:push` Aplica schema.
+- `npm run dev` Sobe front+back.
 
 ## 7) Backfill de recorrencias (parcelamentos legados)
 - `npm install` Instala dependencias.
-- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define a conexao local.
-- `tsx server/backfill_recorrencias.ts` Cria recorrencias a partir de parcelamentos existentes.
+- `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"` Define conexao.
+- `tsx server/backfill_recorrencias.ts` Cria recorrencias de parcelamentos existentes.
 
 ## 8) Checklist de testes manuais (recorrencias)
-- Criar recorrencia fixa e gerar mes corrente -> 1 transacao criada.
-- Rodar geracao do mesmo mes novamente -> nao deve duplicar.
-- Criar recorrencia parcelada (installmentTotal) e gerar meses sequenciais -> indices crescem e param no total.
-- Editar recorrencia existente para `group=fixed` com `endDate=null` -> auto-gerar 24 meses a partir de `startDate` (sem duplicar).
-- Pausar recorrencia e gerar mes seguinte -> nenhuma transacao nova.
-- Cancelar recorrencia e gerar mes seguinte -> nenhuma transacao nova.
+- Criar recorrencia fixa, gerar mes corrente -> 1 transacao criada.
+- Rodar geracao mesmo mes -> nao duplicar.
+- Criar recorrencia parcelada (`installmentTotal`), gerar meses sequenciais -> indices crescem, param no total.
+- Editar recorrencia para `group=fixed` com `endDate=null` -> auto-gerar 24 meses a partir de `startDate` (sem duplicar).
+- Pausar recorrencia, gerar mes seguinte -> nenhuma transacao nova.
+- Cancelar recorrencia, gerar mes seguinte -> nenhuma transacao nova.
 
 ## 9) Padronizacao de schema (PT-BR vs EN)
-- O schema oficial do app e o definido em `shared/schema.ts` (tabelas em ingles).
-- Arquivos `docs/REFERENCIAS_PT_BR/financeiro_bl.postgresql.sql` e `docs/REFERENCIAS_PT_BR/financeiro_bl.dbml` sao referencia PT-BR e nao devem ser aplicados no banco em runtime.
-- Se o banco local tiver tabelas em PT-BR, recrie o banco e rode `npm run db:push`.
-  - Exemplo (com tunel ativo para VM):
-    - `ssh -N -L 5433:localhost:5432 ubuntu@IP_DA_VM` (em outro terminal)
+- Schema oficial: `shared/schema.ts` (tabelas em ingles).
+- `docs/REFERENCIAS_PT_BR/financeiro_bl.postgresql.sql` e `docs/REFERENCIAS_PT_BR/financeiro_bl.dbml` sao referencia PT-BR, nao aplicar em runtime.
+- Banco local com tabelas PT-BR: recriar banco e rodar `npm run db:push`.
+  - Exemplo (tunel ativo para VM):
+    - `ssh -N -L 5433:localhost:5432 ubuntu@IP_DA_VM` (outro terminal)
     - `$env:DATABASE_URL="postgres://usuario:senha@localhost:5433/financeiro_bl"`
     - `npm run db:push`
 
 ## 10) Validar CRUD de recorrencias (local)
 - Requisitos:
-  - Back-end rodando em `http://localhost:3001/api`.
+  - Back-end em `http://localhost:3001/api`.
   - Tabelas criadas com `npm run db:push`.
-- Exemplos em PowerShell:
+- Exemplos PowerShell:
   - Criar recorrencia fixa:
     - `Invoke-RestMethod -Method Post -Uri http://localhost:3001/api/recurrences -ContentType "application/json" -Body '{"description":"Internet","type":"exit","group":"fixed","amountCents":12000,"categoryId":1,"paymentMethodId":1,"startDate":"2026-02-01","endDate":null,"dayOfMonth":5,"installmentTotal":null,"status":"active"}'`
   - Criar recorrencia parcelada:
@@ -85,20 +85,20 @@
     - `Invoke-RestMethod -Method Delete -Uri http://localhost:3001/api/recurrences/1`
 
 ## Observacoes
-- Historico de testes: `docs/logs/TEST_LOG.md`.
+- Historico testes: `docs/logs/TEST_LOG.md`.
 
 ## 11) Deploy em producao (Coolify + Hostinger)
-- Ambiente alvo:
+- Ambiente:
   - VPS Ubuntu 24.04 LTS em `31.97.240.105`
   - Coolify em `http://31.97.240.105:8000/`
 - Fluxo:
-  - Seguir o workflow oficial em `docs/canonicos/RUNBOOK.md` (secoes "Deploy em VPS Hostinger com Coolify" e "Guardrail obrigatorio").
-  - Garantir codigo no GitHub (`git push origin main`) antes do deploy.
-  - Validar variaveis de banco na sessao local (`DATABASE_URL`/`REPLIT_DB_URL`) antes de qualquer comando.
+  - Seguir `docs/canonicos/RUNBOOK.md` (secoes "Deploy em VPS Hostinger com Coolify" e "Guardrail obrigatorio").
+  - Codigo no GitHub (`git push origin main`) antes do deploy.
+  - Validar variaveis banco (`DATABASE_URL`/`REPLIT_DB_URL`) antes de qualquer comando.
 - DNS manual (Hostinger):
-  - Criar registro `A` para dominio/subdominio apontando para `31.97.240.105`.
-  - Depois configurar o dominio no campo **Domains** do app no Coolify.
-  - Executar redeploy para emitir SSL.
+  - Registro `A` apontando para `31.97.240.105`.
+  - Configurar dominio em **Domains** no Coolify.
+  - Redeploy para emitir SSL.
 
 ### Comandos proibidos em producao
 - Lista canonica em `docs/canonicos/RUNBOOK.md` (Guardrail obrigatorio).
