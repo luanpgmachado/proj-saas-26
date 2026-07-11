@@ -73,6 +73,22 @@ Conectar:
 psql "$env:REPORT_DATABASE_URL"
 ```
 
+## Uso imediato sem psql local
+Quando `psql` ainda nao estiver instalado no Windows, execute consultas pelo container PostgreSQL via SSH. A role continua sendo `report_readonly`.
+
+Carregar senha salva no ambiente de usuario:
+
+```powershell
+$env:REPORT_DB_PASSWORD=[Environment]::GetEnvironmentVariable("REPORT_DB_PASSWORD","User")
+```
+
+Executar um SELECT:
+
+```powershell
+$sql="SELECT current_database(), current_user;"
+$sql | ssh -i "$env:USERPROFILE\.ssh\luan_pc" -o IdentitiesOnly=yes root@31.97.240.105 "docker exec -i -e PGPASSWORD=$env:REPORT_DB_PASSWORD q80kcs0gsck0co4sgc4sgcgk psql -U report_readonly -d financeiro_bl"
+```
+
 ## Validar permissoes
 Rodar:
 
