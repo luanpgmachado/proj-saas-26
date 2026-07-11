@@ -7,5 +7,6 @@ drizzle/
 .playwright-cli/
 .worktrees
 .worktrees/
+.superpowers/sdd/
 .codex/napkin.md
 .codex/skills/design-frontend-claude-code/SKILL.md

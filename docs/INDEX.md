@@ -7,6 +7,7 @@ Sem tutoriais longos. Se precisar, crie em `docs/TUTORIALS/`.
 
 ## How-to (fazer algo)
 - `docs/USAGE.md` — subir ambiente, executar tarefas locais.
+- `docs/USAGE_REPORTING.md` - consultar PostgreSQL de producao com usuario read-only para relatorios.
 - `docs/canonicos/RUNBOOK.md` — ordem operacional e fluxo.
 
 ## Referencia (contratos e especificacao)

@@ -210,3 +210,15 @@
   - Lançamentos respeita mesmo mês.
   - Recorrências: "Gerar Mês" usa competência ativa.
   - Panorama Anual: continua usando só seletor de ano.
+
+## 2026-07-11 - DEV-262 - Validacao acesso read-only relatorios
+- Ambiente: PostgreSQL producao `db-proj-financa-v1` no Coolify, container `q80kcs0gsck0co4sgc4sgcgk`, database `financeiro_bl`.
+- Segredo: senha da role nao registrada em git; variaveis de usuario Windows atualizadas (`REPORT_DB_NAME`, `REPORT_DB_USER`, `REPORT_DB_PASSWORD`, `REPORT_DATABASE_URL`).
+- Comando operacional: validacao executada via SSH e `docker exec` com `psql` do container PostgreSQL.
+- Resultado:
+  - `SELECT current_database(), current_user;` passou.
+  - SELECTs em `transactions`, `categories`, `payment_methods` passaram.
+  - `CREATE TABLE public.report_readonly_probe` falhou como esperado.
+  - `INSERT`, `UPDATE`, `DELETE` em `categories` falharam como esperado.
+  - Saida final: `All read-only validation probes passed.`
+- Observacao: `psql` nao estava no PATH local. Tentativa de instalacao via `winget install PostgreSQL.PostgreSQL.16` foi interrompida apos o instalador ficar preso; uso imediato documentado via SSH/container.

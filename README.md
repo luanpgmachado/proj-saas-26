@@ -11,6 +11,7 @@ legibilidade, previsibilidade e controle explicito.
 - `docs/canonicos/API_CONTRACT.md`: contrato base da API.
 - `docs/canonicos/MODELO_DADOS.md`: modelo de dados e relacoes.
 - `docs/USAGE.md`: passo a passo de uso local.
+- `docs/USAGE_REPORTING.md`: uso seguro de PostgreSQL read-only para relatorios.
 - `docs/PROMPTS/`: prompts operacionais por papel.
 - `docs/canonicos/RUNBOOK.md`: ordem de trabalho e fluxo operacional.
 

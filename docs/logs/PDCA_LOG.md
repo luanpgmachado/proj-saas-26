@@ -249,3 +249,9 @@
     - Migradas telas Dashboard, Lançamentos e Recorrências para consumir competência global.
 - **Check:** `npm run build` executado com sucesso.
 - **Act:** Registrar evidências e checklist manual em `docs/logs/TEST_LOG.md`.
+
+## 2026-07-11 - DEV-262 - Acesso read-only para relatorios
+- **Plan:** Definida abordagem com role PostgreSQL `report_readonly`, acesso por tunel/rede interna, sem segredo em git. Spec: `docs/superpowers/specs/2026-07-11-acesso-readonly-producao-design.md`. Plano: `docs/superpowers/plans/2026-07-11-acesso-readonly-producao.md`.
+- **Do:** Criados artefatos `scripts/reporting/setup-report-readonly.sql`, `scripts/reporting/Test-ReportReadonly.ps1`, `scripts/reporting/sample-report-queries.sql` e `docs/USAGE_REPORTING.md`. Role criada no container PostgreSQL `q80kcs0gsck0co4sgc4sgcgk` sem abrir porta publica. Senha salva em variaveis de usuario Windows, fora do git.
+- **Check:** Validacao read-only executada no PostgreSQL de producao: SELECT permitido; DDL/DML negados; database `financeiro_bl`; role `report_readonly`.
+- **Act:** Manter acesso por SSH/container ou tunel/rede interna. `psql` local segue como melhoria de conveniencia; tentativa via `winget` foi interrompida porque o instalador ficou preso.
