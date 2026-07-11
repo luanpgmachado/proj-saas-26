@@ -44,15 +44,42 @@ function Invoke-ReadonlyProbe {
   }
 }
 
+function Invoke-PsqlText {
+  param(
+    [Parameter(Mandatory = $true)][string]$Name,
+    [Parameter(Mandatory = $true)][string]$Sql
+  )
+
+  $tempFile = New-TemporaryFile
+  try {
+    Set-Content -LiteralPath $tempFile.FullName -Value $Sql -Encoding UTF8
+    $output = & psql $DatabaseUrl -X -q -t -A -F "|" -v ON_ERROR_STOP=1 -f $tempFile.FullName
+    $exitCode = $LASTEXITCODE
+  } finally {
+    Remove-Item -LiteralPath $tempFile.FullName -Force -ErrorAction SilentlyContinue
+  }
+
+  if ($exitCode -ne 0) {
+    throw "FAIL: $Name should succeed but psql exited with code $exitCode."
+  }
+
+  return ($output -join "`n").Trim()
+}
+
 Invoke-ReadonlyProbe `
   -Name "basic connection" `
   -ShouldSucceed $true `
   -Sql "SELECT current_database(), current_user;"
 
-Invoke-ReadonlyProbe `
+$settings = Invoke-PsqlText `
   -Name "role settings" `
-  -ShouldSucceed $true `
-  -Sql "SHOW default_transaction_read_only; SHOW statement_timeout; SHOW idle_in_transaction_session_timeout;"
+  -Sql "SELECT current_setting('default_transaction_read_only'), current_setting('statement_timeout'), current_setting('idle_in_transaction_session_timeout');"
+
+if ($settings -ne "on|30s|1min") {
+  throw "FAIL: role settings expected on|30s|1min but got $settings."
+}
+
+Write-Host "PASS: role settings match on|30s|1min."
 
 Invoke-ReadonlyProbe `
   -Name "transactions select" `
