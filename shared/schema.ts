@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, integer, date, text, boolean } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, integer, date, text, boolean, timestamp } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const categories = pgTable("categories", {
@@ -85,6 +85,14 @@ export const investmentContributions = pgTable("investment_contributions", {
   investmentId: integer("investment_id").references(() => investments.id).notNull(),
   date: date("date").notNull(),
   amountCents: integer("amount_cents").notNull(),
+});
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -177,3 +185,5 @@ export type Investment = typeof investments.$inferSelect;
 export type InsertInvestment = typeof investments.$inferInsert;
 export type InvestmentContribution = typeof investmentContributions.$inferSelect;
 export type InsertInvestmentContribution = typeof investmentContributions.$inferInsert;
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
