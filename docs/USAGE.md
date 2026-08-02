@@ -102,3 +102,13 @@
 
 ### Comandos proibidos em producao
 - Lista canonica em `docs/canonicos/RUNBOOK.md` (Guardrail obrigatorio).
+
+## 12) Criar conta de acesso (local ou producao)
+- Requisitos: `DATABASE_URL` apontando pro banco correto (local ou producao, via variavel de ambiente).
+- `npx tsx server/scripts/create-user.ts email@exemplo.com "senha-forte" "Nome da Pessoa"` Cria conta. Sem autocadastro publico — toda conta passa por este script.
+- Rodar de novo com o mesmo email retorna erro sem duplicar.
+
+## 13) Variavel SESSION_SECRET
+- Obrigatoria em producao (`NODE_ENV=production`); o servidor recusa subir sem ela.
+- `$env:SESSION_SECRET="valor-aleatorio-longo"` Define localmente (opcional em dev).
+- Em producao: configurar no Coolify como variavel de ambiente do app, com um valor aleatorio gerado uma vez e mantido estavel (trocar o valor invalida todas as sessoes ativas).
