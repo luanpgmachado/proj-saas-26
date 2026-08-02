@@ -1,6 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { storage } from "./storage";
 import type { ParsedQs } from "qs";
+import rateLimit from "express-rate-limit";
+import { requireAuth } from "./auth";
+import { verifyPassword } from "./passwords";
 
 const router = Router();
 
@@ -24,6 +27,50 @@ const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => P
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
+
+const loginRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Muitas tentativas. Tente novamente em alguns minutos." },
+});
+
+router.post("/auth/login", loginRateLimit, asyncHandler(async (req, res) => {
+  const { email, senha } = req.body ?? {};
+  if (typeof email !== "string" || typeof senha !== "string") {
+    return res.status(400).json({ error: "email e senha sao obrigatorios" });
+  }
+
+  const user = await storage.getUserByEmail(email.trim().toLowerCase());
+  const senhaValida = user ? await verifyPassword(senha, user.passwordHash) : false;
+  if (!user || !senhaValida) {
+    return res.status(401).json({ error: "email ou senha invalidos" });
+  }
+
+  req.session.regenerate((err) => {
+    if (err) return res.status(500).json({ error: "Erro ao iniciar sessao" });
+    req.session.userId = user.id;
+    res.json({ id: user.id, email: user.email, name: user.name });
+  });
+}));
+
+router.post("/auth/logout", asyncHandler(async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return res.status(500).json({ error: "Erro ao encerrar sessao" });
+    res.clearCookie("connect.sid");
+    res.json({ success: true });
+  });
+}));
+
+router.get("/auth/me", asyncHandler(async (req, res) => {
+  if (!req.session.userId) return res.status(401).json({ error: "Nao autenticado" });
+  const user = await storage.getUserById(req.session.userId);
+  if (!user) return res.status(401).json({ error: "Nao autenticado" });
+  res.json({ id: user.id, email: user.email, name: user.name });
+}));
+
+router.use(requireAuth);
 
 router.get("/categories", asyncHandler(async (req, res) => {
   const categories = await storage.getCategories();
