@@ -1,5 +1,11 @@
 const API_BASE = "/api";
 
+let onUnauthorized: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null) {
+  onUnauthorized = handler;
+}
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
     ...options,
@@ -20,12 +26,22 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
     const err = new Error(message) as any;
     err.status = res.status;
     err.body = text;
+    if (res.status === 401) {
+      onUnauthorized?.();
+    }
     throw err;
   }
   return text ? JSON.parse(text) : (null as any);
 }
 
 export const api = {
+  login: (email: string, senha: string) =>
+    request<{ id: number; email: string; name: string }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, senha }),
+    }),
+  logout: () => request<{ success: boolean }>("/auth/logout", { method: "POST" }),
+  me: () => request<{ id: number; email: string; name: string }>("/auth/me"),
   getMonthSummary: (month: string) => request<any>(`/months/${month}/summary`),
   getCategorySpend: (month: string) => request<any[]>(`/months/${month}/categories`),
   getTransactions: (params: Record<string, string>) => {
