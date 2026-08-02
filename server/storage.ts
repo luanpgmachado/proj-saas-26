@@ -9,6 +9,7 @@ import {
   reserveContributions,
   investments,
   investmentContributions,
+  users,
   type Category,
   type InsertCategory,
   type PaymentMethod,
@@ -29,6 +30,8 @@ import {
   type InsertInvestment,
   type InvestmentContribution,
   type InsertInvestmentContribution,
+  type User,
+  type InsertUser,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, isNotNull } from "drizzle-orm";
@@ -807,6 +810,21 @@ export class DatabaseStorage implements IStorage {
       result.push({ month, entriesCents, exitsCents, balanceCents });
     }
     return result;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async getUserById(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [created] = await db.insert(users).values(user).returning();
+    return created;
   }
 }
 
