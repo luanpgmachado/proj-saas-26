@@ -1,6 +1,8 @@
 import { Suspense, lazy } from "react";
 import { Route, Switch } from "wouter";
 import { LayoutAplicativo } from "./components/LayoutAplicativo";
+import { useAuth } from "./context/AuthContext";
+import Login from "./pages/Login";
 
 // Code-splitting por rota: reduz JS inicial e melhora TTI/FID em conexoes lentas.
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -13,6 +15,20 @@ const Recurrences = lazy(() => import("./pages/Recurrences"));
 const Categories = lazy(() => import("./pages/Categories"));
 
 export default function App() {
+  const { usuario, carregando } = useAuth();
+
+  if (carregando) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-background text-sm text-muted-foreground">
+        Carregando...
+      </div>
+    );
+  }
+
+  if (!usuario) {
+    return <Login />;
+  }
+
   return (
     <LayoutAplicativo>
       <Suspense fallback={<div className="surface-card p-5 mt-8">Carregando...</div>}>
