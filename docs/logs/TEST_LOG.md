@@ -1,5 +1,21 @@
 # Registro de Testes
 
+## 2026-08-02 — Task 12: Nome do usuário e logout na sidebar + verificação e2e da camada de autenticação
+- Ambiente: local (build produção — `npm run build` + `npm start`, `http://localhost:3001`), `DATABASE_URL` apontando para container Docker `financa-dev-db` (porta 5433). Conta de teste: `voce@example.com` / `senha-forte-123` (criada na Task 5).
+- Verificações de compilação:
+  - `npx tsc --noEmit -p tsconfig.json`: sem erros.
+  - `npm run build`: client (vite) + server (esbuild) OK, sem erros.
+- Checklist manual (navegador, via `mcp__Claude_Browser__*`, com `read_page`/`get_page_text`/`read_network_requests` como evidência):
+  - Acessar a raiz sem estar logado → apenas tela de login (`Email`, `Senha`, `Entrar`); nenhum item de sidebar ou dado financeiro presente na árvore de acessibilidade. OK.
+  - Senha errada → mensagem "email ou senha invalidos" exibida, permanece na tela de login. OK.
+  - Login com a conta da Task 5 → app completo carregado (Dashboard); sidebar com nome da pessoa ("Seu Nome") no rodapé, `title` com o e-mail (`voce@example.com`) como tooltip. OK.
+  - Navegação entre páginas (`/transactions`, `/goals`) → conteúdo de cada página carregado corretamente, sidebar mantida. OK.
+  - Reload (F5, navegação forçada) logado → `GET /api/auth/me` retornou `200 OK` após o reload, app continua logado sem pedir senha novamente. OK.
+  - Clique em "Sair" → `POST /api/auth/logout` retornou `200 OK`, tela volta para login (somente `Email`/`Senha`/`Entrar`). OK.
+  - Reload após logout → `GET /api/auth/me` retornou `401 Unauthorized`, permanece na tela de login (sessão realmente encerrada no servidor, não é só estado do React). OK.
+- Resultado: todos os itens do checklist da Task 12 passaram. Nenhum bug encontrado.
+- Observação de ferramenta (não é bug do app): em algumas tentativas o clique sintético do `computer` tool no botão "Entrar"/"Sair" não disparou o evento (sem requisição de rede correspondente); refeito o clique via `read_page` + `computer left_click` por `ref` e funcionou normalmente, confirmado por `read_network_requests`. Comportamento da aplicação não foi afetado.
+
 ## 2026-04-16 — DEV-222/DEV-223: Dashboard (Já Pago/Falta Pagar) + barra de totais em Lançamentos
 - Ambiente: local (build produção + Node em `http://127.0.0.1:3001`).
 - Verificações:

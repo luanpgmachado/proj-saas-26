@@ -9,9 +9,11 @@ import {
   Wallet,
   Target,
   LineChart,
+  LogOut,
 } from "lucide-react";
 import { LinkNavegacao } from "./LinkNavegacao";
 import { SeletorCompetenciaMensal } from "./SeletorCompetenciaMensal";
+import { useAuth } from "../context/AuthContext";
 
 type ItemNav = {
   href: string;
@@ -22,6 +24,7 @@ type ItemNav = {
 const CHAVE_RECOLHIDA = "ui.sidebar.recolhida";
 
 export function BarraLateral() {
+  const { usuario, sair } = useAuth();
   const [recolhida, setRecolhida] = useState(false);
 
   useEffect(() => {
@@ -125,14 +128,34 @@ export function BarraLateral() {
         </div>
       </nav>
 
-      <footer
-        className={[
-          "px-2 pb-3 flex justify-center",
-          recolhida ? "pt-0" : "pt-1.5",
-        ].join(" ")}
-        aria-label="Competência mensal"
-      >
-        <SeletorCompetenciaMensal recolhida={recolhida} />
+      <footer className="px-2 pb-3 flex flex-col gap-2">
+        <div
+          className={[
+            "flex items-center gap-2 px-2 h-9",
+            recolhida ? "justify-center" : "justify-between",
+          ].join(" ")}
+        >
+          {recolhida ? null : (
+            <span
+              className="text-xs text-sidebar-muted truncate"
+              title={usuario?.email}
+            >
+              {usuario?.name}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => sair()}
+            className="w-8 h-8 shrink-0 flex items-center justify-center rounded-md text-sidebar-muted hover:text-foreground hover:bg-secondary transition-smooth focus-ring"
+            aria-label="Sair"
+            title="Sair"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="flex justify-center" aria-label="Competência mensal">
+          <SeletorCompetenciaMensal recolhida={recolhida} />
+        </div>
       </footer>
     </aside>
   );
