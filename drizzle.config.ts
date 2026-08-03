@@ -10,6 +10,7 @@ export default defineConfig({
   schema: "./shared/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
+  tablesFilter: ["*", "!session"],
   dbCredentials: {
     url: connectionString,
   },
