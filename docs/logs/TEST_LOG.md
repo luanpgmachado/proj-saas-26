@@ -14,7 +14,73 @@
   - Clique em "Sair" → `POST /api/auth/logout` retornou `200 OK`, tela volta para login (somente `Email`/`Senha`/`Entrar`). OK.
   - Reload após logout → `GET /api/auth/me` retornou `401 Unauthorized`, permanece na tela de login (sessão realmente encerrada no servidor, não é só estado do React). OK.
 - Resultado: todos os itens do checklist da Task 12 passaram. Nenhum bug encontrado.
-- Observação de ferramenta (não é bug do app): em algumas tentativas o clique sintético do `computer` tool no botão "Entrar"/"Sair" não disparou o evento (sem requisição de rede correspondente); refeito o clique via `read_page` + `computer left_click` por `ref` e funcionou normalmente, confirmado por `read_network_requests`. Comportamento da aplicação não foi afetado.
+- Observação de ferramenta (não é bug do app): o `computer` tool teve cliques sintéticos intermitentes sem efeito nesta sessão (screenshot também falhou com "the Browser pane is not displayed, so the page is not compositing frames") — confirmado como problema geral do ambiente e não do app (um clique de controle em "+ Novo Lançamento", não relacionado a auth, também não abriu o modal na mesma janela de falha). Cada passo abaixo foi reexecutado até produzir uma requisição de rede nova e correspondente (ver runbook "Fix — evidência bruta" abaixo).
+
+### Fix — evidência bruta (rodada de reverificação pós-review, mesmo dia)
+Reexecução dos passos dependentes de clique com output literal (não parafraseado) de `read_network_requests`/`get_page_text`/`javascript_tool`, no mesmo ambiente (`npm start`, `http://localhost:3001`, mesma conta `voce@example.com`/`senha-forte-123`, mesmo banco Docker `financa-dev-db`):
+
+1. Raiz sem login — `read_page` (filter interactive):
+   ```
+   textbox [ref_1] type="email"
+   textbox [ref_2] type="password"
+   button "Entrar" [ref_3] type="submit"
+   ```
+2. Senha errada — `read_network_requests` (urlPattern=login):
+   ```
+   [29612.252] POST http://localhost:3001/api/auth/login → 401 Unauthorized
+   ```
+   `get_page_text`:
+   ```
+   Email
+   Senha
+
+   email ou senha invalidos
+
+   Entrar
+   ```
+3. Login correto — `read_network_requests` (urlPattern=auth):
+   ```
+   [29612.253] POST http://localhost:3001/api/auth/login → 200 OK
+   ```
+   `javascript_tool` (leitura do span do rodapé da sidebar, apenas inspeção, sem alterar estado):
+   ```
+   {"text":"Seu Nome","title":"voce@example.com"}
+   ```
+4. Navegação `/transactions` — `get_page_text`:
+   ```
+   Lançamentos
+
+   Gerencie suas receitas e despesas
+
+   Novo Lançamento
+   Todos
+   Pagos
+   Pendentes
+   Atrasados
+   ```
+5. Reload logado (force navigate em `/transactions`) — `read_network_requests` (urlPattern=auth/me), última linha nova:
+   ```
+   [29612.342] GET http://localhost:3001/api/auth/me → 200 OK
+   ```
+6. Clique real em "Sair" (`computer left_click` por `ref`, 8ª tentativa nesta rodada até compositar) — `read_network_requests` (urlPattern=logout), última linha nova:
+   ```
+   [29612.397] POST http://localhost:3001/api/auth/logout → 200 OK
+   ```
+   `get_page_text` logo em seguida:
+   ```
+   Finança Familiar
+
+   Entre com sua conta.
+
+   Email
+   Senha
+   Entrar
+   ```
+7. Reload após logout (force navigate na raiz) — `read_network_requests` (urlPattern=auth/me), última linha nova:
+   ```
+   [29612.432] GET http://localhost:3001/api/auth/me → 401 Unauthorized
+   ```
+- Conclusão do fix: os 7 itens do checklist reproduzidos com IDs de requisição/timestamps novos e distintos a cada passo (nenhum reaproveitamento de request antiga). Nenhuma mudança de código — apenas evidência. Servidor (`npm start`, PID na porta 3001) finalizado com `taskkill` ao final; `curl` confirmou porta 3001 sem resposta (`000`) após o encerramento.
 
 ## 2026-04-16 — DEV-222/DEV-223: Dashboard (Já Pago/Falta Pagar) + barra de totais em Lançamentos
 - Ambiente: local (build produção + Node em `http://127.0.0.1:3001`).
