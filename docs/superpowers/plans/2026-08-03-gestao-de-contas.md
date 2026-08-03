@@ -649,7 +649,7 @@ router.post("/auth/reset-password/:token", asyncHandler(async (req, res) => {
 
 - [ ] **Step 5: Testar de ponta a ponta**
 
-Pré-requisito: banco local ativo (Task 4), servidor rodando (`npx tsx watch server/index.ts`), `RESEND_API_KEY`/`EMAIL_FROM` reais setados no ambiente do servidor.
+Pré-requisito: banco local ativo (Task 4), servidor rodando (`npx tsx watch server/index.ts`), `SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM` reais setados no ambiente do servidor.
 
 Como a rota de **criar** convite só existe na Task 7, insira um convite direto pra testar esta task isoladamente (arquivo temporário, apagar depois):
 

@@ -123,9 +123,10 @@
 - Checklist de smoke test (antes/depois do primeiro deploy de producao):
   - Confirmar que `POST /api/auth/login` retorna header `Set-Cookie` em producao (DevTools do navegador ou `curl -i` contra o dominio real). Sem isso o login fica inerte mesmo retornando 200.
   - Confirmar que o app se recusa a subir se `SESSION_SECRET` nao estiver definida em ambiente configurado como producao (`NODE_ENV=production`).
-- Nota operacional — exclusao de conta: ao apagar a conta de uma pessoa, tambem rodar `DELETE FROM session;` no mesmo banco, forcando todo mundo a logar de novo. `requireAuth` so confere `req.session.userId`, nao revalida no banco a cada request — sessoes de uma conta apagada continuam validas ate expirar (ate 30 dias). Sem isso a sessao da pessoa removida continua ativa. Para um app de 2-5 pessoas essa e a abordagem mais simples e segura (nao da pra invalidar so a sessao de uma pessoa sem parsear o payload JSON do session store, e derrubar todo mundo ocasionalmente e um trade-off aceitavel nessa escala).
+- Nota operacional — exclusao de conta: apagar uma conta pelo painel admin (`/admin/users`) ja invalida automaticamente as sessoes ativas dessa pessoa (`storage.deleteSessionsForUser`, chamado pela rota de delete) — nao precisa mais rodar `DELETE FROM session;` manualmente.
 
 ## 15) Variaveis de email (SMTP Hostinger)
+- Antes de configurar essas variaveis: se ainda nao rodou depois deste plano, repita o passo 1 da secao 14 (`db:push` manual contra producao) — ele tambem aplica a coluna `is_admin` em `users` e a tabela `tokens` novas deste plano. E aditivo, mesma regra de sempre.
 - `SMTP_HOST`: `smtp.hostinger.com` (default no codigo, so precisa setar se mudar).
 - `SMTP_PORT`: `465` (SSL, default no codigo) ou `587` (STARTTLS) se `465` nao funcionar.
 - `SMTP_USER`: `noreply@meucontrole.cloud` (caixa ja existente na hospedagem de email da Hostinger).

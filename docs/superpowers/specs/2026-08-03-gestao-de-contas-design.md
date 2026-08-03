@@ -3,6 +3,8 @@
 Data: 2026-08-03
 Status: aprovado (aguardando plano de implementação)
 
+Nota pós-implementação (2026-08-03): este spec descreve o design original com Resend. Durante a implementação, descobrimos que o domínio já tinha hospedagem de email da Hostinger configurada (DKIM/SPF/DMARC prontos) — trocamos para SMTP via essa caixa existente (`noreply@meucontrole.cloud`) em vez de criar uma conta Resend nova. Onde este documento menciona Resend/`RESEND_API_KEY`, leia como "SMTP Hostinger" (`SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM`) — o restante do design (convite, admin, recuperação de senha) não mudou. Ver `docs/superpowers/plans/2026-08-03-gestao-de-contas.md` para o design final.
+
 ## Contexto
 
 A camada de autenticação (spec `2026-07-31-camada-autenticacao-design.md`) está em produção: login por email+senha, sessão server-side, sem autocadastro, sem papéis, sem recuperação de senha — decisões deliberadas para um app de 2-5 contas conhecidas.
