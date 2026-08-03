@@ -2,21 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Substituir a criação de conta via CLI por convite (validando o email de verdade), acrescentar papel admin com um painel de gestão de usuários, e adicionar recuperação de senha — tudo por email via Resend.
+**Goal:** Substituir a criação de conta via CLI por convite (validando o email de verdade), acrescentar papel admin com um painel de gestão de usuários, e adicionar recuperação de senha — tudo por email via SMTP do próprio domínio (Hostinger).
 
-**Architecture:** Uma tabela `tokens` genérica (convite e reset de senha) + um módulo de email (Resend) + um módulo de geração/validação de token, reaproveitando a sessão/auth já existentes. `requireAdmin` empilha sobre o `requireAuth` já em produção. Frontend ganha rotas reais pré-login (convite/reset chegam por link de email, precisam de URL própria) e uma tela de administração de usuários, visível só pra quem é admin.
+**Architecture:** Uma tabela `tokens` genérica (convite e reset de senha) + um módulo de email (SMTP via nodemailer, usando a caixa `noreply@meucontrole.cloud` já existente na hospedagem de email da Hostinger) + um módulo de geração/validação de token, reaproveitando a sessão/auth já existentes. `requireAdmin` empilha sobre o `requireAuth` já em produção. Frontend ganha rotas reais pré-login (convite/reset chegam por link de email, precisam de URL própria) e uma tela de administração de usuários, visível só pra quem é admin.
 
-**Tech Stack:** Express + Postgres/drizzle-orm + React/wouter já existentes. Novo: `resend` (envio de email).
+**Tech Stack:** Express + Postgres/drizzle-orm + React/wouter já existentes. Novo: `nodemailer` (envio de email via SMTP).
 
-## Pré-requisito (fora do plano, resolver antes da Task 3)
+## Pré-requisito (resolvido antes da Task 3)
 
-Precisa de uma conta Resend com **domínio verificado** (`onboarding@resend.dev`, o remetente de teste do Resend, só envia pra o dono da conta — não serve pra convidar terceiros). Passos, fora deste plano:
-1. Criar conta em resend.com.
-2. Adicionar o domínio (`meucontrole.cloud` ou um subdomínio tipo `mail.meucontrole.cloud`) — Resend mostra os registros DNS necessários (SPF/DKIM).
-3. Registros DNS aplicados na Hostinger (posso fazer isso via API, tenho acesso).
-4. Gerar uma API key no Resend.
-
-Isso dá dois valores: `RESEND_API_KEY` e um `EMAIL_FROM` (ex.: `"Finança Familiar <naoresponda@meucontrole.cloud>"`). Sem isso, a Task 3 não tem como ser verificada de verdade (envio real).
+Domínio `meucontrole.cloud` já tem hospedagem de email da Hostinger configurada (MX, DKIM, SPF, DMARC já publicados — confirmado via API da Hostinger). Caixa existente: `noreply@meucontrole.cloud`. Servidor SMTP: `smtp.hostinger.com`, porta `465` (SSL). Isso dá os valores `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM` necessários pra Task 3 — sem criar conta em serviço nenhum novo.
 
 ## Global Constraints
 
@@ -26,7 +20,7 @@ Isso dá dois valores: `RESEND_API_KEY` e um `EMAIL_FROM` (ex.: `"Finança Famil
 - `npm run db:push` só roda contra banco local/dev, nunca produção neste fluxo (`docs/canonicos/RUNBOOK.md`, Guardrail obrigatório) — mesma regra do plano anterior.
 - Tokens (convite/reset) armazenados como hash (sha256), nunca em texto puro no banco.
 - `/api/auth/forgot-password` sempre responde com a mesma mensagem genérica, exista ou não a conta — não pode vazar se um email tem cadastro.
-- `RESEND_API_KEY` e `EMAIL_FROM` obrigatórias em produção (mesmo padrão de fail-fast do `SESSION_SECRET` em `server/auth.ts`).
+- `SMTP_USER`, `SMTP_PASSWORD` e `EMAIL_FROM` obrigatórias em produção (mesmo padrão de fail-fast do `SESSION_SECRET` em `server/auth.ts`).
 - Projeto não tem suite automatizada. Verificação manual via `tsc --noEmit`, `curl` e (a partir da Task 3) envio real de email — registrada em `docs/logs/TEST_LOG.md`.
 - `npx tsc --noEmit -p tsconfig.server.json` sempre mostra 1 erro pré-existente não relacionado em `server/seed.ts:34` — ignorar, só checar que não aparece nenhum erro novo.
 
@@ -36,14 +30,14 @@ Isso dá dois valores: `RESEND_API_KEY` e um `EMAIL_FROM` (ex.: `"Finança Famil
 
 **Backend (novo):**
 - `server/tokens.ts` — gera/hasheia/valida token de convite ou reset.
-- `server/email.ts` — cliente Resend, `sendInviteEmail`, `sendResetPasswordEmail`.
+- `server/email.ts` — transporte SMTP (nodemailer), `sendInviteEmail`, `sendResetPasswordEmail`.
 
 **Backend (modificado):**
 - `shared/schema.ts` — `isAdmin` em `users`, tabela `tokens`.
 - `server/storage.ts` — métodos de `tokens`, gestão de usuário, limpeza de sessão.
 - `server/auth.ts` — `requireAdmin`.
 - `server/routes.ts` — rotas de convite/reset (públicas) e admin (`/admin/users/*`).
-- `package.json` — dependência `resend`.
+- `package.json` — dependência `nodemailer`.
 
 **Frontend (novo):**
 - `client/src/pages/CreateAccount.tsx` — resgatar convite.
@@ -59,7 +53,7 @@ Isso dá dois valores: `RESEND_API_KEY` e um `EMAIL_FROM` (ex.: `"Finança Famil
 - `client/src/components/BarraLateral.tsx` — item "Usuários" (admin only).
 
 **Docs:**
-- `docs/USAGE.md` — `RESEND_API_KEY`/`EMAIL_FROM`/`APP_URL`, bootstrap do primeiro admin.
+- `docs/USAGE.md` — `SMTP_HOST`/`SMTP_PORT`/`SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM`/`APP_URL`, bootstrap do primeiro admin.
 - `docs/logs/TEST_LOG.md` — verificação final.
 
 ---
@@ -186,7 +180,7 @@ git commit -m "feat: modulo de geracao e validacao de token"
 
 ---
 
-### Task 3: Dependência Resend + módulo de email (`server/email.ts`)
+### Task 3: Dependência nodemailer + módulo de email (`server/email.ts`)
 
 **Files:**
 - Modify: `package.json`
@@ -195,14 +189,20 @@ git commit -m "feat: modulo de geracao e validacao de token"
 **Interfaces:**
 - Produces: `sendInviteEmail(email: string, token: string): Promise<void>`, `sendResetPasswordEmail(email: string, token: string): Promise<void>`.
 
-**Pré-requisito:** `RESEND_API_KEY` e `EMAIL_FROM` reais (ver seção "Pré-requisito" no topo do plano) precisam estar disponíveis pra rodar o Step 3. Se ainda não existirem, pare e peça ao controlador — não invente um envio fake.
+**Pré-requisito:** `SMTP_USER`, `SMTP_PASSWORD` e `EMAIL_FROM` reais (ver seção "Pré-requisito" no topo do plano — caixa `noreply@meucontrole.cloud` já existe na Hostinger) precisam estar disponíveis pra rodar o Step 3. Se ainda não existirem, pare e peça ao controlador — não invente um envio fake.
 
-- [ ] **Step 1: Adicionar dependência**
+- [ ] **Step 1: Adicionar dependências**
 
 Em `package.json`, em `dependencies`, depois de `"connect-pg-simple": "^10.0.0",`, adicionar:
 
 ```json
-    "resend": "^6.18.1",
+    "nodemailer": "^9.0.3",
+```
+
+Em `devDependencies`, depois de `"@types/connect-pg-simple": "^7.0.3",`, adicionar:
+
+```json
+    "@types/nodemailer": "^8.0.1",
 ```
 
 Run: `npm install`
@@ -210,26 +210,34 @@ Run: `npm install`
 - [ ] **Step 2: Criar o módulo**
 
 ```ts
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 const isProd = process.env.NODE_ENV === "production";
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const SMTP_HOST = process.env.SMTP_HOST || "smtp.hostinger.com";
+const SMTP_PORT = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 465;
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 const EMAIL_FROM = process.env.EMAIL_FROM;
 const APP_URL = process.env.APP_URL || "http://localhost:3001";
 
-if (isProd && !RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY deve estar definida em producao.");
+if (isProd && (!SMTP_USER || !SMTP_PASSWORD)) {
+  throw new Error("SMTP_USER e SMTP_PASSWORD devem estar definidas em producao.");
 }
 if (isProd && !EMAIL_FROM) {
-  throw new Error("EMAIL_FROM deve estar definida em producao (ex: 'Financa Familiar <naoresponda@meucontrole.cloud>').");
+  throw new Error("EMAIL_FROM deve estar definida em producao (ex: 'Financa Familiar <noreply@meucontrole.cloud>').");
 }
 
-const resend = new Resend(RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: SMTP_PORT === 465,
+  auth: { user: SMTP_USER, pass: SMTP_PASSWORD },
+});
 
 export async function sendInviteEmail(email: string, token: string): Promise<void> {
   const link = `${APP_URL}/criar-conta?token=${token}`;
-  await resend.emails.send({
-    from: EMAIL_FROM || "onboarding@resend.dev",
+  await transporter.sendMail({
+    from: EMAIL_FROM,
     to: email,
     subject: "Convite - Financa Familiar",
     html: `<p>Voce foi convidado para o Financa Familiar.</p><p><a href="${link}">Clique aqui para criar sua conta</a></p><p>Este link expira em 7 dias.</p>`,
@@ -238,8 +246,8 @@ export async function sendInviteEmail(email: string, token: string): Promise<voi
 
 export async function sendResetPasswordEmail(email: string, token: string): Promise<void> {
   const link = `${APP_URL}/redefinir-senha?token=${token}`;
-  await resend.emails.send({
-    from: EMAIL_FROM || "onboarding@resend.dev",
+  await transporter.sendMail({
+    from: EMAIL_FROM,
     to: email,
     subject: "Redefinir senha - Financa Familiar",
     html: `<p>Clique no link abaixo para definir uma nova senha.</p><p><a href="${link}">Redefinir senha</a></p><p>Este link expira em 1 hora. Se voce nao pediu isso, ignore este email.</p>`,
@@ -249,7 +257,7 @@ export async function sendResetPasswordEmail(email: string, token: string): Prom
 
 - [ ] **Step 3: Verificar envio real**
 
-Com `RESEND_API_KEY` e `EMAIL_FROM` reais setados na sessão (`$env:RESEND_API_KEY=...`, `$env:EMAIL_FROM=...`), rodar (troca `destino@real.com` por um email que você acessa de verdade):
+Com `SMTP_USER`, `SMTP_PASSWORD` e `EMAIL_FROM` reais setados na sessão (`$env:SMTP_USER="noreply@meucontrole.cloud"`, `$env:SMTP_PASSWORD=...`, `$env:EMAIL_FROM="Financa Familiar <noreply@meucontrole.cloud>"`), rodar (troca `destino@real.com` por um email que você acessa de verdade):
 
 ```bash
 cat > _tmp-check-email.ts << 'EOF'
@@ -263,13 +271,13 @@ npx tsx _tmp-check-email.ts
 rm _tmp-check-email.ts
 ```
 
-Expected: `enviado sem erro`, e o email chega de verdade na caixa de entrada (confirmar manualmente).
+Expected: `enviado sem erro`, e o email chega de verdade na caixa de entrada (confirmar manualmente). Se a conexão SMTP falhar, confirmar porta/host: Hostinger também aceita `587` com `secure:false` (STARTTLS) como alternativa a `465`.
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add package.json package-lock.json server/email.ts
-git commit -m "feat: modulo de envio de email via Resend"
+git commit -m "feat: modulo de envio de email via SMTP (Hostinger)"
 ```
 
 ---
@@ -1744,12 +1752,15 @@ git commit -m "feat: painel de administracao de usuarios"
 Adicionar no final do arquivo (depois da seção "## 13) Variavel SESSION_SECRET"):
 
 ```markdown
-## 14) Variaveis de email (Resend)
-- `RESEND_API_KEY`: chave da API Resend. Obrigatoria em producao (o modulo `server/email.ts` recusa subir sem ela).
-- `EMAIL_FROM`: remetente verificado (ex.: `"Financa Familiar <naoresponda@meucontrole.cloud>"`). Precisa de dominio verificado no Resend (SPF/DKIM) pra enviar pra qualquer destinatario — sem isso, so entrega pro dono da conta Resend.
+## 14) Variaveis de email (SMTP Hostinger)
+- `SMTP_HOST`: `smtp.hostinger.com` (default no codigo, so precisa setar se mudar).
+- `SMTP_PORT`: `465` (SSL, default no codigo) ou `587` (STARTTLS) se `465` nao funcionar.
+- `SMTP_USER`: `noreply@meucontrole.cloud` (caixa ja existente na hospedagem de email da Hostinger).
+- `SMTP_PASSWORD`: senha da caixa `noreply@meucontrole.cloud`. Obrigatoria em producao (o modulo `server/email.ts` recusa subir sem ela).
+- `EMAIL_FROM`: `"Financa Familiar <noreply@meucontrole.cloud>"`. Obrigatoria em producao.
 - `APP_URL`: base usada nos links de convite/reset (ex.: `https://meucontrole.cloud`). Em dev, default `http://localhost:3001`.
-- `$env:RESEND_API_KEY="..."`, `$env:EMAIL_FROM="..."`, `$env:APP_URL="..."` Define localmente (PowerShell).
-- Em producao: configurar as 3 no Coolify como variavel de ambiente do app.
+- `$env:SMTP_USER="noreply@meucontrole.cloud"`, `$env:SMTP_PASSWORD="..."`, `$env:EMAIL_FROM="Financa Familiar <noreply@meucontrole.cloud>"`, `$env:APP_URL="..."` Define localmente (PowerShell).
+- Em producao: configurar as 4 (`SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `APP_URL`) no Coolify como variavel de ambiente do app.
 
 ## 15) Promover o primeiro admin
 - Nao existe UI pra promover o primeiro admin (a UI de gestao de usuario exige jah ser admin pra acessar).
@@ -1765,7 +1776,7 @@ Expected: build termina sem erro (client + server).
 
 - [ ] **Step 3: Verificação manual de ponta a ponta (navegador)**
 
-Pré-requisito: banco local ativo, servidor rodando (`npm start` ou `npm run dev`), `RESEND_API_KEY`/`EMAIL_FROM`/`APP_URL` reais setados, pelo menos um usuário promovido a admin (Step 1 desta task, ou o `admin-teste@example.com` da Task 7).
+Pré-requisito: banco local ativo, servidor rodando (`npm start` ou `npm run dev`), `SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM`/`APP_URL` reais setados, pelo menos um usuário promovido a admin (Step 1 desta task, ou o `admin-teste@example.com` da Task 7).
 
 Checklist:
 - Logar como admin → sidebar mostra item "Usuários" (usuário comum não vê esse item).
@@ -1794,6 +1805,5 @@ git commit -m "docs: variaveis de email, bootstrap de admin e verificacao e2e de
 
 ## Depois deste plano (fora de escopo, não incluir aqui)
 
-- Verificar domínio no Resend + aplicar registros DNS na Hostinger (pré-requisito, resolver com o controlador antes da Task 3 se ainda não feito).
-- Promover o primeiro admin em produção (`docs/USAGE.md` seção 15) e configurar `RESEND_API_KEY`/`EMAIL_FROM`/`APP_URL` no Coolify antes do deploy.
+- Promover o primeiro admin em produção (`docs/USAGE.md` seção 15) e configurar `SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM`/`APP_URL` no Coolify antes do deploy.
 - Aplicar `isAdmin`/`tokens` em produção via `db:push` manual (mesmo canal humano já documentado no plano anterior).
