@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { useSearchParams } from "wouter";
+import { useLocation, useSearchParams } from "wouter";
 import { api } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 
 export default function CreateAccount() {
   const [params] = useSearchParams();
+  const [, navigate] = useLocation();
   const token = params.get("token") ?? "";
   const { entrarComSessaoExistente } = useAuth();
 
@@ -33,6 +34,7 @@ export default function CreateAccount() {
     try {
       const usuario = await api.redeemInvite(token, nome, senha);
       entrarComSessaoExistente(usuario);
+      navigate("/");
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao criar conta");
     } finally {
