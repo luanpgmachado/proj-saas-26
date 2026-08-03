@@ -112,3 +112,15 @@
 - Obrigatoria em producao (`NODE_ENV=production`); o servidor recusa subir sem ela.
 - `$env:SESSION_SECRET="valor-aleatorio-longo"` Define localmente (opcional em dev).
 - Em producao: configurar no Coolify como variavel de ambiente do app, com um valor aleatorio gerado uma vez e mantido estavel (trocar o valor invalida todas as sessoes ativas).
+
+## 14) Preparar producao para login (passo humano, fora do fluxo de agente)
+- Guardrail do `docs/canonicos/RUNBOOK.md` proibe agente rodar `npm run db:push` (ou qualquer comando de escrita de schema) contra producao. Os passos abaixo sao manuais, executados por uma pessoa, nao pelo agente.
+- Ordem obrigatoria:
+  1. **Criar tabelas `users`/`session` em producao**: em shell local, apontar `DATABASE_URL` para a string de conexao de producao e rodar `npm run db:push` manualmente. E aditivo — cria as tabelas novas, nenhuma tabela existente e alterada.
+  2. **Definir `SESSION_SECRET`**: configurar no Coolify como variavel de ambiente do app, valor aleatorio longo, gerado uma vez e mantido estavel (trocar depois invalida todas as sessoes ativas).
+  3. **Criar a(s) conta(s) real(is)**: com `DATABASE_URL` ainda apontando para producao, rodar `npx tsx server/scripts/create-user.ts <email> <senha> <nome>` (ver secao 12).
+  4. **So entao** fazer deploy/redeploy do app.
+- Checklist de smoke test (antes/depois do primeiro deploy de producao):
+  - Confirmar que `POST /api/auth/login` retorna header `Set-Cookie` em producao (DevTools do navegador ou `curl -i` contra o dominio real). Sem isso o login fica inerte mesmo retornando 200.
+  - Confirmar que o app se recusa a subir se `SESSION_SECRET` nao estiver definida em ambiente configurado como producao (`NODE_ENV=production`).
+- Nota operacional — exclusao de conta: ao apagar a conta de uma pessoa, tambem rodar `DELETE FROM session;` no mesmo banco, forcando todo mundo a logar de novo. `requireAuth` so confere `req.session.userId`, nao revalida no banco a cada request — sessoes de uma conta apagada continuam validas ate expirar (ate 30 dias). Sem isso a sessao da pessoa removida continua ativa. Para um app de 2-5 pessoas essa e a abordagem mais simples e segura (nao da pra invalidar so a sessao de uma pessoa sem parsear o payload JSON do session store, e derrubar todo mundo ocasionalmente e um trade-off aceitavel nessa escala).

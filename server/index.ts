@@ -14,6 +14,12 @@ const isDev = process.env.NODE_ENV !== "production";
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : (isDev ? 3001 : 5000);
 const HOST = "0.0.0.0";
 
+// Confia em 1 hop de proxy reverso (Traefik/Coolify), que termina o TLS e repassa
+// X-Forwarded-Proto. Sem isso, req.secure fica sempre false e o cookie de sessao
+// (cookie.secure em server/auth.ts) nunca e emitido em producao; tambem corrige
+// req.ip para o rate limiter de login (ver server/routes.ts).
+app.set("trust proxy", 1);
+
 app.use(cors());
 app.use(express.json());
 app.use(sessionMiddleware);
