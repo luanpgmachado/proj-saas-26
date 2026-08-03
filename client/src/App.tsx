@@ -3,6 +3,9 @@ import { Route, Switch } from "wouter";
 import { LayoutAplicativo } from "./components/LayoutAplicativo";
 import { useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
+import CreateAccount from "./pages/CreateAccount";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Code-splitting por rota: reduz JS inicial e melhora TTI/FID em conexoes lentas.
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -13,6 +16,7 @@ const Goals = lazy(() => import("./pages/Goals"));
 const Investments = lazy(() => import("./pages/Investments"));
 const Recurrences = lazy(() => import("./pages/Recurrences"));
 const Categories = lazy(() => import("./pages/Categories"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 
 export default function App() {
   const { usuario, carregando } = useAuth();
@@ -26,7 +30,14 @@ export default function App() {
   }
 
   if (!usuario) {
-    return <Login />;
+    return (
+      <Switch>
+        <Route path="/criar-conta" component={CreateAccount} />
+        <Route path="/esqueci-senha" component={ForgotPassword} />
+        <Route path="/redefinir-senha" component={ResetPassword} />
+        <Route component={Login} />
+      </Switch>
+    );
   }
 
   return (
@@ -41,6 +52,7 @@ export default function App() {
           <Route path="/investments" component={Investments} />
           <Route path="/recurrences" component={Recurrences} />
           <Route path="/categories" component={Categories} />
+          {usuario.isAdmin ? <Route path="/admin/users" component={AdminUsers} /> : null}
         </Switch>
       </Suspense>
     </LayoutAplicativo>

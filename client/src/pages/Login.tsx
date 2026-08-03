@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "wouter";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
@@ -59,6 +60,15 @@ export default function Login() {
         >
           {enviando ? "Entrando..." : "Entrar"}
         </button>
+
+        <div className="flex items-center justify-between mt-4 text-sm">
+          <Link href="/esqueci-senha" className="text-muted-foreground hover:text-foreground">
+            Esqueceu a senha?
+          </Link>
+          <Link href="/criar-conta" className="text-muted-foreground hover:text-foreground">
+            Criar conta
+          </Link>
+        </div>
       </form>
     </div>
   );
