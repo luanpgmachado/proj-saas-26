@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { api, setUnauthorizedHandler } from "../lib/api";
 
-type Usuario = { id: number; email: string; name: string };
+type Usuario = { id: number; email: string; name: string; isAdmin: boolean };
 
 type ValorContexto = {
   usuario: Usuario | null;
   carregando: boolean;
   entrar: (email: string, senha: string) => Promise<void>;
+  entrarComSessaoExistente: (usuario: Usuario) => void;
   sair: () => Promise<void>;
 };
 
@@ -37,13 +38,17 @@ export function AuthProvider({ children }: Props) {
     setUsuario(usuarioLogado);
   };
 
+  const entrarComSessaoExistente = (usuarioLogado: Usuario) => {
+    setUsuario(usuarioLogado);
+  };
+
   const sair = async () => {
     await api.logout();
     setUsuario(null);
   };
 
   const valor = useMemo<ValorContexto>(
-    () => ({ usuario, carregando, entrar, sair }),
+    () => ({ usuario, carregando, entrar, entrarComSessaoExistente, sair }),
     [usuario, carregando]
   );
 

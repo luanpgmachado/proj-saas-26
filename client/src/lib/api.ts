@@ -36,12 +36,27 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   login: (email: string, senha: string) =>
-    request<{ id: number; email: string; name: string }>("/auth/login", {
+    request<{ id: number; email: string; name: string; isAdmin: boolean }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, senha }),
     }),
   logout: () => request<{ success: boolean }>("/auth/logout", { method: "POST" }),
-  me: () => request<{ id: number; email: string; name: string }>("/auth/me"),
+  me: () => request<{ id: number; email: string; name: string; isAdmin: boolean }>("/auth/me"),
+  createInvite: (email: string) => request<{ success: boolean }>("/admin/users/invite", { method: "POST", body: JSON.stringify({ email }) }),
+  getUsers: () => request<{ id: number; email: string; name: string; isAdmin: boolean }[]>("/admin/users"),
+  updateUser: (id: number, data: { name?: string; isAdmin?: boolean }) =>
+    request<{ id: number; email: string; name: string; isAdmin: boolean }>(`/admin/users/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteUser: (id: number) => request<{ success: boolean }>(`/admin/users/${id}`, { method: "DELETE" }),
+  getInvite: (token: string) => request<{ email: string }>(`/auth/invites/${token}`),
+  redeemInvite: (token: string, name: string, senha: string) =>
+    request<{ id: number; email: string; name: string; isAdmin: boolean }>(`/auth/invites/${token}/redeem`, {
+      method: "POST",
+      body: JSON.stringify({ name, senha }),
+    }),
+  forgotPassword: (email: string) => request<{ message: string }>("/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) }),
+  getResetPassword: (token: string) => request<{ valid: boolean }>(`/auth/reset-password/${token}`),
+  resetPassword: (token: string, senha: string) =>
+    request<{ success: boolean }>(`/auth/reset-password/${token}`, { method: "POST", body: JSON.stringify({ senha }) }),
   getMonthSummary: (month: string) => request<any>(`/months/${month}/summary`),
   getCategorySpend: (month: string) => request<any[]>(`/months/${month}/categories`),
   getTransactions: (params: Record<string, string>) => {
