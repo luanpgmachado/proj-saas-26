@@ -3,7 +3,9 @@ import { storage } from "./storage";
 import type { ParsedQs } from "qs";
 import rateLimit from "express-rate-limit";
 import { requireAuth } from "./auth";
-import { verifyPassword } from "./passwords";
+import { hashPassword, verifyPassword } from "./passwords";
+import { generateToken, hashToken, isExpired, expiryFromNow } from "./tokens";
+import { sendResetPasswordEmail } from "./email";
 
 const router = Router();
 
@@ -51,7 +53,7 @@ router.post("/auth/login", loginRateLimit, asyncHandler(async (req, res) => {
   req.session.regenerate((err) => {
     if (err) return res.status(500).json({ error: "Erro ao iniciar sessao" });
     req.session.userId = user.id;
-    res.json({ id: user.id, email: user.email, name: user.name });
+    res.json({ id: user.id, email: user.email, name: user.name, isAdmin: user.isAdmin });
   });
 }));
 
@@ -67,7 +69,108 @@ router.get("/auth/me", asyncHandler(async (req, res) => {
   if (!req.session.userId) return res.status(401).json({ error: "Nao autenticado" });
   const user = await storage.getUserById(req.session.userId);
   if (!user) return res.status(401).json({ error: "Nao autenticado" });
-  res.json({ id: user.id, email: user.email, name: user.name });
+  res.json({ id: user.id, email: user.email, name: user.name, isAdmin: user.isAdmin });
+}));
+
+const forgotPasswordRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Muitas tentativas. Tente novamente em alguns minutos." },
+});
+
+router.get("/auth/invites/:token", asyncHandler(async (req, res) => {
+  const rawToken = getParamString(req.params.token);
+  const found = await storage.getTokenByHash(hashToken(rawToken), "invite");
+  if (!found || found.usedAt || isExpired(found.expiresAt)) {
+    return res.status(400).json({ error: "Convite invalido ou expirado" });
+  }
+  res.json({ email: found.email });
+}));
+
+router.post("/auth/invites/:token/redeem", asyncHandler(async (req, res) => {
+  const rawToken = getParamString(req.params.token);
+  const { name, senha } = req.body ?? {};
+  if (typeof name !== "string" || !name.trim() || typeof senha !== "string" || !senha) {
+    return res.status(400).json({ error: "nome e senha sao obrigatorios" });
+  }
+
+  const found = await storage.getTokenByHash(hashToken(rawToken), "invite");
+  if (!found || found.usedAt || isExpired(found.expiresAt)) {
+    return res.status(400).json({ error: "Convite invalido ou expirado" });
+  }
+
+  const existente = await storage.getUserByEmail(found.email);
+  if (existente) {
+    return res.status(400).json({ error: "Ja existe conta com esse email" });
+  }
+
+  const passwordHash = await hashPassword(senha);
+  const user = await storage.createUser({ email: found.email, passwordHash, name: name.trim() });
+  await storage.markTokenUsed(found.id);
+
+  req.session.regenerate((err) => {
+    if (err) return res.status(500).json({ error: "Erro ao iniciar sessao" });
+    req.session.userId = user.id;
+    res.json({ id: user.id, email: user.email, name: user.name, isAdmin: user.isAdmin });
+  });
+}));
+
+router.post("/auth/forgot-password", forgotPasswordRateLimit, asyncHandler(async (req, res) => {
+  const { email } = req.body ?? {};
+  if (typeof email !== "string") {
+    return res.status(400).json({ error: "email e obrigatorio" });
+  }
+
+  const emailNormalizado = email.trim().toLowerCase();
+  const user = await storage.getUserByEmail(emailNormalizado);
+  if (user) {
+    const rawToken = generateToken();
+    await storage.createToken({
+      email: user.email,
+      tokenHash: hashToken(rawToken),
+      type: "reset",
+      userId: user.id,
+      expiresAt: expiryFromNow(1),
+    });
+    try {
+      await sendResetPasswordEmail(user.email, rawToken);
+    } catch (err) {
+      console.error("Erro ao enviar email de recuperacao:", err);
+    }
+  }
+
+  res.json({ message: "Se esse email tiver uma conta, enviamos um link de redefinicao." });
+}));
+
+router.get("/auth/reset-password/:token", asyncHandler(async (req, res) => {
+  const rawToken = getParamString(req.params.token);
+  const found = await storage.getTokenByHash(hashToken(rawToken), "reset");
+  if (!found || found.usedAt || isExpired(found.expiresAt)) {
+    return res.status(400).json({ error: "Link invalido ou expirado" });
+  }
+  res.json({ valid: true });
+}));
+
+router.post("/auth/reset-password/:token", asyncHandler(async (req, res) => {
+  const rawToken = getParamString(req.params.token);
+  const { senha } = req.body ?? {};
+  if (typeof senha !== "string" || !senha) {
+    return res.status(400).json({ error: "senha e obrigatoria" });
+  }
+
+  const found = await storage.getTokenByHash(hashToken(rawToken), "reset");
+  if (!found || found.usedAt || isExpired(found.expiresAt) || !found.userId) {
+    return res.status(400).json({ error: "Link invalido ou expirado" });
+  }
+
+  const passwordHash = await hashPassword(senha);
+  await storage.updateUserPassword(found.userId, passwordHash);
+  await storage.markTokenUsed(found.id);
+  await storage.deleteSessionsForUser(found.userId);
+
+  res.json({ success: true });
 }));
 
 router.use(requireAuth);
