@@ -10,6 +10,7 @@ import {
   Target,
   LineChart,
   LogOut,
+  Users,
 } from "lucide-react";
 import { LinkNavegacao } from "./LinkNavegacao";
 import { SeletorCompetenciaMensal } from "./SeletorCompetenciaMensal";
@@ -52,13 +53,16 @@ export function BarraLateral() {
     []
   );
 
-  const navConfig: ItemNav[] = useMemo(
-    () => [
+  const navConfig: ItemNav[] = useMemo(() => {
+    const itens: ItemNav[] = [
       { href: "/categories", titulo: "Categorias", Icone: Tags },
       { href: "/payment-methods", titulo: "Métodos de Pagamento", Icone: CreditCard },
-    ],
-    []
-  );
+    ];
+    if (usuario?.isAdmin) {
+      itens.push({ href: "/admin/users", titulo: "Usuários", Icone: Users });
+    }
+    return itens;
+  }, [usuario?.isAdmin]);
 
   return (
     <aside
