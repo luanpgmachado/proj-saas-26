@@ -92,6 +92,19 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
   name: varchar("name", { length: 255 }).notNull(),
+  isAdmin: boolean("is_admin").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const tokens = pgTable("tokens", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull(),
+  tokenHash: varchar("token_hash", { length: 255 }).notNull(),
+  type: varchar("type", { length: 20 }).notNull(),
+  userId: integer("user_id").references(() => users.id),
+  createdByUserId: integer("created_by_user_id").references(() => users.id),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -187,3 +200,5 @@ export type InvestmentContribution = typeof investmentContributions.$inferSelect
 export type InsertInvestmentContribution = typeof investmentContributions.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+export type Token = typeof tokens.$inferSelect;
+export type InsertToken = typeof tokens.$inferInsert;
