@@ -109,6 +109,7 @@ router.post("/auth/invites/:token/redeem", asyncHandler(async (req, res) => {
   const passwordHash = await hashPassword(senha);
   const user = await storage.createUser({ email: found.email, passwordHash, name: name.trim() });
   await storage.markTokenUsed(found.id);
+  await storage.markInviteTokensUsedForEmail(found.email);
 
   req.session.regenerate((err) => {
     if (err) return res.status(500).json({ error: "Erro ao iniciar sessao" });
@@ -124,22 +125,25 @@ router.post("/auth/forgot-password", forgotPasswordRateLimit, asyncHandler(async
   }
 
   const emailNormalizado = email.trim().toLowerCase();
-  const user = await storage.getUserByEmail(emailNormalizado);
-  if (user) {
-    const rawToken = generateToken();
-    await storage.createToken({
-      email: user.email,
-      tokenHash: hashToken(rawToken),
-      type: "reset",
-      userId: user.id,
-      expiresAt: expiryFromNow(1),
-    });
+
+  (async () => {
     try {
-      await sendResetPasswordEmail(user.email, rawToken);
+      const user = await storage.getUserByEmail(emailNormalizado);
+      if (user) {
+        const rawToken = generateToken();
+        await storage.createToken({
+          email: user.email,
+          tokenHash: hashToken(rawToken),
+          type: "reset",
+          userId: user.id,
+          expiresAt: expiryFromNow(1),
+        });
+        await sendResetPasswordEmail(user.email, rawToken);
+      }
     } catch (err) {
       console.error("Erro ao enviar email de recuperacao:", err);
     }
-  }
+  })();
 
   res.json({ message: "Se esse email tiver uma conta, enviamos um link de redefinicao." });
 }));
@@ -168,6 +172,7 @@ router.post("/auth/reset-password/:token", asyncHandler(async (req, res) => {
   const passwordHash = await hashPassword(senha);
   await storage.updateUserPassword(found.userId, passwordHash);
   await storage.markTokenUsed(found.id);
+  await storage.markResetTokensUsedForUser(found.userId);
   await storage.deleteSessionsForUser(found.userId);
 
   res.json({ success: true });
@@ -201,7 +206,12 @@ router.post("/admin/users/invite", requireAdmin, asyncHandler(async (req, res) =
     expiresAt: expiryFromNow(24 * 7),
   });
 
-  await sendInviteEmail(emailNormalizado, rawToken);
+  try {
+    await sendInviteEmail(emailNormalizado, rawToken);
+  } catch (err) {
+    console.error("Erro ao enviar email de convite:", err);
+    return res.status(502).json({ error: "Convite criado mas falhou ao enviar o email. Tente convidar de novo." });
+  }
   res.json({ success: true });
 }));
 
@@ -228,9 +238,13 @@ router.delete("/admin/users/:id", requireAdmin, asyncHandler(async (req, res) =>
     return res.status(400).json({ error: "Voce nao pode deletar a propria conta" });
   }
 
+  const alvo = await storage.getUserById(id);
+  if (!alvo) return res.status(404).json({ error: "Usuario nao encontrado" });
+
   const deleted = await storage.deleteUser(id);
   if (!deleted) return res.status(404).json({ error: "Usuario nao encontrado" });
   await storage.deleteSessionsForUser(id);
+  await storage.markInviteTokensUsedForEmail(alvo.email);
   res.json({ success: true });
 }));
 

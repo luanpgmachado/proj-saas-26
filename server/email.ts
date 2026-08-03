@@ -14,6 +14,9 @@ if (isProd && (!SMTP_USER || !SMTP_PASSWORD)) {
 if (isProd && !EMAIL_FROM) {
   throw new Error("EMAIL_FROM deve estar definida em producao (ex: 'Financa Familiar <noreply@meucontrole.cloud>').");
 }
+if (isProd && !process.env.APP_URL) {
+  throw new Error("APP_URL deve estar definida em producao (ex: 'https://meucontrole.cloud'), senao os links de convite/reset apontam para localhost.");
+}
 
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,

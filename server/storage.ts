@@ -37,7 +37,7 @@ import {
   type InsertToken,
 } from "@shared/schema";
 import { db, pool } from "./db";
-import { eq, and, gte, lte, isNotNull } from "drizzle-orm";
+import { eq, and, gte, lte, isNotNull, isNull } from "drizzle-orm";
 
 class HttpError extends Error {
   statusCode: number;
@@ -845,6 +845,20 @@ export class DatabaseStorage implements IStorage {
 
   async markTokenUsed(id: number): Promise<void> {
     await db.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, id));
+  }
+
+  async markInviteTokensUsedForEmail(email: string): Promise<void> {
+    await db
+      .update(tokens)
+      .set({ usedAt: new Date() })
+      .where(and(eq(tokens.email, email), eq(tokens.type, "invite"), isNull(tokens.usedAt)));
+  }
+
+  async markResetTokensUsedForUser(userId: number): Promise<void> {
+    await db
+      .update(tokens)
+      .set({ usedAt: new Date() })
+      .where(and(eq(tokens.userId, userId), eq(tokens.type, "reset"), isNull(tokens.usedAt)));
   }
 
   async getUsers(): Promise<User[]> {
