@@ -10,6 +10,7 @@ import {
   investments,
   investmentContributions,
   users,
+  tokens,
   type Category,
   type InsertCategory,
   type PaymentMethod,
@@ -32,8 +33,10 @@ import {
   type InsertInvestmentContribution,
   type User,
   type InsertUser,
+  type Token,
+  type InsertToken,
 } from "@shared/schema";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq, and, gte, lte, isNotNull } from "drizzle-orm";
 
 class HttpError extends Error {
@@ -825,6 +828,45 @@ export class DatabaseStorage implements IStorage {
   async createUser(user: InsertUser): Promise<User> {
     const [created] = await db.insert(users).values(user).returning();
     return created;
+  }
+
+  async createToken(token: InsertToken): Promise<Token> {
+    const [created] = await db.insert(tokens).values(token).returning();
+    return created;
+  }
+
+  async getTokenByHash(tokenHash: string, type: string): Promise<Token | undefined> {
+    const [found] = await db
+      .select()
+      .from(tokens)
+      .where(and(eq(tokens.tokenHash, tokenHash), eq(tokens.type, type)));
+    return found;
+  }
+
+  async markTokenUsed(id: number): Promise<void> {
+    await db.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, id));
+  }
+
+  async getUsers(): Promise<User[]> {
+    return db.select().from(users);
+  }
+
+  async updateUser(id: number, patch: { name?: string; isAdmin?: boolean }): Promise<User | undefined> {
+    const [updated] = await db.update(users).set(patch).where(eq(users.id, id)).returning();
+    return updated;
+  }
+
+  async updateUserPassword(id: number, passwordHash: string): Promise<void> {
+    await db.update(users).set({ passwordHash }).where(eq(users.id, id));
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async deleteSessionsForUser(userId: number): Promise<void> {
+    await pool.query(`DELETE FROM session WHERE (sess->>'userId')::int = $1`, [userId]);
   }
 }
 
