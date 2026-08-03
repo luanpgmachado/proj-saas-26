@@ -53,6 +53,7 @@ export default function App() {
           <Route path="/recurrences" component={Recurrences} />
           <Route path="/categories" component={Categories} />
           {usuario.isAdmin ? <Route path="/admin/users" component={AdminUsers} /> : null}
+          <Route component={Dashboard} />
         </Switch>
       </Suspense>
     </LayoutAplicativo>
