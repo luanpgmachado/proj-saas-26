@@ -125,7 +125,7 @@
   - Confirmar que o app se recusa a subir se `SESSION_SECRET` nao estiver definida em ambiente configurado como producao (`NODE_ENV=production`).
 - Nota operacional — exclusao de conta: ao apagar a conta de uma pessoa, tambem rodar `DELETE FROM session;` no mesmo banco, forcando todo mundo a logar de novo. `requireAuth` so confere `req.session.userId`, nao revalida no banco a cada request — sessoes de uma conta apagada continuam validas ate expirar (ate 30 dias). Sem isso a sessao da pessoa removida continua ativa. Para um app de 2-5 pessoas essa e a abordagem mais simples e segura (nao da pra invalidar so a sessao de uma pessoa sem parsear o payload JSON do session store, e derrubar todo mundo ocasionalmente e um trade-off aceitavel nessa escala).
 
-## 14) Variaveis de email (SMTP Hostinger)
+## 15) Variaveis de email (SMTP Hostinger)
 - `SMTP_HOST`: `smtp.hostinger.com` (default no codigo, so precisa setar se mudar).
 - `SMTP_PORT`: `465` (SSL, default no codigo) ou `587` (STARTTLS) se `465` nao funcionar.
 - `SMTP_USER`: `noreply@meucontrole.cloud` (caixa ja existente na hospedagem de email da Hostinger).
@@ -135,7 +135,7 @@
 - `$env:SMTP_USER="noreply@meucontrole.cloud"`, `$env:SMTP_PASSWORD="..."`, `$env:EMAIL_FROM="Financa Familiar <noreply@meucontrole.cloud>"`, `$env:APP_URL="..."` Define localmente (PowerShell).
 - Em producao: configurar as 4 (`SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `APP_URL`) no Coolify como variavel de ambiente do app.
 
-## 15) Promover o primeiro admin
+## 16) Promover o primeiro admin
 - Nao existe UI pra promover o primeiro admin (a UI de gestao de usuario exige jah ser admin pra acessar).
 - Rodar uma vez, manualmente, com `DATABASE_URL` apontando pro banco certo (local ou producao):
   - `npx tsx -e "import('./server/storage.ts').then(async ({storage}) => { const u = await storage.getUserByEmail('seu@email.com'); if (!u) throw new Error('usuario nao encontrado'); await storage.updateUser(u.id, { isAdmin: true }); console.log('promovido:', u.id); process.exit(0); })"`
