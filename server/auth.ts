@@ -2,6 +2,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import type { Request, Response, NextFunction } from "express";
 import { pool } from "./db";
+import { storage } from "./storage";
 
 declare module "express-session" {
   interface SessionData {
@@ -39,4 +40,19 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({ error: "Nao autenticado" });
   }
   next();
+}
+
+export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: "Nao autenticado" });
+  }
+  try {
+    const user = await storage.getUserById(req.session.userId);
+    if (!user?.isAdmin) {
+      return res.status(403).json({ error: "Acesso restrito a administradores" });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
 }
