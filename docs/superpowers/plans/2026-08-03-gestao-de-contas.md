@@ -1805,5 +1805,5 @@ git commit -m "docs: variaveis de email, bootstrap de admin e verificacao e2e de
 
 ## Depois deste plano (fora de escopo, não incluir aqui)
 
-- Promover o primeiro admin em produção (`docs/USAGE.md` seção 15) e configurar `SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM`/`APP_URL` no Coolify antes do deploy.
+- Promover o primeiro admin em produção (`docs/USAGE.md` seção 16) e configurar `SMTP_USER`/`SMTP_PASSWORD`/`EMAIL_FROM`/`APP_URL` no Coolify antes do deploy.
 - Aplicar `isAdmin`/`tokens` em produção via `db:push` manual (mesmo canal humano já documentado no plano anterior).
