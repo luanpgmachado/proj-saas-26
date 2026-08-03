@@ -11,8 +11,8 @@ export default function ForgotPassword() {
     event.preventDefault();
     setEnviando(true);
     try {
-      const res = await api.forgotPassword(email);
-      setMensagem(res.message);
+      await api.forgotPassword(email);
+      setMensagem("Se esse email tiver uma conta, enviamos um link de redefinição.");
     } catch {
       setMensagem("Se esse email tiver uma conta, enviamos um link de redefinição.");
     } finally {
