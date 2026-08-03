@@ -2,10 +2,10 @@ import { Router, Request, Response, NextFunction } from "express";
 import { storage } from "./storage";
 import type { ParsedQs } from "qs";
 import rateLimit from "express-rate-limit";
-import { requireAuth } from "./auth";
+import { requireAuth, requireAdmin } from "./auth";
 import { hashPassword, verifyPassword } from "./passwords";
 import { generateToken, hashToken, isExpired, expiryFromNow } from "./tokens";
-import { sendResetPasswordEmail } from "./email";
+import { sendInviteEmail, sendResetPasswordEmail } from "./email";
 
 const router = Router();
 
@@ -174,6 +174,65 @@ router.post("/auth/reset-password/:token", asyncHandler(async (req, res) => {
 }));
 
 router.use(requireAuth);
+
+router.get("/admin/users", requireAdmin, asyncHandler(async (req, res) => {
+  const usuarios = await storage.getUsers();
+  res.json(usuarios.map((u) => ({ id: u.id, email: u.email, name: u.name, isAdmin: u.isAdmin })));
+}));
+
+router.post("/admin/users/invite", requireAdmin, asyncHandler(async (req, res) => {
+  const { email } = req.body ?? {};
+  if (typeof email !== "string" || !email.trim()) {
+    return res.status(400).json({ error: "email e obrigatorio" });
+  }
+
+  const emailNormalizado = email.trim().toLowerCase();
+  const existente = await storage.getUserByEmail(emailNormalizado);
+  if (existente) {
+    return res.status(400).json({ error: "Ja existe conta com esse email" });
+  }
+
+  const rawToken = generateToken();
+  await storage.createToken({
+    email: emailNormalizado,
+    tokenHash: hashToken(rawToken),
+    type: "invite",
+    createdByUserId: req.session.userId!,
+    expiresAt: expiryFromNow(24 * 7),
+  });
+
+  await sendInviteEmail(emailNormalizado, rawToken);
+  res.json({ success: true });
+}));
+
+router.patch("/admin/users/:id", requireAdmin, asyncHandler(async (req, res) => {
+  const id = parseInt(getParamString(req.params.id));
+  const { name, isAdmin } = req.body ?? {};
+
+  if (id === req.session.userId && isAdmin === false) {
+    return res.status(400).json({ error: "Voce nao pode remover seu proprio acesso de admin" });
+  }
+
+  const patch: { name?: string; isAdmin?: boolean } = {};
+  if (typeof name === "string" && name.trim()) patch.name = name.trim();
+  if (typeof isAdmin === "boolean") patch.isAdmin = isAdmin;
+
+  const updated = await storage.updateUser(id, patch);
+  if (!updated) return res.status(404).json({ error: "Usuario nao encontrado" });
+  res.json({ id: updated.id, email: updated.email, name: updated.name, isAdmin: updated.isAdmin });
+}));
+
+router.delete("/admin/users/:id", requireAdmin, asyncHandler(async (req, res) => {
+  const id = parseInt(getParamString(req.params.id));
+  if (id === req.session.userId) {
+    return res.status(400).json({ error: "Voce nao pode deletar a propria conta" });
+  }
+
+  const deleted = await storage.deleteUser(id);
+  if (!deleted) return res.status(404).json({ error: "Usuario nao encontrado" });
+  await storage.deleteSessionsForUser(id);
+  res.json({ success: true });
+}));
 
 router.get("/categories", asyncHandler(async (req, res) => {
   const categories = await storage.getCategories();
